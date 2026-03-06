@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "description": "Lương tháng này",
+    "amount": 5000,
+    "type": "income",
+    "category": "Lương",
+    "date": "2023-10-01"
+  },
+  {
+    "id": "2",
+    "description": "Đi siêu thị",
+    "amount": 150,
+    "type": "expense",
+    "category": "Ăn uống",
+    "date": "2023-10-02"
+  },
+  {
+    "id": "3",
+    "description": "Grab đi làm",
+    "amount": 25,
+    "type": "expense",
+    "category": "Di chuyển",
+    "date": "2023-10-03"
+  },
+  {
+    "id": "4",
+    "description": "Đăng ký Netflix",
+    "amount": 15,
+    "type": "expense",
+    "category": "Giải trí",
+    "date": "2023-10-05"
+  },
+  {
+    "id": "5",
+    "description": "Dự án Freelance",
+    "amount": 1200,
+    "type": "income",
+    "category": "Khác",
+    "date": "2023-10-10"
+  }
+]

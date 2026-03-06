@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthScreen } from '../features/auth/AuthScreen';
+import { AuthScreen } from '../components/Auth/AuthScreen';
 import { User } from '../types';
 
 interface LoginPageProps {

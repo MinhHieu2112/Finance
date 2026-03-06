@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { SummaryCards } from '../features/analytics/SummaryCards';
-import { TransactionList } from '../features/transaction/TransactionList';
-import { TransactionForm } from '../features/transaction/TransactionForm';
-import { Charts } from '../features/analytics/Charts';
-import { FinancialAdvisorModal } from '../features/ai/FinancialAdvisorModal';
+import { SummaryCards } from '../components/Analytics/SummaryCards';
+import { TransactionList } from '../components/Transaction/TransactionList';
+import { TransactionForm } from '../components/Transaction/TransactionForm';
+import { Charts } from '../components/Analytics/Charts';
+import { FinancialAdvisorModal } from '../components/AI/FinancialAdvisorModal';
 import { Button } from '../components/Button';
-import { INITIAL_TRANSACTIONS } from '../constants';
 import { Transaction, User } from '../types';
 import { getFinancialAdvice } from '../services/geminiService';
 import { Plus, Sparkles, LogOut, User as UserIcon } from 'lucide-react';
+
+const API_BASE_URL = 'http://localhost:5000/api';
 
 interface DashboardPageProps {
   user: User;
@@ -16,7 +17,7 @@ interface DashboardPageProps {
 }
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) => {
-  const [transactions, setTransactions] = useState<Transaction[]>(INITIAL_TRANSACTIONS);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   
   // AI Advice State
@@ -24,30 +25,55 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
   const [loadingAdvice, setLoadingAdvice] = useState(false);
   const [showAdviceModal, setShowAdviceModal] = useState(false);
 
-  // Load transactions from local storage on mount
+  // Load transactions from backend on mount.
   useEffect(() => {
-    const savedTransactions = localStorage.getItem('smart_finance_transactions');
-    if (savedTransactions) {
-      setTransactions(JSON.parse(savedTransactions));
-    }
+    const loadTransactions = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/transactions`);
+        if (!response.ok) throw new Error('Cannot load transactions');
+        const data = await response.json();
+        setTransactions(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadTransactions();
   }, []);
 
-  // Persist transactions when changed
-  useEffect(() => {
-    localStorage.setItem('smart_finance_transactions', JSON.stringify(transactions));
-  }, [transactions]);
-
-  const addTransaction = (newTx: Omit<Transaction, 'id'>) => {
+  const addTransaction = async (newTx: Omit<Transaction, 'id'>) => {
     const transaction: Transaction = {
       ...newTx,
       id: crypto.randomUUID(),
     };
-    setTransactions([transaction, ...transactions]);
+
+    const response = await fetch(`${API_BASE_URL}/transactions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(transaction),
+    });
+
+    if (!response.ok) {
+      throw new Error('Cannot create transaction');
+    }
+
+    const createdTransaction: Transaction = await response.json();
+    setTransactions((prev) => [createdTransaction, ...prev]);
   };
 
-  const deleteTransaction = (id: string) => {
+  const deleteTransaction = async (id: string) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa giao dịch này?')) {
-      setTransactions(transactions.filter(t => t.id !== id));
+      const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Cannot delete transaction');
+      }
+
+      setTransactions((prev) => prev.filter((t) => t.id !== id));
     }
   };
 
