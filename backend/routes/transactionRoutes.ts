@@ -1,9 +1,9 @@
-const express = require('express');
-const Transaction = require('../models/Transaction');
+import express, { type Request, type Response, type NextFunction } from 'express';
+import Transaction from '../models/Transaction';
 
 const router = express.Router();
 
-router.get('/', async (_req, res, next) => {
+router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const transactions = await Transaction.find().sort({ date: -1 });
     res.json(transactions);
@@ -12,7 +12,7 @@ router.get('/', async (_req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const transaction = await Transaction.create(req.body);
     res.status(201).json(transaction);
@@ -21,7 +21,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const deletedTransaction = await Transaction.findOneAndDelete({ id: req.params.id });
 
@@ -35,4 +35,4 @@ router.delete('/:id', async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;

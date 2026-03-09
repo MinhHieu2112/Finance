@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { SummaryCards } from '../components/Analytics/SummaryCards';
-import { TransactionList } from '../components/Transaction/TransactionList';
-import { TransactionForm } from '../components/Transaction/TransactionForm';
-import { Charts } from '../components/Analytics/Charts';
-import { FinancialAdvisorModal } from '../components/AI/FinancialAdvisorModal';
-import { Button } from '../components/Button';
-import { Transaction, User } from '../types';
-import { getFinancialAdvice } from '../services/geminiService';
+import { SummaryCards } from '../../components/SummaryCards/SummaryCards';
+import { TransactionList } from '../../components/TransactionList/TransactionList';
+import { TransactionForm } from '../../components/TransactionForm/TransactionForm';
+import { Charts } from '../../components/Charts/Charts';
+import { FinancialAdvisorModal } from '../../components/FinancialAdvisorModal/FinancialAdvisorModal';
+import { Button } from '../../components/Button/Button';
+import { Transaction, User } from '../../types';
+import { getFinancialAdvice } from '../../components/GeminiService/geminiService';
 import { Plus, Sparkles, LogOut, User as UserIcon } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:4000/api';
 
 interface DashboardPageProps {
   user: User;
@@ -18,11 +18,11 @@ interface DashboardPageProps {
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen]     = useState(false);
   
   // AI Advice State
-  const [aiAdvice, setAiAdvice] = useState<string | null>(null);
-  const [loadingAdvice, setLoadingAdvice] = useState(false);
+  const [aiAdvice, setAiAdvice]               = useState<string | null>(null);
+  const [loadingAdvice, setLoadingAdvice]     = useState(false);
   const [showAdviceModal, setShowAdviceModal] = useState(false);
 
   // Load transactions from backend on mount.
@@ -121,21 +121,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         {/* Action Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Tổng quan</h1>
-            <p className="text-gray-500 text-sm">Tổng quan về sức khỏe tài chính của bạn</p>
+            <h1 className="text-2xl font-bold text-gray-900"> 
+              Tổng quan
+            </h1>
+            <p className="text-gray-500 text-sm">
+              Tổng quan về sức khỏe tài chính của bạn
+            </p>
           </div>
           <div className="flex gap-3 w-full sm:w-auto">
             <Button 
-              variant="secondary" 
-              onClick={handleGetAdvice} 
-              className="flex-1 sm:flex-none"
+              variant   = "secondary" 
+              onClick   = {handleGetAdvice} 
+              className = "flex-1 sm:flex-none"
             >
               <Sparkles size={18} className="text-purple-500" />
               Trợ lý ảo
             </Button>
             <Button 
-              onClick={() => setIsFormOpen(true)}
-              className="flex-1 sm:flex-none"
+              onClick   = {() => setIsFormOpen(true)}
+              className = "flex-1 sm:flex-none"
             >
               <Plus size={18} />
               Thêm giao dịch
@@ -144,17 +148,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         </div>
 
         {/* Widgets */}
-        <SummaryCards transactions={transactions} />
-        
-        <Charts transactions={transactions} />
-
-        <TransactionList transactions={transactions} onDelete={deleteTransaction} />
-
+        <SummaryCards    transactions = {transactions} />        
+        <Charts          transactions = {transactions} />
+        <TransactionList transactions = {transactions} onDelete={deleteTransaction} />
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 py-6 text-center text-gray-400 text-sm">
+      <footer className = "bg-white border-t border-gray-200 mt-auto">
+        <div  className = "max-w-7xl mx-auto px-4 py-6 text-center text-gray-400 text-sm">
           &copy; {new Date().getFullYear()} SmartFinance. Thiết kế tối ưu cho quản lý tài chính.
         </div>
       </footer>
@@ -162,17 +163,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
       {/* Add Transaction Modal */}
       {isFormOpen && (
         <TransactionForm 
-          onSave={addTransaction} 
-          onClose={() => setIsFormOpen(false)} 
+          onSave  = {addTransaction} 
+          onClose = {() => setIsFormOpen(false)} 
         />
       )}
 
       {/* AI Advice Modal */}
       <FinancialAdvisorModal 
-        isOpen={showAdviceModal} 
-        onClose={() => setShowAdviceModal(false)}
-        loading={loadingAdvice}
-        advice={aiAdvice}
+        isOpen  = {showAdviceModal} 
+        onClose = {() => setShowAdviceModal(false)}
+        loading = {loadingAdvice}
+        advice  = {aiAdvice}
       />
     </div>
   );

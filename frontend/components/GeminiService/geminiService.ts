@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { Transaction } from "../types";
+import { Transaction } from "../../types";
 
 // Initialize Gemini Client
 // We assume process.env.API_KEY is available.

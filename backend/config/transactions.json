@@ -1,42 +1,42 @@
 [
   {
     "id": "1",
-    "description": "Lương tháng này",
+    "description": "Monthly Salary",
     "amount": 5000,
     "type": "income",
-    "category": "Lương",
+    "category": "Salary",
     "date": "2023-10-01"
   },
   {
     "id": "2",
-    "description": "Đi siêu thị",
+    "description": "Grocery Shopping",
     "amount": 150,
     "type": "expense",
-    "category": "Ăn uống",
+    "category": "Food & Dining",
     "date": "2023-10-02"
   },
   {
     "id": "3",
-    "description": "Grab đi làm",
+    "description": "Uber Ride",
     "amount": 25,
     "type": "expense",
-    "category": "Di chuyển",
+    "category": "Transportation",
     "date": "2023-10-03"
   },
   {
     "id": "4",
-    "description": "Đăng ký Netflix",
+    "description": "Netflix Subscription",
     "amount": 15,
     "type": "expense",
-    "category": "Giải trí",
+    "category": "Entertainment",
     "date": "2023-10-05"
   },
   {
     "id": "5",
-    "description": "Dự án Freelance",
+    "description": "Freelance Project",
     "amount": 1200,
     "type": "income",
-    "category": "Khác",
+    "category": "Other",
     "date": "2023-10-10"
   }
 ]

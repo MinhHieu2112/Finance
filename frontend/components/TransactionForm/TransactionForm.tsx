@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Category, Transaction, TransactionType } from '../../types';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 import { X } from 'lucide-react';
 
 interface TransactionFormProps {
@@ -43,16 +43,16 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSave, onClos
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex bg-gray-100 p-1 rounded-lg mb-4">
             <button
-              type="button"
-              onClick={() => setType(TransactionType.EXPENSE)}
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${type === TransactionType.EXPENSE ? 'bg-white text-red-500 shadow-sm' : 'text-gray-500'}`}
+              type      = "button"
+              onClick   = {() => setType(TransactionType.EXPENSE)}
+              className = {`flex-1 py-2 rounded-md text-sm font-medium transition-all ${type === TransactionType.EXPENSE ? 'bg-white text-red-500 shadow-sm' : 'text-gray-500'}`}
             >
               Chi tiêu
             </button>
             <button
-              type="button"
-              onClick={() => setType(TransactionType.INCOME)}
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${type === TransactionType.INCOME ? 'bg-white text-emerald-600 shadow-sm' : 'text-gray-500'}`}
+              type      = "button"
+              onClick   = {() => setType(TransactionType.INCOME)}
+              className = {`flex-1 py-2 rounded-md text-sm font-medium transition-all ${type === TransactionType.INCOME ? 'bg-white text-emerald-600 shadow-sm' : 'text-gray-500'}`}
             >
               Thu nhập
             </button>
@@ -61,26 +61,26 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSave, onClos
           <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Số tiền</label>
             <input
-              type="number"
-              min="0"
-              step="0.01"
+              type        = "number"
+              min         = "0"
+              step        = "0.01"
+              value       = {amount}
+              onChange    = {(e) => setAmount(e.target.value)}
+              className   = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+              placeholder = "0"
               required
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-              placeholder="0"
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Mô tả</label>
             <input
-              type="text"
+              type        = "text"
+              value       = {description}
+              onChange    = {(e) => setDescription(e.target.value)}
+              className   = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+              placeholder = "Ví dụ: Ăn trưa, Tiền xăng, Lương..."
               required
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-              placeholder="Ví dụ: Ăn trưa, Tiền xăng, Lương..."
             />
           </div>
 
@@ -88,9 +88,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSave, onClos
             <div>
               <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Danh mục</label>
               <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value as Category)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
+                value     = {category}
+                onChange  = {(e) => setCategory(e.target.value as Category)}
+                className = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
               >
                 {CATEGORY_OPTIONS.map((cat) => (
                   <option key={cat} value={cat}>
@@ -102,11 +102,11 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSave, onClos
             <div>
               <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Ngày</label>
               <input
-                type="date"
+                type      = "date"
+                value     = {date}
+                onChange  = {(e) => setDate(e.target.value)}
+                className = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                 required
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
               />
             </div>
           </div>

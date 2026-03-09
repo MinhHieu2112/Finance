@@ -10,18 +10,18 @@ interface TransactionListProps {
 const CATEGORY_OPTIONS = Object.values(Category);
 
 export const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelete }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm]         = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate]           = useState('');
+  const [endDate, setEndDate]               = useState('');
 
   const filteredTransactions = useMemo(() => {
     return transactions
       .filter((t) => {
-        const matchesSearch = t.description.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = categoryFilter ? t.category === categoryFilter : true;
+        const matchesSearch    = t.description.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory  = categoryFilter ? t.category === categoryFilter : true;
         const matchesStartDate = startDate ? new Date(t.date) >= new Date(startDate) : true;
-        const matchesEndDate = endDate ? new Date(t.date) <= new Date(endDate) : true;
+        const matchesEndDate   = endDate ? new Date(t.date) <= new Date(endDate) : true;
 
         return matchesSearch && matchesCategory && matchesStartDate && matchesEndDate;
       })
@@ -48,11 +48,11 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
         <div className="relative w-full md:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
-            type="text"
-            placeholder="Tìm kiếm mô tả..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
+            type        = "text"
+            placeholder = "Tìm kiếm mô tả..."
+            value       = {searchTerm}
+            onChange    = {(e) => setSearchTerm(e.target.value)}
+            className   = "w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
           />
         </div>
       </div>
@@ -64,9 +64,9 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
         </div>
 
         <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer hover:border-gray-300 transition-colors"
+          value     = {categoryFilter}
+          onChange  = {(e) => setCategoryFilter(e.target.value)}
+          className = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer hover:border-gray-300 transition-colors"
         >
           <option value="">Tất cả danh mục</option>
           {CATEGORY_OPTIONS.map((cat) => (
@@ -79,20 +79,20 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
           <input
             type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-300 transition-colors"
-            placeholder="Từ ngày"
-            title="Từ ngày"
+            value       = {startDate}
+            onChange    = {(e) => setStartDate(e.target.value)}
+            className   = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-300 transition-colors"
+            placeholder = "Từ ngày"
+            title       = "Từ ngày"
           />
           <span className="text-gray-400 hidden sm:inline">-</span>
           <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-300 transition-colors"
-            placeholder="Đến ngày"
-            title="Đến ngày"
+            type        =" date"
+            value       = {endDate}
+            onChange    = {(e) => setEndDate(e.target.value)}
+            className   = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-300 transition-colors"
+            placeholder = "Đến ngày"
+            title       = "Đến ngày"
           />
         </div>
 

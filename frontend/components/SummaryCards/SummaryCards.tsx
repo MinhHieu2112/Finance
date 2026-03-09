@@ -33,9 +33,9 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ transactions }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <Card title="Tổng số dư" amount={balance} icon={<Wallet className="text-primary w-6 h-6" />} colorClass="text-primary" />
-      <Card title="Tổng thu nhập" amount={income} icon={<ArrowUpCircle className="text-emerald-600 w-6 h-6" />} colorClass="text-emerald-600" />
-      <Card title="Tổng chi tiêu" amount={expense} icon={<ArrowDownCircle className="text-red-500 w-6 h-6" />} colorClass="text-red-500" />
+      <Card title = "Tổng số dư"    amount = {balance} icon = {<Wallet className="text-primary w-6 h-6" />} colorClass="text-primary" />
+      <Card title = "Tổng thu nhập" amount = {income}  icon = {<ArrowUpCircle className="text-emerald-600 w-6 h-6" />} colorClass="text-emerald-600" />
+      <Card title = "Tổng chi tiêu" amount = {expense} icon = {<ArrowDownCircle className="text-red-500 w-6 h-6" />} colorClass="text-red-500" />
     </div>
   );
 };

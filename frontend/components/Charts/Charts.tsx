@@ -10,8 +10,8 @@ const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'
 
 export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
   const categoryData = useMemo(() => {
-    const expenses = transactions.filter((t) => t.type === TransactionType.EXPENSE);
-    const map = new Map<string, number>();
+    const expenses   = transactions.filter((t) => t.type === TransactionType.EXPENSE);
+    const map        = new Map<string, number>();
 
     expenses.forEach((t) => {
       const current = map.get(t.category) || 0;
