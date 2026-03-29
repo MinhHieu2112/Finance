@@ -6,16 +6,23 @@ import { X } from 'lucide-react';
 interface TransactionFormProps {
   onSave: (transaction: Omit<Transaction, 'id'>) => Promise<void> | void;
   onClose: () => void;
+  mode?: 'create' | 'edit';
+  initialTransaction?: Transaction | null;
 }
 
 const CATEGORY_OPTIONS = Object.values(Category);
 
-export const TransactionForm: React.FC<TransactionFormProps> = ({ onSave, onClose }) => {
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
-  const [type, setType] = useState<TransactionType>(TransactionType.EXPENSE);
-  const [category, setCategory] = useState<Category>(Category.FOOD);
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+export const TransactionForm: React.FC<TransactionFormProps> = ({
+  onSave,
+  onClose,
+  mode = 'create',
+  initialTransaction = null,
+}) => {
+  const [description, setDescription] = useState(initialTransaction?.description || '');
+  const [amount, setAmount] = useState(initialTransaction ? String(initialTransaction.amount) : '');
+  const [type, setType] = useState<TransactionType>(initialTransaction?.type || TransactionType.EXPENSE);
+  const [category, setCategory] = useState<Category>(initialTransaction?.category || Category.FOOD);
+  const [date, setDate] = useState(initialTransaction?.date || new Date().toISOString().split('T')[0]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +45,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSave, onClos
           <X size={24} />
         </button>
 
-        <h2 className="text-xl font-bold mb-6 text-gray-800">Thêm giao dịch mới</h2>
+        <h2 className="text-xl font-bold mb-6 text-gray-800">
+          {mode === 'edit' ? 'Chỉnh sửa giao dịch' : 'Thêm giao dịch mới'}
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex bg-gray-100 p-1 rounded-lg mb-4">
@@ -113,7 +122,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSave, onClos
 
           <div className="pt-4">
             <Button type="submit" className="w-full py-3">
-              Lưu giao dịch
+              {mode === 'edit' ? 'Cập nhật giao dịch' : 'Lưu giao dịch'}
             </Button>
           </div>
         </form>

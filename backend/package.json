@@ -6,9 +6,10 @@
   "scripts": {
     "start": "tsx server.ts",
     "dev": "tsx watch server.ts",
-    "reset:data": "tsx config/import-data.ts --delete && tsx config/import-data.ts --import"
+    "resetdb": "tsx config/import-data.ts --delete && tsx config/import-data.ts --import"
   },
   "dependencies": {
+    "@google/genai": "^1.38.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "mongoose": "^8.9.5",

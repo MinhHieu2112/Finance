@@ -6,7 +6,6 @@ import { Charts } from '../../components/Charts/Charts';
 import { FinancialAdvisorModal } from '../../components/FinancialAdvisorModal/FinancialAdvisorModal';
 import { Button } from '../../components/Button/Button';
 import { Transaction, User } from '../../types';
-import { getFinancialAdvice } from '../../components/GeminiService/geminiService';
 import { Plus, Sparkles, LogOut, User as UserIcon } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:4000/api';
@@ -16,23 +15,37 @@ interface DashboardPageProps {
   onLogout: () => void;
 }
 
+interface ListTransactionResponse {
+  success: boolean;
+  transactions: Transaction[];
+}
+
+interface SaveTransactionResponse {
+  success: boolean;
+  transaction: Transaction;
+}
+
+interface AdviceResponse {
+  success: boolean;
+  advice: string;
+}
+
 export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isFormOpen, setIsFormOpen]     = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   
-  // AI Advice State
   const [aiAdvice, setAiAdvice]               = useState<string | null>(null);
   const [loadingAdvice, setLoadingAdvice]     = useState(false);
   const [showAdviceModal, setShowAdviceModal] = useState(false);
 
-  // Load transactions from backend on mount.
   useEffect(() => {
     const loadTransactions = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/transactions`);
+        const response = await fetch(`${API_BASE_URL}/transactions/list`);
         if (!response.ok) throw new Error('Cannot load transactions');
-        const data = await response.json();
-        setTransactions(data);
+        const data: ListTransactionResponse = await response.json();
+        setTransactions(data.transactions);
       } catch (error) {
         console.error(error);
       }
@@ -42,30 +55,68 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
   }, []);
 
   const addTransaction = async (newTx: Omit<Transaction, 'id'>) => {
-    const transaction: Transaction = {
-      ...newTx,
-      id: crypto.randomUUID(),
-    };
-
-    const response = await fetch(`${API_BASE_URL}/transactions`, {
+    const response = await fetch(`${API_BASE_URL}/transactions/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(transaction),
+      body: JSON.stringify(newTx),
     });
 
     if (!response.ok) {
       throw new Error('Cannot create transaction');
     }
 
-    const createdTransaction: Transaction = await response.json();
-    setTransactions((prev) => [createdTransaction, ...prev]);
+    const data: SaveTransactionResponse = await response.json();
+    setTransactions((prev) => [data.transaction, ...prev]);
+    setAiAdvice(null);
+  };
+
+  const updateTransaction = async (id: string, updatedTx: Omit<Transaction, 'id'>) => {
+    const response = await fetch(`${API_BASE_URL}/transactions/edit/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedTx),
+    });
+
+    if (!response.ok) {
+      throw new Error('Cannot update transaction');
+    }
+
+    const data: SaveTransactionResponse = await response.json();
+    setTransactions((prev) => prev.map((t) => (t.id === id ? data.transaction : t)));
+    setAiAdvice(null);
+  };
+
+  const handleSaveTransaction = async (tx: Omit<Transaction, 'id'>) => {
+    if (editingTransaction) {
+      await updateTransaction(editingTransaction.id, tx);
+      return;
+    }
+
+    await addTransaction(tx);
+  };
+
+  const openCreateForm = () => {
+    setEditingTransaction(null);
+    setIsFormOpen(true);
+  };
+
+  const openEditForm = (transaction: Transaction) => {
+    setEditingTransaction(transaction);
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditingTransaction(null);
   };
 
   const deleteTransaction = async (id: string) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa giao dịch này?')) {
-      const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/transactions/delete/${id}`, {
         method: 'DELETE',
       });
 
@@ -74,6 +125,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
       }
 
       setTransactions((prev) => prev.filter((t) => t.id !== id));
+        setAiAdvice(null);
     }
   };
 
@@ -81,9 +133,22 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
     setShowAdviceModal(true);
     if (!aiAdvice) {
       setLoadingAdvice(true);
-      const advice = await getFinancialAdvice(transactions);
-      setAiAdvice(advice);
-      setLoadingAdvice(false);
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/ai/advice`);
+
+        if (!response.ok) {
+          throw new Error('Cannot fetch AI advice');
+        }
+
+        const data: AdviceResponse = await response.json();
+        setAiAdvice(data.advice);
+      } catch (error) {
+        console.error(error);
+          setAiAdvice('Xin lỗi, không thể phân tích dữ liệu lúc này. Vui lòng thử lại sau.');
+      } finally {
+        setLoadingAdvice(false);
+      }
     }
   };
 
@@ -138,7 +203,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
               Trợ lý ảo
             </Button>
             <Button 
-              onClick   = {() => setIsFormOpen(true)}
+              onClick   = {openCreateForm}
               className = "flex-1 sm:flex-none"
             >
               <Plus size={18} />
@@ -150,7 +215,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         {/* Widgets */}
         <SummaryCards    transactions = {transactions} />        
         <Charts          transactions = {transactions} />
-        <TransactionList transactions = {transactions} onDelete={deleteTransaction} />
+        <TransactionList
+          transactions={transactions}
+          onDelete={deleteTransaction}
+          onEdit={openEditForm}
+        />
       </main>
 
       {/* Footer */}
@@ -163,8 +232,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
       {/* Add Transaction Modal */}
       {isFormOpen && (
         <TransactionForm 
-          onSave  = {addTransaction} 
-          onClose = {() => setIsFormOpen(false)} 
+          onSave={handleSaveTransaction}
+          onClose={closeForm}
+          mode={editingTransaction ? 'edit' : 'create'}
+          initialTransaction={editingTransaction}
         />
       )}
 

@@ -1,15 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { Category, Transaction, TransactionType } from '../../types';
-import { Trash2, TrendingUp, TrendingDown, Search, Filter, X } from 'lucide-react';
+import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil } from 'lucide-react';
 
 interface TransactionListProps {
   transactions: Transaction[];
   onDelete: (id: string) => void;
+  onEdit: (transaction: Transaction) => void;
 }
 
 const CATEGORY_OPTIONS = Object.values(Category);
 
-export const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelete }) => {
+export const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelete, onEdit }) => {
   const [searchTerm, setSearchTerm]         = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [startDate, setStartDate]           = useState('');
@@ -87,7 +88,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
           />
           <span className="text-gray-400 hidden sm:inline">-</span>
           <input
-            type        =" date"
+            type        = "date"
             value       = {endDate}
             onChange    = {(e) => setEndDate(e.target.value)}
             className   = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-300 transition-colors"
@@ -137,13 +138,22 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                   {t.amount.toLocaleString('vi-VN')} đ
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <button
-                    onClick={() => onDelete(t.id)}
-                    className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
-                    title="Xóa giao dịch"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                  <div className="flex items-center justify-center gap-1">
+                    <button
+                      onClick={() => onEdit(t)}
+                      className="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-full"
+                      title="Chỉnh sửa giao dịch"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                    <button
+                      onClick={() => onDelete(t.id)}
+                      className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
+                      title="Xóa giao dịch"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
