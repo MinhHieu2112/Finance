@@ -1,8 +1,8 @@
 import transactionRepository from './Repository';
 
 class transactionService {
-	async listTransactions() {
-		return transactionRepository.listTransactions();
+	async listTransactions(userID: string) {
+		return transactionRepository.listTransactions(userID);
 	}
 }
 

@@ -1,34 +1,9 @@
 import { GoogleGenAI } from '@google/genai';
 import transactionModel from '../../models/Transaction';
 
-// export interface AdviceTransaction {
-// 	description: string;
-// 	amount: number;
-// 	type: string;
-// 	category: string;
-// 	date: string;
-// }
-
-// let aiClient: GoogleGenAI | null = null;
-
-// const getGeminiClient = (): GoogleGenAI => {
-// 	if (aiClient) {
-// 		return aiClient;
-// 	}
-
-// 	const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-
-// 	if (!apiKey) {
-// 		throw new Error('Missing GEMINI_API_KEY (or API_KEY) in backend environment');
-// 	}
-
-// 	aiClient = new GoogleGenAI({ apiKey });
-// 	return aiClient;
-// };
-
 class geminiRepository {
-	async getRecentTransactions(limit: number) {
-		return transactionModel.find()
+	async getRecentTransactions(limit: number, userID: string) {
+		return transactionModel.find({ userID })
 			.sort({ date: -1 })
 			.limit(limit)
 			.select('description amount type category date -_id')

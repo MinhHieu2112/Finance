@@ -1,6 +1,7 @@
 [
   {
     "id": "1",
+    "userID": "tri",
     "description": "Monthly Salary",
     "amount": 5000,
     "type": "income",
@@ -9,6 +10,7 @@
   },
   {
     "id": "2",
+    "userID": "hieu",
     "description": "Grocery Shopping",
     "amount": 150,
     "type": "expense",
@@ -17,6 +19,7 @@
   },
   {
     "id": "3",
+    "userID": "tri",
     "description": "Uber Ride",
     "amount": 25,
     "type": "expense",
@@ -25,6 +28,7 @@
   },
   {
     "id": "4",
+    "userID": "hieu",
     "description": "Netflix Subscription",
     "amount": 15,
     "type": "expense",
@@ -33,6 +37,7 @@
   },
   {
     "id": "5",
+    "userID": "tri",
     "description": "Freelance Project",
     "amount": 1200,
     "type": "income",

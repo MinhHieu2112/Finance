@@ -29,6 +29,8 @@ export interface Transaction {
 
 // User object for authentication context
 export interface User {
+  id: string;
   username: string;
   email: string;
+  token: string;
 }

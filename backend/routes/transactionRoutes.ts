@@ -3,8 +3,11 @@ import addTransaction from '../modules/Transactions/addTransaction/Controller';
 import listTransaction from '../modules/Transactions/listTransaction/Controller';
 import editTransaction from '../modules/Transactions/editTransaction/Controller';
 import deleteTransaction from '../modules/Transactions/deleteTransaction/Controller';
+import auth from '../middleware/Auth';
 
 const transactionRouter = express.Router();
+
+transactionRouter.use(auth);
 
 transactionRouter
     .route("/list")

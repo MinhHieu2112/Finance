@@ -3,6 +3,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import Transaction from '../models/Transaction';
+import User from '../models/Users';
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
@@ -15,12 +16,17 @@ const transactions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'transactions.json'), 'utf-8')
 );
 
+const users = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, 'users.json'), 'utf-8')
+);
+
 // IMPORT DATA INTO DB
 const importData = async () => {
   try {
-    await Transaction.create(transactions);
-    console.log('Data successfully loaded!');
+      await User.create(users);
+      await Transaction.create(transactions);
 
+    console.log('Data successfully loaded!');
   } catch (err) {
     console.log(err);
   }
@@ -31,6 +37,7 @@ const importData = async () => {
 const deleteData = async () => {
   try {
     await Transaction.deleteMany();
+    await User.deleteMany();
     console.log('Data successfully deleted!');
 
   } catch (err) {

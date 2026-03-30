@@ -1,8 +1,8 @@
 import transactionModel from '../../../models/Transaction';
 
 class transactionRepository {
-	async listTransactions() {
-		return transactionModel.find().sort({ date: -1 });
+	async listTransactions(userID: string) {
+		return transactionModel.find({ userID }).sort({ date: -1 });
 	}
 }
 

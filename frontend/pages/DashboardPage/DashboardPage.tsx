@@ -42,7 +42,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
   useEffect(() => {
     const loadTransactions = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/transactions/list`);
+        const response = await fetch(`${API_BASE_URL}/transactions/list`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
         if (!response.ok) throw new Error('Cannot load transactions');
         const data: ListTransactionResponse = await response.json();
         setTransactions(data.transactions);
@@ -52,13 +56,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
     };
 
     loadTransactions();
-  }, []);
+  }, [user.token]);
 
   const addTransaction = async (newTx: Omit<Transaction, 'id'>) => {
     const response = await fetch(`${API_BASE_URL}/transactions/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
       },
       body: JSON.stringify(newTx),
     });
@@ -77,6 +82,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
       },
       body: JSON.stringify(updatedTx),
     });
@@ -118,6 +124,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
     if (window.confirm('Bạn có chắc chắn muốn xóa giao dịch này?')) {
       const response = await fetch(`${API_BASE_URL}/transactions/delete/${id}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       });
 
       if (!response.ok) {
@@ -135,13 +144,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
       setLoadingAdvice(true);
 
       try {
-        const response = await fetch(`${API_BASE_URL}/ai/advice`);
+        const authorizedResponse = await fetch(`${API_BASE_URL}/ai/advice`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
 
-        if (!response.ok) {
+        if (!authorizedResponse.ok) {
           throw new Error('Cannot fetch AI advice');
         }
 
-        const data: AdviceResponse = await response.json();
+        const data: AdviceResponse = await authorizedResponse.json();
         setAiAdvice(data.advice);
       } catch (error) {
         console.error(error);

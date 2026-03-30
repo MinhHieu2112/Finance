@@ -3,8 +3,8 @@ import geminiRepository from './Repository';
 import AppError from '../../utils/appError';
 
 class geminiService {
-	async getFinancialAdvice() {
-		const transactions = await geminiRepository.getRecentTransactions(100);
+	async getFinancialAdvice(userID: string) {
+		const transactions = await geminiRepository.getRecentTransactions(100, userID);
 
         const apiKey = process.env.GEMINI_API_KEY
         if (!apiKey) {

@@ -3,13 +3,15 @@ import AppError from '../../../utils/appError';
 import { randomUUID } from 'node:crypto';
 
 class transactionService {
-    async addTransaction(data: { description: string, 
+    async addTransaction(data: { userID     : string,
+                                 description: string, 
                                  amount     : number, 
                                  type       : string, 
                                  category   : string, 
                                  date       : string }) {
 
-        if (!data.description ||
+        if (!data.userID ||
+            !data.description ||
             data.amount === undefined ||
             data.amount === null ||
             !data.type ||

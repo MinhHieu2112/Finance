@@ -1,11 +1,13 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import transactionService from './Serviec';
+import AppError from '../../../utils/appError';
 
 const deleteTransaction = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const transactionId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+        const authUser 		= res.locals.authUser;
 
-		await transactionService.deleteTransaction(transactionId);
+		await transactionService.deleteTransaction(transactionId, authUser.id);
 
 		res.status(204).send();
 	} catch (error) {
