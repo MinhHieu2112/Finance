@@ -31,16 +31,11 @@
   },
   {
     "id": "c7",
-    "name": "Salary",
-    "description": "Monthly income from employment"
-  },
-  {
-    "id": "c8",
     "name": "Investment",
     "description": "Stocks, bonds, and other investments"
   },
   {
-    "id": "c9",
+    "id": "c8",
     "name": "Other",
     "description": "Miscellaneous or uncategorized expenses"
   }
