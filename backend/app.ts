@@ -3,8 +3,8 @@ import morgan from "morgan";
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import transactionRoutes from './routes/transactionRoutes';
 import AIRoutes from './routes/AIRoutes';
-import AppError from './utils/appError';
 import userRoutes from './routes/userRoutes';
+import categoryRoutes from './routes/categoryRoutes';
 
 const app = express();
 
@@ -28,6 +28,7 @@ app.use((req, res, next) => {
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/ai', AIRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/categories', categoryRoutes);
 
 app.get('/', (req, res) => {
   res.send('API working');

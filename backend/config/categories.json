@@ -1,0 +1,47 @@
+[
+  {
+    "id": "c1",
+    "name": "Food & Dining",
+    "description": "Daily food and household expenses"
+  },
+  {
+    "id": "c2",
+    "name": "Transportation",
+    "description": "Taxi, fuel, and travel"
+  },
+  {
+    "id": "c3",
+    "name": "Entertainment",
+    "description": "Movies, subscriptions, and leisure"
+  },
+  {
+    "id": "c4",
+    "name": "Utilities",
+    "description": "Electricity, water, internet"
+  },
+  {
+    "id": "c5",
+    "name": "Health",
+    "description": "Medical and wellness expenses"
+  },
+  {
+    "id": "c6",
+    "name": "Shopping",
+    "description": "Retail, groceries, and online purchases"
+  },
+  {
+    "id": "c7",
+    "name": "Salary",
+    "description": "Monthly income from employment"
+  },
+  {
+    "id": "c8",
+    "name": "Investment",
+    "description": "Stocks, bonds, and other investments"
+  },
+  {
+    "id": "c9",
+    "name": "Other",
+    "description": "Miscellaneous or uncategorized expenses"
+  }
+]

@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { SummaryCards } from '../../components/SummaryCards/SummaryCards';
 import { TransactionList } from '../../components/TransactionList/TransactionList';
 import { TransactionForm } from '../../components/TransactionForm/TransactionForm';
 import { Charts } from '../../components/Charts/Charts';
 import { FinancialAdvisorModal } from '../../components/FinancialAdvisorModal/FinancialAdvisorModal';
+import { CategoryManagerModal } from '../../components/CategoryManagerModal/CategoryManagerModal';
 import { Button } from '../../components/Button/Button';
-import { Transaction, User } from '../../types';
-import { Plus, Sparkles, LogOut, User as UserIcon } from 'lucide-react';
+import { Category, Transaction, User } from '../../types';
+import { Plus, Sparkles, LogOut, User as UserIcon, Tags } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 
@@ -25,6 +26,16 @@ interface SaveTransactionResponse {
   transaction: Transaction;
 }
 
+interface ListCategoryResponse {
+  success: boolean;
+  categories: Category[];
+}
+
+interface SaveCategoryResponse {
+  success: boolean;
+  category: Category;
+}
+
 interface AdviceResponse {
   success: boolean;
   advice: string;
@@ -32,30 +43,55 @@ interface AdviceResponse {
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isFormOpen, setIsFormOpen]     = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   
   const [aiAdvice, setAiAdvice]               = useState<string | null>(null);
   const [loadingAdvice, setLoadingAdvice]     = useState(false);
   const [showAdviceModal, setShowAdviceModal] = useState(false);
 
+  const categoryOptions = useMemo(() => {
+    const names = categories.map((category) => category.name.trim()).filter(Boolean);
+    return Array.from(new Set(names));
+  }, [categories]);
+
   useEffect(() => {
-    const loadTransactions = async () => {
+    const loadDashboardData = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/transactions/list`, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        if (!response.ok) throw new Error('Cannot load transactions');
-        const data: ListTransactionResponse = await response.json();
-        setTransactions(data.transactions);
+        const [transactionResponse, categoryResponse] = await Promise.all([
+          fetch(`${API_BASE_URL}/transactions/list`, {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }),
+          fetch(`${API_BASE_URL}/categories/list`, {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }),
+        ]);
+
+        if (!transactionResponse.ok) {
+          throw new Error('Cannot load transactions');
+        }
+
+        if (!categoryResponse.ok) {
+          throw new Error('Cannot load categories');
+        }
+
+        const transactionData: ListTransactionResponse = await transactionResponse.json();
+        const categoryData: ListCategoryResponse = await categoryResponse.json();
+
+        setTransactions(transactionData.transactions);
+        setCategories(categoryData.categories);
       } catch (error) {
         console.error(error);
       }
     };
 
-    loadTransactions();
+    loadDashboardData();
   }, [user.token]);
 
   const addTransaction = async (newTx: Omit<Transaction, 'id'>) => {
@@ -105,6 +141,57 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
     await addTransaction(tx);
   };
 
+  const createCategory = async (payload: { name: string; description: string }) => {
+    const response = await fetch(`${API_BASE_URL}/categories/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error('Cannot create category');
+    }
+
+    const data: SaveCategoryResponse = await response.json();
+    setCategories((prev) => [data.category, ...prev.filter((item) => item.id !== data.category.id)]);
+  };
+
+  const updateCategory = async (id: string, payload: { name: string; description: string }) => {
+    const response = await fetch(`${API_BASE_URL}/categories/edit/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error('Cannot update category');
+    }
+
+    const data: SaveCategoryResponse = await response.json();
+    setCategories((prev) => prev.map((item) => (item.id === id ? data.category : item)));
+  };
+
+  const deleteCategory = async (id: string) => {
+    const response = await fetch(`${API_BASE_URL}/categories/delete/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Cannot delete category');
+    }
+
+    setCategories((prev) => prev.filter((item) => item.id !== id));
+  };
+
   const openCreateForm = () => {
     setEditingTransaction(null);
     setIsFormOpen(true);
@@ -118,6 +205,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
   const closeForm = () => {
     setIsFormOpen(false);
     setEditingTransaction(null);
+  };
+
+  const openCategoryManager = () => {
+    setIsCategoryModalOpen(true);
+  };
+
+  const closeCategoryManager = () => {
+    setIsCategoryModalOpen(false);
+  };
+
+  const openCategoryManagerFromForm = () => {
+    closeForm();
+    setIsCategoryModalOpen(true);
   };
 
   const deleteTransaction = async (id: string) => {
@@ -215,6 +315,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
               <Sparkles size={18} className="text-purple-500" />
               Trợ lý ảo
             </Button>
+            <Button
+              variant   = "secondary"
+              onClick   = {openCategoryManager}
+              className = "flex-1 sm:flex-none"
+            >
+              <Tags size={18} />
+              Danh mục
+            </Button>
             <Button 
               onClick   = {openCreateForm}
               className = "flex-1 sm:flex-none"
@@ -230,6 +338,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         <Charts          transactions = {transactions} />
         <TransactionList
           transactions={transactions}
+          categoryOptions={categoryOptions}
           onDelete={deleteTransaction}
           onEdit={openEditForm}
         />
@@ -247,10 +356,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         <TransactionForm 
           onSave={handleSaveTransaction}
           onClose={closeForm}
+          categoryOptions={categoryOptions}
+          onManageCategories={openCategoryManagerFromForm}
           mode={editingTransaction ? 'edit' : 'create'}
           initialTransaction={editingTransaction}
         />
       )}
+
+      <CategoryManagerModal
+        isOpen={isCategoryModalOpen}
+        categories={categories}
+        onClose={closeCategoryManager}
+        onCreate={createCategory}
+        onUpdate={updateCategory}
+        onDelete={deleteCategory}
+      />
 
       {/* AI Advice Modal */}
       <FinancialAdvisorModal 

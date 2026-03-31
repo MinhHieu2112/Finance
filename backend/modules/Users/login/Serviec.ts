@@ -5,12 +5,15 @@ import authRepository from './Repository';
 import AppError from '../../../utils/appError';
 
 class authService {
-	createToken(id: any) {
+	createToken(userData: any) {
 		const secret = process.env.JWT_SECRET;
 		if (!secret) {
 			throw new AppError('Missing JWT_SECRET in backend environment', 500);
 		}
-		return jwt.sign({ id }, secret)
+		return jwt.sign({ id	  : userData.id,
+						  email   : userData.email,
+						  username: userData.username,}, 
+						  secret)
 	}
 
 	async login(data: { email: string; password: string }) {
@@ -36,11 +39,10 @@ class authService {
 		}
 
 		const userData = {
-			id: user.id,
+			id: user.userID,
 			username: user.username,
 			email: user.email,
 		};
-
 		return {
 			user: userData,
 			token: this.createToken(userData),

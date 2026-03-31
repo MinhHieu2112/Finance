@@ -1,0 +1,17 @@
+import { type Request, type Response, type NextFunction } from 'express';
+import categoryService from './Serviec';
+
+const editCategory = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const { name, description } = req.body;
+
+		const categoryId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+		const category   = await categoryService.editCategory(categoryId, { name, description });
+
+		res.status(200).json({ success: true, category });
+	} catch (error) {
+		next(error);
+	}
+};
+
+export default editCategory;

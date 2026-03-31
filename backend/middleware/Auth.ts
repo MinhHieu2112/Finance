@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import AppError from '../utils/appError';
 
 interface TokenPayload {
-	sub?: string;
+	id?: string;
 	email?: string;
 	username?: string;
 }
@@ -23,15 +23,13 @@ const protect = (req: Request, res: Response, next: NextFunction) => {
 
 	try {
 		const decoded = jwt.verify(token, secret) as TokenPayload;
-		if (!decoded.sub || !decoded.email || !decoded.username) {
+		if (!decoded.id || !decoded.email || !decoded.username) {
 			return next(new AppError('Invalid token payload', 401));
 		}
 
-		res.locals.authUser = {
-			id: decoded.sub,
-			email: decoded.email,
-			username: decoded.username,
-		};
+		res.locals.authUser = {id		: decoded.id,
+							   email	: decoded.email,
+							   username : decoded.username,};
 
 		return next();
 	} catch (_error) {

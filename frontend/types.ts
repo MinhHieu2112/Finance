@@ -4,17 +4,20 @@ export enum TransactionType {
   EXPENSE = 'expense',
 }
 
-// Enum for Categories to keep data structured
-export enum Category {
-  FOOD = 'Food & Dining',
-  TRANSPORT = 'Transportation',
-  UTILITIES = 'Utilities',
-  ENTERTAINMENT = 'Entertainment',
-  SHOPPING = 'Shopping',
-  HEALTH = 'Health',
-  SALARY = 'Salary',
-  INVESTMENT = 'Investment',
-  OTHER = 'Other',
+export enum TransactionFrequency {
+  WEEKLY = 'weekly',
+  MONTHLY = 'monthly',
+  YEARLY = 'yearly',
+  ONE_TIME = 'one-time',
+}
+
+// Category entity returned by backend API
+export interface Category {
+  id: string;
+  name: string;
+  description: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // The shape of a single Transaction object
@@ -23,7 +26,8 @@ export interface Transaction {
   description: string;
   amount: number;
   type: TransactionType;
-  category: Category;
+  category: string;
+  frequency: TransactionFrequency;
   date: string;
 }
 

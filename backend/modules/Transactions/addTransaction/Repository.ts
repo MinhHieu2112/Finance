@@ -7,6 +7,7 @@ class transactionRepository {
                                  amount     : number, 
                                  type       : string, 
                                  category   : string, 
+                                 frequency  : string,
                                  date       : string }) {
         const transaction = await transactionModel.create(data);
         return transaction;

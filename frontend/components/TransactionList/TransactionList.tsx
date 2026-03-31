@@ -1,20 +1,24 @@
 import React, { useMemo, useState } from 'react';
-import { Category, Transaction, TransactionType } from '../../types';
+import { Transaction, TransactionType } from '../../types';
 import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil } from 'lucide-react';
 
 interface TransactionListProps {
   transactions: Transaction[];
+  categoryOptions: string[];
   onDelete: (id: string) => void;
   onEdit: (transaction: Transaction) => void;
 }
 
-const CATEGORY_OPTIONS = Object.values(Category);
-
-export const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelete, onEdit }) => {
+export const TransactionList: React.FC<TransactionListProps> = ({ transactions, categoryOptions, onDelete, onEdit }) => {
   const [searchTerm, setSearchTerm]         = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [startDate, setStartDate]           = useState('');
   const [endDate, setEndDate]               = useState('');
+
+  const allCategoryOptions = useMemo(() => {
+    const categoriesFromTransactions = transactions.map((t) => t.category);
+    return Array.from(new Set([...categoryOptions, ...categoriesFromTransactions])).filter(Boolean);
+  }, [transactions, categoryOptions]);
 
   const filteredTransactions = useMemo(() => {
     return transactions
@@ -70,7 +74,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
           className = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer hover:border-gray-300 transition-colors"
         >
           <option value="">Tất cả danh mục</option>
-          {CATEGORY_OPTIONS.map((cat) => (
+          {allCategoryOptions.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option>

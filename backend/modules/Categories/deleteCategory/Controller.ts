@@ -1,0 +1,15 @@
+import { type Request, type Response, type NextFunction } from 'express';
+import categoryService from './Serviec';
+
+const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const categoryId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+
+		await categoryService.deleteCategory(categoryId);
+		res.status(204).send();
+	} catch (error) {
+		next(error);
+	}
+};
+
+export default deleteCategory;

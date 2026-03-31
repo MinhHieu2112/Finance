@@ -1,38 +1,64 @@
-import React, { useState } from 'react';
-import { Category, Transaction, TransactionType } from '../../types';
+import React, { useEffect, useState } from 'react';
+import { Transaction, TransactionFrequency, TransactionType } from '../../types';
 import { Button } from '../Button/Button';
 import { X } from 'lucide-react';
 
 interface TransactionFormProps {
   onSave: (transaction: Omit<Transaction, 'id'>) => Promise<void> | void;
   onClose: () => void;
+  categoryOptions: string[];
   mode?: 'create' | 'edit';
   initialTransaction?: Transaction | null;
 }
 
-const CATEGORY_OPTIONS = Object.values(Category);
-
 export const TransactionForm: React.FC<TransactionFormProps> = ({
   onSave,
   onClose,
+  categoryOptions,
   mode = 'create',
   initialTransaction = null,
 }) => {
   const [description, setDescription] = useState(initialTransaction?.description || '');
   const [amount, setAmount] = useState(initialTransaction ? String(initialTransaction.amount) : '');
   const [type, setType] = useState<TransactionType>(initialTransaction?.type || TransactionType.EXPENSE);
-  const [category, setCategory] = useState<Category>(initialTransaction?.category || Category.FOOD);
+  const [source, setSource] = useState(
+    initialTransaction?.type === TransactionType.INCOME ? initialTransaction.category : ''
+  );
+  const [expenseCategory, setExpenseCategory] = useState(
+    initialTransaction?.type === TransactionType.EXPENSE
+      ? initialTransaction.category
+      : categoryOptions[0] || ''
+  );
+  const [frequency, setFrequency] = useState<TransactionFrequency>(
+    initialTransaction?.frequency || TransactionFrequency.ONE_TIME
+  );
   const [date, setDate] = useState(initialTransaction?.date || new Date().toISOString().split('T')[0]);
+
+  useEffect(() => {
+    if (!categoryOptions.length) {
+      setExpenseCategory('');
+      return;
+    }
+
+    if (!expenseCategory || !categoryOptions.includes(expenseCategory)) {
+      setExpenseCategory(categoryOptions[0]);
+    }
+  }, [categoryOptions, expenseCategory]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!description || !amount) return;
+
+    const transactionCategory =
+      type === TransactionType.INCOME ? source.trim() : expenseCategory;
+
+    if (!description || !amount || !transactionCategory) return;
 
     await onSave({
       description,
       amount: parseFloat(amount),
       type,
-      category,
+      category: transactionCategory,
+      frequency,
       date,
     });
     onClose();
@@ -68,6 +94,41 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           </div>
 
           <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+              {type === TransactionType.INCOME ? 'Nguồn thu' : 'Danh mục'}
+            </label>
+
+            {type === TransactionType.INCOME ? (
+              <input
+                type="text"
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="Ví dụ: Lương, Khách hàng A, Cổ tức..."
+                required
+              />
+            ) : (
+              <>
+                <select
+                  value={expenseCategory}
+                  onChange={(e) => setExpenseCategory(e.target.value)}
+                  disabled={categoryOptions.length === 0}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
+                >
+                  {categoryOptions.length === 0 && (
+                    <option value="">Chưa có danh mục</option>
+                  )}
+                  {categoryOptions.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+          </div>
+
+          <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Số tiền</label>
             <input
               type        = "number"
@@ -95,17 +156,16 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Danh mục</label>
+              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tần suất</label>
               <select
-                value     = {category}
-                onChange  = {(e) => setCategory(e.target.value as Category)}
+                value     = {frequency}
+                onChange  = {(e) => setFrequency(e.target.value as TransactionFrequency)}
                 className = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
               >
-                {CATEGORY_OPTIONS.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
+                <option value={TransactionFrequency.WEEKLY}>weekly</option>
+                <option value={TransactionFrequency.MONTHLY}>monthly</option>
+                <option value={TransactionFrequency.YEARLY}>yearly</option>
+                <option value={TransactionFrequency.ONE_TIME}>one-time</option>
               </select>
             </div>
             <div>
@@ -121,9 +181,16 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           </div>
 
           <div className="pt-4">
-            <Button type="submit" className="w-full py-3">
+            <Button
+              type="submit"
+              className="w-full py-3"
+              disabled={type === TransactionType.EXPENSE && categoryOptions.length === 0}
+            >
               {mode === 'edit' ? 'Cập nhật giao dịch' : 'Lưu giao dịch'}
             </Button>
+            {type === TransactionType.EXPENSE && categoryOptions.length === 0 && (
+              <p className="mt-2 text-xs text-red-500 text-center">Hãy tạo ít nhất một danh mục trước khi thêm giao dịch.</p>
+            )}
           </div>
         </form>
       </div>

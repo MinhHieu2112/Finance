@@ -5,17 +5,11 @@ export enum TransactionType {
   EXPENSE = 'expense',
 }
 
-// Enum for Categories to keep data structured
-export enum Category {
-  FOOD          = 'Food & Dining',
-  TRANSPORT     = 'Transportation',
-  UTILITIES     = 'Utilities',
-  ENTERTAINMENT = 'Entertainment',
-  SHOPPING      = 'Shopping',
-  HEALTH        = 'Health',
-  SALARY        = 'Salary',
-  INVESTMENT    = 'Investment',
-  OTHER         = 'Other',
+export enum TransactionFrequency {
+  WEEKLY   = 'weekly',
+  MONTHLY  = 'monthly',
+  YEARLY   = 'yearly',
+  ONE_TIME = 'one-time',
 }
 
 const transactionSchema = new Schema({id         : {type    : String,
@@ -37,8 +31,11 @@ const transactionSchema = new Schema({id         : {type    : String,
                                                     enum    : Object.values(TransactionType),},
                                       category   : {type    : String,
                                                     required: true,
-                                                    enum    : Object.values(Category),
                                                     trim    : true,},
+                                      frequency  : {type    : String,
+                                                    required: true,
+                                                    enum    : Object.values(TransactionFrequency),
+                                                    default : TransactionFrequency.ONE_TIME,},
                                       date       : {type    : String,
                                                     required: true,}},
                                      {timestamps : true,
