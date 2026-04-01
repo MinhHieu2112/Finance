@@ -3,7 +3,6 @@ import { SummaryCards } from '../../components/SummaryCards/SummaryCards';
 import { TransactionList } from '../../components/TransactionList/TransactionList';
 import { TransactionForm } from '../../components/TransactionForm/TransactionForm';
 import { Charts } from '../../components/Charts/Charts';
-import { FinancialAdvisorModal } from '../../components/FinancialAdvisorModal/FinancialAdvisorModal';
 import { CategoryManagerModal } from '../../components/CategoryManagerModal/CategoryManagerModal';
 import { Button } from '../../components/Button/Button';
 import { Category, Transaction, User } from '../../types';
@@ -36,21 +35,12 @@ interface SaveCategoryResponse {
   category: Category;
 }
 
-interface AdviceResponse {
-  success: boolean;
-  advice: string;
-}
-
 export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isFormOpen, setIsFormOpen]     = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
-  
-  const [aiAdvice, setAiAdvice]               = useState<string | null>(null);
-  const [loadingAdvice, setLoadingAdvice]     = useState(false);
-  const [showAdviceModal, setShowAdviceModal] = useState(false);
 
   const categoryOptions = useMemo(() => {
     const names = categories.map((category) => category.name.trim()).filter(Boolean);
@@ -110,7 +100,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
 
     const data: SaveTransactionResponse = await response.json();
     setTransactions((prev) => [data.transaction, ...prev]);
-    setAiAdvice(null);
   };
 
   const updateTransaction = async (id: string, updatedTx: Omit<Transaction, 'id'>) => {
@@ -129,7 +118,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
 
     const data: SaveTransactionResponse = await response.json();
     setTransactions((prev) => prev.map((t) => (t.id === id ? data.transaction : t)));
-    setAiAdvice(null);
   };
 
   const handleSaveTransaction = async (tx: Omit<Transaction, 'id'>) => {
@@ -234,35 +222,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
       }
 
       setTransactions((prev) => prev.filter((t) => t.id !== id));
-        setAiAdvice(null);
     }
   };
 
-  const handleGetAdvice = async () => {
-    setShowAdviceModal(true);
-    if (!aiAdvice) {
-      setLoadingAdvice(true);
-
-      try {
-        const authorizedResponse = await fetch(`${API_BASE_URL}/ai/advice`, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-
-        if (!authorizedResponse.ok) {
-          throw new Error('Cannot fetch AI advice');
-        }
-
-        const data: AdviceResponse = await authorizedResponse.json();
-        setAiAdvice(data.advice);
-      } catch (error) {
-        console.error(error);
-          setAiAdvice('Xin lỗi, không thể phân tích dữ liệu lúc này. Vui lòng thử lại sau.');
-      } finally {
-        setLoadingAdvice(false);
-      }
-    }
+  const handleGetAdvice = () => {
+    // Assistant button is kept intentionally, but analysis is now displayed in the sidebar.
+    return;
   };
 
   return (
@@ -334,7 +299,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         </div>
 
         {/* Widgets */}
-        <SummaryCards    transactions = {transactions} />        
+        <SummaryCards    transactions = {transactions} />
         <Charts          transactions = {transactions} />
         <TransactionList
           transactions={transactions}
@@ -372,13 +337,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         onDelete={deleteCategory}
       />
 
-      {/* AI Advice Modal */}
-      <FinancialAdvisorModal 
-        isOpen  = {showAdviceModal} 
-        onClose = {() => setShowAdviceModal(false)}
-        loading = {loadingAdvice}
-        advice  = {aiAdvice}
-      />
     </div>
   );
 };

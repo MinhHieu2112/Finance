@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { LoginPage } from './pages/LoginPage/LoginPage';
 import { DashboardPage } from './pages/DashboardPage/DashboardPage';
+import { AnalysisPage } from './pages/AnalysisPage/AnalysisPage';
+import Sidebar from './components/Sidebar/Sidebar';
 import { User } from './types';
 
 const App: React.FC = () => {
@@ -34,8 +37,21 @@ const App: React.FC = () => {
     return <LoginPage onLogin={handleLogin} />;
   }
 
-  // Show Dashboard
-  return <DashboardPage user={user} onLogout={handleLogout} />;
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <div className="flex-1 min-w-0">
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<DashboardPage user={user} onLogout={handleLogout} />} />
+            <Route path="/analysis" element={<AnalysisPage user={user} />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default App;
