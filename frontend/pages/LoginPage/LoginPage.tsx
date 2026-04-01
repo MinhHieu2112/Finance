@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthScreen } from '../../components/AuthScreen/AuthScreen';
-import { User } from '../../types';
+import { User } from '../../types/Users';
 
 interface LoginPageProps {
   onLogin: (user: User) => void;

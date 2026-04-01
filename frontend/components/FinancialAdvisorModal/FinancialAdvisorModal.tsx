@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Button } from '../Button/Button';
 import { Plus, Sparkles } from 'lucide-react';
-import { AnalysisResult } from '../../types';
+import { AnalysisResult } from '../../types/Analysis';
 
 interface FinancialAdvisorModalProps {
   isOpen: boolean;

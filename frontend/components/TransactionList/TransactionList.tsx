@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Transaction, TransactionType } from '../../types';
+import { Transaction, TransactionType } from '../../types/Transactions';
 import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil } from 'lucide-react';
 
 interface TransactionListProps {

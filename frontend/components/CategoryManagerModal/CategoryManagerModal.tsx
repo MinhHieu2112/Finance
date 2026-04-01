@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Category } from '../../types';
+import { Category } from '../../types/Categories';
 import { Button } from '../Button/Button';
 import { Pencil, Trash2, X } from 'lucide-react';
 

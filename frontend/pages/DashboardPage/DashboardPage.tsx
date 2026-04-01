@@ -5,7 +5,9 @@ import { TransactionForm } from '../../components/TransactionForm/TransactionFor
 import { Charts } from '../../components/Charts/Charts';
 import { CategoryManagerModal } from '../../components/CategoryManagerModal/CategoryManagerModal';
 import { Button } from '../../components/Button/Button';
-import { Category, Transaction, User } from '../../types';
+import { Category} from '../../types/Categories';
+import { Transaction } from '../../types/Transactions';
+import { User } from '../../types/Users';
 import { Plus, Sparkles, LogOut, User as UserIcon, Tags } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:4000/api';

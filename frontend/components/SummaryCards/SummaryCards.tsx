@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Transaction, TransactionType } from '../../types';
+import { Transaction, TransactionType } from '../../types/Transactions';
 import { ArrowUpCircle, ArrowDownCircle, Wallet } from 'lucide-react';
 
 interface SummaryCardsProps {

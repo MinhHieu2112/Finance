@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AnalysisResult, User } from '../../types';
+import { AnalysisResult } from '../../types/Analysis';
+import { User } from '../../types/Users';
 import { ResponsiveContainer,
          LineChart,
          Line,

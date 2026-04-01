@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Transaction, TransactionFrequency, TransactionType } from '../../types';
+import { Transaction, TransactionFrequency, TransactionType } from '../../types/Transactions';
 import { Button } from '../Button/Button';
 import { X } from 'lucide-react';
 

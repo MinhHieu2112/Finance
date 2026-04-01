@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../Button/Button';
-import { User } from '../../types';
+import { User } from '../../types/Users';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 

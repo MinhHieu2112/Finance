@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Transaction, TransactionType } from '../../types';
+import { Transaction, TransactionType } from '../../types/Transactions';
 import {
   PieChart,
   Pie,
