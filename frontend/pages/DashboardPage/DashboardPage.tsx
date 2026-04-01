@@ -211,7 +211,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
   };
 
   const deleteTransaction = async (id: string) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa giao dịch này?')) {
+    if (window.confirm('Are you sure you want to delete this transaction?')) {
       const response = await fetch(`${API_BASE_URL}/transactions/delete/${id}`, {
         method: 'DELETE',
         headers: {
@@ -252,7 +252,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
             <button 
               onClick={onLogout}
               className="p-2 text-gray-400 hover:text-danger transition-colors rounded-full hover:bg-gray-100"
-              title="Đăng xuất"
+              title="Log out"
             >
               <LogOut size={20} />
             </button>
@@ -267,10 +267,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900"> 
-              Tổng quan
+              Overview
             </h1>
             <p className="text-gray-500 text-sm">
-              Tổng quan về sức khỏe tài chính của bạn
+              A quick snapshot of your financial health
             </p>
           </div>
           <div className="flex gap-3 w-full sm:w-auto">
@@ -280,7 +280,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
               className = "flex-1 sm:flex-none"
             >
               <Sparkles size={18} className="text-purple-500" />
-              Trợ lý ảo
+              AI Assistant
             </Button>
             <Button
               variant   = "secondary"
@@ -288,14 +288,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
               className = "flex-1 sm:flex-none"
             >
               <Tags size={18} />
-              Danh mục
+              Categories
             </Button>
             <Button 
               onClick   = {openCreateForm}
               className = "flex-1 sm:flex-none"
             >
               <Plus size={18} />
-              Thêm giao dịch
+              Add Transaction
             </Button>
           </div>
         </div>
@@ -314,7 +314,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
       {/* Footer */}
       <footer className = "bg-white border-t border-gray-200 mt-auto">
         <div  className = "max-w-7xl mx-auto px-4 py-6 text-center text-gray-400 text-sm">
-          &copy; {new Date().getFullYear()} SmartFinance. Thiết kế tối ưu cho quản lý tài chính.
+          &copy; {new Date().getFullYear()} SmartFinance. Built for smarter personal finance management.
         </div>
       </footer>
 

@@ -2,301 +2,8201 @@
   {
     "id": "1",
     "userID": "tri",
-    "description": "Monthly Salary Jan",
-    "amount": 4800,
+    "description": "Monthly Salary 1/2024",
+    "amount": 5000000,
     "type": "income",
     "category": "Salary",
     "frequency": "monthly",
-    "date": "2021-01-28"
+    "date": "2024-01-01"
   },
   {
     "id": "2",
-    "userID": "hieu",
-    "description": "Grocery Shopping",
-    "amount": 150,
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 83536,
     "type": "expense",
-    "category": "Food & Dining",
-    "frequency": "weekly",
-    "date": "2021-02-03"
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-01-01"
   },
   {
     "id": "3",
     "userID": "tri",
-    "description": "Bus Pass",
-    "amount": 30,
+    "description": "Chi tiêu Utilities",
+    "amount": 143173,
     "type": "expense",
-    "category": "Transportation",
-    "frequency": "weekly",
-    "date": "2021-03-12"
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-01-02"
   },
   {
     "id": "4",
-    "userID": "hieu",
-    "description": "Electricity Bill",
-    "amount": 65,
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 87968,
     "type": "expense",
-    "category": "Utilities",
-    "frequency": "monthly",
-    "date": "2021-04-01"
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-01-03"
   },
   {
     "id": "5",
     "userID": "tri",
-    "description": "Dividend Payout",
-    "amount": 900,
-    "type": "income",
-    "category": "Investment",
-    "frequency": "yearly",
-    "date": "2021-05-20"
+    "description": "Chi tiêu Shopping",
+    "amount": 65629,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-01-04"
   },
   {
     "id": "6",
-    "userID": "hieu",
-    "description": "Movie Night",
-    "amount": 45,
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 54635,
     "type": "expense",
     "category": "Entertainment",
-    "frequency": "monthly",
-    "date": "2021-06-18"
+    "frequency": "weekly",
+    "date": "2024-01-05"
   },
   {
     "id": "7",
     "userID": "tri",
-    "description": "Dental Checkup",
-    "amount": 210,
+    "description": "Chi tiêu Other",
+    "amount": 144756,
     "type": "expense",
-    "category": "Health",
-    "frequency": "one-time",
-    "date": "2021-08-05"
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-01-06"
   },
   {
     "id": "8",
-    "userID": "hieu",
-    "description": "Monthly Salary Sep",
-    "amount": 4300,
-    "type": "income",
-    "category": "Salary",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 109395,
+    "type": "expense",
+    "category": "Transportation",
     "frequency": "monthly",
-    "date": "2021-09-30"
+    "date": "2024-01-07"
   },
   {
     "id": "9",
     "userID": "tri",
-    "description": "Online Shopping",
-    "amount": 320,
-    "type": "expense",
-    "category": "Shopping",
-    "frequency": "one-time",
-    "date": "2021-11-11"
-  },
-  {
-    "id": "10",
-    "userID": "hieu",
-    "description": "Home Repair",
-    "amount": 180,
+    "description": "Chi tiêu Other",
+    "amount": 107682,
     "type": "expense",
     "category": "Other",
     "frequency": "one-time",
-    "date": "2021-12-22"
+    "date": "2024-01-08"
+  },
+  {
+    "id": "10",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 98968,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-01-09"
   },
   {
     "id": "11",
     "userID": "tri",
-    "description": "Monthly Salary Jan",
-    "amount": 5000,
-    "type": "income",
-    "category": "Salary",
+    "description": "Chi tiêu Transportation",
+    "amount": 15014,
+    "type": "expense",
+    "category": "Transportation",
     "frequency": "monthly",
-    "date": "2022-01-31"
+    "date": "2024-01-10"
   },
   {
     "id": "12",
-    "userID": "hieu",
-    "description": "Valentine Dinner",
-    "amount": 120,
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 10297,
     "type": "expense",
-    "category": "Food & Dining",
-    "frequency": "weekly",
-    "date": "2022-02-14"
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-01-11"
   },
   {
     "id": "13",
     "userID": "tri",
-    "description": "Internet Bill",
-    "amount": 28,
+    "description": "Chi tiêu Food & Dining",
+    "amount": 108120,
     "type": "expense",
-    "category": "Utilities",
-    "frequency": "monthly",
-    "date": "2022-03-02"
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-01-12"
   },
   {
     "id": "14",
-    "userID": "hieu",
-    "description": "Mutual Fund Profit",
-    "amount": 760,
-    "type": "income",
-    "category": "Investment",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 52171,
+    "type": "expense",
+    "category": "Food & Dining",
     "frequency": "yearly",
-    "date": "2022-04-15"
+    "date": "2024-01-13"
   },
   {
     "id": "15",
     "userID": "tri",
-    "description": "Concert Tickets",
-    "amount": 160,
+    "description": "Chi tiêu Utilities",
+    "amount": 48186,
     "type": "expense",
-    "category": "Entertainment",
-    "frequency": "monthly",
-    "date": "2022-05-27"
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-01-14"
   },
   {
     "id": "16",
-    "userID": "hieu",
-    "description": "Fuel Refill",
-    "amount": 55,
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 126455,
     "type": "expense",
-    "category": "Transportation",
-    "frequency": "weekly",
-    "date": "2022-06-09"
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-01-15"
   },
   {
     "id": "17",
     "userID": "tri",
-    "description": "Freelance Design",
-    "amount": 1100,
-    "type": "income",
-    "category": "Other",
-    "frequency": "one-time",
-    "date": "2022-07-21"
+    "description": "Chi tiêu Food & Dining",
+    "amount": 129290,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-01-16"
   },
   {
     "id": "18",
-    "userID": "hieu",
-    "description": "Annual Health Check",
-    "amount": 240,
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 74645,
     "type": "expense",
-    "category": "Health",
+    "category": "Entertainment",
     "frequency": "one-time",
-    "date": "2022-08-16"
+    "date": "2024-01-17"
   },
   {
     "id": "19",
     "userID": "tri",
-    "description": "Family Dinner",
-    "amount": 95,
+    "description": "Chi tiêu Shopping",
+    "amount": 83999,
     "type": "expense",
-    "category": "Food & Dining",
-    "frequency": "weekly",
-    "date": "2022-09-07"
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-01-18"
   },
   {
     "id": "20",
-    "userID": "hieu",
-    "description": "Monthly Salary Oct",
-    "amount": 4400,
-    "type": "income",
-    "category": "Salary",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 45043,
+    "type": "expense",
+    "category": "Shopping",
     "frequency": "monthly",
-    "date": "2022-10-31"
+    "date": "2024-01-19"
   },
   {
     "id": "21",
     "userID": "tri",
-    "description": "New Year Shopping",
-    "amount": 370,
+    "description": "Chi tiêu Health",
+    "amount": 79435,
     "type": "expense",
-    "category": "Shopping",
-    "frequency": "one-time",
-    "date": "2023-01-05"
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-01-20"
   },
   {
     "id": "22",
-    "userID": "hieu",
-    "description": "Water Bill",
-    "amount": 22,
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 115600,
     "type": "expense",
-    "category": "Utilities",
-    "frequency": "monthly",
-    "date": "2023-03-19"
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-01-21"
   },
   {
     "id": "23",
     "userID": "tri",
-    "description": "Stock Dividend",
-    "amount": 980,
-    "type": "income",
-    "category": "Investment",
-    "frequency": "yearly",
-    "date": "2023-04-30"
+    "description": "Chi tiêu Food & Dining",
+    "amount": 22022,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-01-22"
   },
   {
     "id": "24",
-    "userID": "hieu",
-    "description": "Streaming Subscription",
-    "amount": 18,
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 99660,
     "type": "expense",
     "category": "Entertainment",
     "frequency": "monthly",
-    "date": "2023-06-11"
+    "date": "2024-01-23"
   },
   {
     "id": "25",
     "userID": "tri",
-    "description": "Monthly Salary Aug",
-    "amount": 5200,
-    "type": "income",
-    "category": "Salary",
-    "frequency": "monthly",
-    "date": "2023-08-31"
+    "description": "Chi tiêu Health",
+    "amount": 141830,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-01-24"
   },
   {
     "id": "26",
-    "userID": "hieu",
-    "description": "Ride-hailing Trips",
-    "amount": 42,
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 15440,
     "type": "expense",
-    "category": "Transportation",
+    "category": "Entertainment",
     "frequency": "weekly",
-    "date": "2023-10-10"
+    "date": "2024-01-25"
   },
   {
     "id": "27",
     "userID": "tri",
-    "description": "Eye Checkup",
-    "amount": 175,
+    "description": "Chi tiêu Entertainment",
+    "amount": 14678,
     "type": "expense",
-    "category": "Health",
-    "frequency": "one-time",
-    "date": "2024-02-24"
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-01-26"
   },
   {
     "id": "28",
-    "userID": "hieu",
-    "description": "Bonus from Side Job",
-    "amount": 650,
-    "type": "income",
-    "category": "Other",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 32759,
+    "type": "expense",
+    "category": "Food & Dining",
     "frequency": "one-time",
-    "date": "2024-07-14"
+    "date": "2024-01-27"
   },
   {
     "id": "29",
     "userID": "tri",
-    "description": "Laptop Repair",
-    "amount": 260,
+    "description": "Chi tiêu Food & Dining",
+    "amount": 70642,
     "type": "expense",
-    "category": "Other",
-    "frequency": "one-time",
-    "date": "2025-05-03"
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-01-28"
   },
   {
     "id": "30",
-    "userID": "hieu",
-    "description": "Monthly Salary Mar",
-    "amount": 1200,
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 115627,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-01-29"
+  },
+  {
+    "id": "31",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 86529,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-01-30"
+  },
+  {
+    "id": "32",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 81670,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-01-31"
+  },
+  {
+    "id": "33",
+    "userID": "tri",
+    "description": "Monthly Salary 2/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-02-01"
+  },
+  {
+    "id": "34",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 74575,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-02-01"
+  },
+  {
+    "id": "35",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 104326,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-02-02"
+  },
+  {
+    "id": "36",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 58057,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-02-03"
+  },
+  {
+    "id": "37",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 134252,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-02-04"
+  },
+  {
+    "id": "38",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 135409,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-02-05"
+  },
+  {
+    "id": "39",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 92070,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-02-06"
+  },
+  {
+    "id": "40",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 66211,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-02-07"
+  },
+  {
+    "id": "41",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 79064,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-02-08"
+  },
+  {
+    "id": "42",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 136807,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-02-09"
+  },
+  {
+    "id": "43",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 23499,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-02-10"
+  },
+  {
+    "id": "44",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 104478,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-02-11"
+  },
+  {
+    "id": "45",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 126229,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-02-12"
+  },
+  {
+    "id": "46",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 130685,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-02-13"
+  },
+  {
+    "id": "47",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 146118,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-02-14"
+  },
+  {
+    "id": "48",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 132819,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-02-15"
+  },
+  {
+    "id": "49",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 108066,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-02-16"
+  },
+  {
+    "id": "50",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 76559,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-02-17"
+  },
+  {
+    "id": "51",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 126375,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2024-02-18"
+  },
+  {
+    "id": "52",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 132343,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-02-19"
+  },
+  {
+    "id": "53",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 27934,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-02-20"
+  },
+  {
+    "id": "54",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 79358,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-02-21"
+  },
+  {
+    "id": "55",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 15599,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-02-22"
+  },
+  {
+    "id": "56",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 54313,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-02-23"
+  },
+  {
+    "id": "57",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 33435,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-02-24"
+  },
+  {
+    "id": "58",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 61491,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-02-25"
+  },
+  {
+    "id": "59",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 145648,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-02-26"
+  },
+  {
+    "id": "60",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 113195,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-02-27"
+  },
+  {
+    "id": "61",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 17988,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-02-28"
+  },
+  {
+    "id": "62",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 134440,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-02-29"
+  },
+  {
+    "id": "63",
+    "userID": "tri",
+    "description": "Monthly Salary 3/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-03-01"
+  },
+  {
+    "id": "64",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 127937,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-03-01"
+  },
+  {
+    "id": "65",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 122714,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-03-02"
+  },
+  {
+    "id": "66",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 46720,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-03-03"
+  },
+  {
+    "id": "67",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 64132,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-03-04"
+  },
+  {
+    "id": "68",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 36846,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-03-05"
+  },
+  {
+    "id": "69",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 139149,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-03-06"
+  },
+  {
+    "id": "70",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 68925,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-03-07"
+  },
+  {
+    "id": "71",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 128857,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-03-08"
+  },
+  {
+    "id": "72",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 65289,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-03-09"
+  },
+  {
+    "id": "73",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 121835,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-03-10"
+  },
+  {
+    "id": "74",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 12319,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-03-11"
+  },
+  {
+    "id": "75",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 62334,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-03-12"
+  },
+  {
+    "id": "76",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 118964,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-03-13"
+  },
+  {
+    "id": "77",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 110170,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-03-14"
+  },
+  {
+    "id": "78",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 117615,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-03-15"
+  },
+  {
+    "id": "79",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 149171,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-03-16"
+  },
+  {
+    "id": "80",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 50310,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-03-17"
+  },
+  {
+    "id": "81",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 118148,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-03-18"
+  },
+  {
+    "id": "82",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 100410,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-03-19"
+  },
+  {
+    "id": "83",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 84209,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-03-20"
+  },
+  {
+    "id": "84",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 125001,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-03-21"
+  },
+  {
+    "id": "85",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 63702,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-03-22"
+  },
+  {
+    "id": "86",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 20774,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-03-23"
+  },
+  {
+    "id": "87",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 80622,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-03-24"
+  },
+  {
+    "id": "88",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 95500,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-03-25"
+  },
+  {
+    "id": "89",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 31055,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-03-26"
+  },
+  {
+    "id": "90",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 134598,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-03-27"
+  },
+  {
+    "id": "91",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 85635,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-03-28"
+  },
+  {
+    "id": "92",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 77290,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-03-29"
+  },
+  {
+    "id": "93",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 146467,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2024-03-30"
+  },
+  {
+    "id": "94",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 102336,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-03-31"
+  },
+  {
+    "id": "95",
+    "userID": "tri",
+    "description": "Monthly Salary 4/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-04-01"
+  },
+  {
+    "id": "96",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 27848,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-04-01"
+  },
+  {
+    "id": "97",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 70220,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-04-02"
+  },
+  {
+    "id": "98",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 132252,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-04-03"
+  },
+  {
+    "id": "99",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 131660,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-04-04"
+  },
+  {
+    "id": "100",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 16532,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-04-05"
+  },
+  {
+    "id": "101",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 15423,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-04-06"
+  },
+  {
+    "id": "102",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 125622,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-04-07"
+  },
+  {
+    "id": "103",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 34840,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-04-08"
+  },
+  {
+    "id": "104",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 133125,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-04-09"
+  },
+  {
+    "id": "105",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 88301,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-04-10"
+  },
+  {
+    "id": "106",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 35915,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-04-11"
+  },
+  {
+    "id": "107",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 131795,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-04-12"
+  },
+  {
+    "id": "108",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 75746,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-04-13"
+  },
+  {
+    "id": "109",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 77374,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-04-14"
+  },
+  {
+    "id": "110",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 74918,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-04-15"
+  },
+  {
+    "id": "111",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 56583,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-04-16"
+  },
+  {
+    "id": "112",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 49090,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-04-17"
+  },
+  {
+    "id": "113",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 140146,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-04-18"
+  },
+  {
+    "id": "114",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 126080,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-04-19"
+  },
+  {
+    "id": "115",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 133370,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-04-20"
+  },
+  {
+    "id": "116",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 137071,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-04-21"
+  },
+  {
+    "id": "117",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 104807,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-04-22"
+  },
+  {
+    "id": "118",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 103092,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-04-23"
+  },
+  {
+    "id": "119",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 37289,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-04-24"
+  },
+  {
+    "id": "120",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 106100,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-04-25"
+  },
+  {
+    "id": "121",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 100109,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-04-26"
+  },
+  {
+    "id": "122",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 14937,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-04-27"
+  },
+  {
+    "id": "123",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 137343,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-04-28"
+  },
+  {
+    "id": "124",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 69632,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-04-29"
+  },
+  {
+    "id": "125",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 33428,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-04-30"
+  },
+  {
+    "id": "126",
+    "userID": "tri",
+    "description": "Monthly Salary 5/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-05-01"
+  },
+  {
+    "id": "127",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 36325,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-05-01"
+  },
+  {
+    "id": "128",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 142774,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-05-02"
+  },
+  {
+    "id": "129",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 65360,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-05-03"
+  },
+  {
+    "id": "130",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 75957,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-05-04"
+  },
+  {
+    "id": "131",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 89055,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-05-05"
+  },
+  {
+    "id": "132",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 49756,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-05-06"
+  },
+  {
+    "id": "133",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 122825,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-05-07"
+  },
+  {
+    "id": "134",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 10115,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-05-08"
+  },
+  {
+    "id": "135",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 46204,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-05-09"
+  },
+  {
+    "id": "136",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 117994,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-05-10"
+  },
+  {
+    "id": "137",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 90236,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-05-11"
+  },
+  {
+    "id": "138",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 119499,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-05-12"
+  },
+  {
+    "id": "139",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 135090,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-05-13"
+  },
+  {
+    "id": "140",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 108580,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-05-14"
+  },
+  {
+    "id": "141",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 44802,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-05-15"
+  },
+  {
+    "id": "142",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 84095,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-05-16"
+  },
+  {
+    "id": "143",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 136308,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2024-05-17"
+  },
+  {
+    "id": "144",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 92801,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-05-18"
+  },
+  {
+    "id": "145",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 55108,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-05-19"
+  },
+  {
+    "id": "146",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 65687,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-05-20"
+  },
+  {
+    "id": "147",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 93512,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2024-05-21"
+  },
+  {
+    "id": "148",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 93359,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-05-22"
+  },
+  {
+    "id": "149",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 69394,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-05-23"
+  },
+  {
+    "id": "150",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 41104,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-05-24"
+  },
+  {
+    "id": "151",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 108715,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-05-25"
+  },
+  {
+    "id": "152",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 19206,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-05-26"
+  },
+  {
+    "id": "153",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 22905,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-05-27"
+  },
+  {
+    "id": "154",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 57642,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-05-28"
+  },
+  {
+    "id": "155",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 95996,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-05-29"
+  },
+  {
+    "id": "156",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 50033,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-05-30"
+  },
+  {
+    "id": "157",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 25965,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-05-31"
+  },
+  {
+    "id": "158",
+    "userID": "tri",
+    "description": "Monthly Salary 6/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-06-01"
+  },
+  {
+    "id": "159",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 74059,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-06-01"
+  },
+  {
+    "id": "160",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 126800,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-06-02"
+  },
+  {
+    "id": "161",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 68406,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-06-03"
+  },
+  {
+    "id": "162",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 61560,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-06-04"
+  },
+  {
+    "id": "163",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 12031,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-06-05"
+  },
+  {
+    "id": "164",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 21841,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-06-06"
+  },
+  {
+    "id": "165",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 124434,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-06-07"
+  },
+  {
+    "id": "166",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 148129,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-06-08"
+  },
+  {
+    "id": "167",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 46415,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-06-09"
+  },
+  {
+    "id": "168",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 11323,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-06-10"
+  },
+  {
+    "id": "169",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 131281,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2024-06-11"
+  },
+  {
+    "id": "170",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 112043,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-06-12"
+  },
+  {
+    "id": "171",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 61477,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-06-13"
+  },
+  {
+    "id": "172",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 70741,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-06-14"
+  },
+  {
+    "id": "173",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 81185,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-06-15"
+  },
+  {
+    "id": "174",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 86478,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-06-16"
+  },
+  {
+    "id": "175",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 65902,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-06-17"
+  },
+  {
+    "id": "176",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 140050,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-06-18"
+  },
+  {
+    "id": "177",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 139789,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-06-19"
+  },
+  {
+    "id": "178",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 142697,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-06-20"
+  },
+  {
+    "id": "179",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 140056,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-06-21"
+  },
+  {
+    "id": "180",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 110547,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-06-22"
+  },
+  {
+    "id": "181",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 129478,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-06-23"
+  },
+  {
+    "id": "182",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 117756,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-06-24"
+  },
+  {
+    "id": "183",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 22043,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-06-25"
+  },
+  {
+    "id": "184",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 69187,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-06-26"
+  },
+  {
+    "id": "185",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 93105,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-06-27"
+  },
+  {
+    "id": "186",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 135248,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-06-28"
+  },
+  {
+    "id": "187",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 102878,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-06-29"
+  },
+  {
+    "id": "188",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 50604,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-06-30"
+  },
+  {
+    "id": "189",
+    "userID": "tri",
+    "description": "Monthly Salary 7/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-07-01"
+  },
+  {
+    "id": "190",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 83245,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-07-01"
+  },
+  {
+    "id": "191",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 106383,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-07-02"
+  },
+  {
+    "id": "192",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 74685,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-07-03"
+  },
+  {
+    "id": "193",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 18552,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-07-04"
+  },
+  {
+    "id": "194",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 60667,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-07-05"
+  },
+  {
+    "id": "195",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 28513,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-07-06"
+  },
+  {
+    "id": "196",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 35181,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-07-07"
+  },
+  {
+    "id": "197",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 33773,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-07-08"
+  },
+  {
+    "id": "198",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 12688,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-07-09"
+  },
+  {
+    "id": "199",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 62187,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-07-10"
+  },
+  {
+    "id": "200",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 37380,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-07-11"
+  },
+  {
+    "id": "201",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 120034,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-07-12"
+  },
+  {
+    "id": "202",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 99605,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-07-13"
+  },
+  {
+    "id": "203",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 69133,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-07-14"
+  },
+  {
+    "id": "204",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 114824,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-07-15"
+  },
+  {
+    "id": "205",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 72791,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-07-16"
+  },
+  {
+    "id": "206",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 45293,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-07-17"
+  },
+  {
+    "id": "207",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 92294,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-07-18"
+  },
+  {
+    "id": "208",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 137659,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-07-19"
+  },
+  {
+    "id": "209",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 26361,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-07-20"
+  },
+  {
+    "id": "210",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 83947,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-07-21"
+  },
+  {
+    "id": "211",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 128072,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-07-22"
+  },
+  {
+    "id": "212",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 14463,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-07-23"
+  },
+  {
+    "id": "213",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 120508,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-07-24"
+  },
+  {
+    "id": "214",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 20591,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-07-25"
+  },
+  {
+    "id": "215",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 99881,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2024-07-26"
+  },
+  {
+    "id": "216",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 115217,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-07-27"
+  },
+  {
+    "id": "217",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 106847,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-07-28"
+  },
+  {
+    "id": "218",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 121733,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-07-29"
+  },
+  {
+    "id": "219",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 66696,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2024-07-30"
+  },
+  {
+    "id": "220",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 134120,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-07-31"
+  },
+  {
+    "id": "221",
+    "userID": "tri",
+    "description": "Monthly Salary 8/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-08-01"
+  },
+  {
+    "id": "222",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 26242,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-08-01"
+  },
+  {
+    "id": "223",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 113600,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-08-02"
+  },
+  {
+    "id": "224",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 122885,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-08-03"
+  },
+  {
+    "id": "225",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 16073,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-08-04"
+  },
+  {
+    "id": "226",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 51153,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-08-05"
+  },
+  {
+    "id": "227",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 128833,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-08-06"
+  },
+  {
+    "id": "228",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 114667,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-08-07"
+  },
+  {
+    "id": "229",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 105229,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-08-08"
+  },
+  {
+    "id": "230",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 46425,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-08-09"
+  },
+  {
+    "id": "231",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 19053,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-08-10"
+  },
+  {
+    "id": "232",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 128104,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-08-11"
+  },
+  {
+    "id": "233",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 113112,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-08-12"
+  },
+  {
+    "id": "234",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 82137,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-08-13"
+  },
+  {
+    "id": "235",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 139755,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-08-14"
+  },
+  {
+    "id": "236",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 149797,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-08-15"
+  },
+  {
+    "id": "237",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 39326,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-08-16"
+  },
+  {
+    "id": "238",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 33450,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-08-17"
+  },
+  {
+    "id": "239",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 127836,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-08-18"
+  },
+  {
+    "id": "240",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 10779,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-08-19"
+  },
+  {
+    "id": "241",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 101179,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-08-20"
+  },
+  {
+    "id": "242",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 84969,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-08-21"
+  },
+  {
+    "id": "243",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 49338,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-08-22"
+  },
+  {
+    "id": "244",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 34115,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-08-23"
+  },
+  {
+    "id": "245",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 36410,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-08-24"
+  },
+  {
+    "id": "246",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 72763,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-08-25"
+  },
+  {
+    "id": "247",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 19619,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-08-26"
+  },
+  {
+    "id": "248",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 87000,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-08-27"
+  },
+  {
+    "id": "249",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 121201,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-08-28"
+  },
+  {
+    "id": "250",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 29382,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-08-29"
+  },
+  {
+    "id": "251",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 46758,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-08-30"
+  },
+  {
+    "id": "252",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 34710,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-08-31"
+  },
+  {
+    "id": "253",
+    "userID": "tri",
+    "description": "Monthly Salary 9/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-09-01"
+  },
+  {
+    "id": "254",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 100274,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2024-09-01"
+  },
+  {
+    "id": "255",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 94896,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2024-09-02"
+  },
+  {
+    "id": "256",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 15607,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-09-03"
+  },
+  {
+    "id": "257",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 10256,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-09-04"
+  },
+  {
+    "id": "258",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 20630,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2024-09-05"
+  },
+  {
+    "id": "259",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 84464,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-09-06"
+  },
+  {
+    "id": "260",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 108314,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-09-07"
+  },
+  {
+    "id": "261",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 90159,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-09-08"
+  },
+  {
+    "id": "262",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 123556,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-09-09"
+  },
+  {
+    "id": "263",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 125017,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-09-10"
+  },
+  {
+    "id": "264",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 89524,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-09-11"
+  },
+  {
+    "id": "265",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 79043,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-09-12"
+  },
+  {
+    "id": "266",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 37352,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-09-13"
+  },
+  {
+    "id": "267",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 121529,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-09-14"
+  },
+  {
+    "id": "268",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 55277,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-09-15"
+  },
+  {
+    "id": "269",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 117414,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-09-16"
+  },
+  {
+    "id": "270",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 76207,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-09-17"
+  },
+  {
+    "id": "271",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 82853,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-09-18"
+  },
+  {
+    "id": "272",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 145892,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-09-19"
+  },
+  {
+    "id": "273",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 29931,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-09-20"
+  },
+  {
+    "id": "274",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 61237,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-09-21"
+  },
+  {
+    "id": "275",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 96741,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-09-22"
+  },
+  {
+    "id": "276",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 78814,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-09-23"
+  },
+  {
+    "id": "277",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 87500,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-09-24"
+  },
+  {
+    "id": "278",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 16687,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-09-25"
+  },
+  {
+    "id": "279",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 70042,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-09-26"
+  },
+  {
+    "id": "280",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 26569,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-09-27"
+  },
+  {
+    "id": "281",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 85898,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-09-28"
+  },
+  {
+    "id": "282",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 21429,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-09-29"
+  },
+  {
+    "id": "283",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 108578,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-09-30"
+  },
+  {
+    "id": "284",
+    "userID": "tri",
+    "description": "Monthly Salary 10/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-10-01"
+  },
+  {
+    "id": "285",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 129706,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-10-01"
+  },
+  {
+    "id": "286",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 19166,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2024-10-02"
+  },
+  {
+    "id": "287",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 17567,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-10-03"
+  },
+  {
+    "id": "288",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 22004,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-10-04"
+  },
+  {
+    "id": "289",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 58273,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-10-05"
+  },
+  {
+    "id": "290",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 145702,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-10-06"
+  },
+  {
+    "id": "291",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 22876,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-10-07"
+  },
+  {
+    "id": "292",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 46187,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-10-08"
+  },
+  {
+    "id": "293",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 70629,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-10-09"
+  },
+  {
+    "id": "294",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 105016,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-10-10"
+  },
+  {
+    "id": "295",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 119025,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-10-11"
+  },
+  {
+    "id": "296",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 147291,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-10-12"
+  },
+  {
+    "id": "297",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 25440,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-10-13"
+  },
+  {
+    "id": "298",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 39410,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-10-14"
+  },
+  {
+    "id": "299",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 125614,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-10-15"
+  },
+  {
+    "id": "300",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 46996,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-10-16"
+  },
+  {
+    "id": "301",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 67574,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-10-17"
+  },
+  {
+    "id": "302",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 86465,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2024-10-18"
+  },
+  {
+    "id": "303",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 140746,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-10-19"
+  },
+  {
+    "id": "304",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 94274,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-10-20"
+  },
+  {
+    "id": "305",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 17044,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-10-21"
+  },
+  {
+    "id": "306",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 86932,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-10-22"
+  },
+  {
+    "id": "307",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 106373,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-10-23"
+  },
+  {
+    "id": "308",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 122448,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2024-10-24"
+  },
+  {
+    "id": "309",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 36654,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-10-25"
+  },
+  {
+    "id": "310",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 119938,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-10-26"
+  },
+  {
+    "id": "311",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 21426,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-10-27"
+  },
+  {
+    "id": "312",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 103945,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2024-10-28"
+  },
+  {
+    "id": "313",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 52418,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-10-29"
+  },
+  {
+    "id": "314",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 31570,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-10-30"
+  },
+  {
+    "id": "315",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 65257,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-10-31"
+  },
+  {
+    "id": "316",
+    "userID": "tri",
+    "description": "Monthly Salary 11/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-11-01"
+  },
+  {
+    "id": "317",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 51865,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-11-01"
+  },
+  {
+    "id": "318",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 90054,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-11-02"
+  },
+  {
+    "id": "319",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 65008,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-11-03"
+  },
+  {
+    "id": "320",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 112767,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2024-11-04"
+  },
+  {
+    "id": "321",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 57400,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-11-05"
+  },
+  {
+    "id": "322",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 114777,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-11-06"
+  },
+  {
+    "id": "323",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 63891,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-11-07"
+  },
+  {
+    "id": "324",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 21160,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-11-08"
+  },
+  {
+    "id": "325",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 90819,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2024-11-09"
+  },
+  {
+    "id": "326",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 105895,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-11-10"
+  },
+  {
+    "id": "327",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 42100,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-11-11"
+  },
+  {
+    "id": "328",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 126463,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-11-12"
+  },
+  {
+    "id": "329",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 57460,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2024-11-13"
+  },
+  {
+    "id": "330",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 128659,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-11-14"
+  },
+  {
+    "id": "331",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 132511,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-11-15"
+  },
+  {
+    "id": "332",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 120709,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2024-11-16"
+  },
+  {
+    "id": "333",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 105983,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-11-17"
+  },
+  {
+    "id": "334",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 81696,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-11-18"
+  },
+  {
+    "id": "335",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 33195,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-11-19"
+  },
+  {
+    "id": "336",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 79149,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2024-11-20"
+  },
+  {
+    "id": "337",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 51287,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2024-11-21"
+  },
+  {
+    "id": "338",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 121598,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2024-11-22"
+  },
+  {
+    "id": "339",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 33363,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-11-23"
+  },
+  {
+    "id": "340",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 80033,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2024-11-24"
+  },
+  {
+    "id": "341",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 23833,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2024-11-25"
+  },
+  {
+    "id": "342",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 101296,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-11-26"
+  },
+  {
+    "id": "343",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 25548,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2024-11-27"
+  },
+  {
+    "id": "344",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 120215,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-11-28"
+  },
+  {
+    "id": "345",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 121876,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2024-11-29"
+  },
+  {
+    "id": "346",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 120351,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2024-11-30"
+  },
+  {
+    "id": "347",
+    "userID": "tri",
+    "description": "Monthly Salary 12/2024",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2024-12-01"
+  },
+  {
+    "id": "348",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 66002,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-12-01"
+  },
+  {
+    "id": "349",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 90037,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2024-12-02"
+  },
+  {
+    "id": "350",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 83532,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-12-03"
+  },
+  {
+    "id": "351",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 43769,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-12-04"
+  },
+  {
+    "id": "352",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 39742,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-12-05"
+  },
+  {
+    "id": "353",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 145213,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-12-06"
+  },
+  {
+    "id": "354",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 148879,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2024-12-07"
+  },
+  {
+    "id": "355",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 43615,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-12-08"
+  },
+  {
+    "id": "356",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 47160,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-12-09"
+  },
+  {
+    "id": "357",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 118016,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2024-12-10"
+  },
+  {
+    "id": "358",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 116340,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-12-11"
+  },
+  {
+    "id": "359",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 78564,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2024-12-12"
+  },
+  {
+    "id": "360",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 127743,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-12-13"
+  },
+  {
+    "id": "361",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 103254,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2024-12-14"
+  },
+  {
+    "id": "362",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 83521,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-12-15"
+  },
+  {
+    "id": "363",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 133588,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-12-16"
+  },
+  {
+    "id": "364",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 89918,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2024-12-17"
+  },
+  {
+    "id": "365",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 115291,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2024-12-18"
+  },
+  {
+    "id": "366",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 93827,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2024-12-19"
+  },
+  {
+    "id": "367",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 67045,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2024-12-20"
+  },
+  {
+    "id": "368",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 46108,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2024-12-21"
+  },
+  {
+    "id": "369",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 43705,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2024-12-22"
+  },
+  {
+    "id": "370",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 101409,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2024-12-23"
+  },
+  {
+    "id": "371",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 146790,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-12-24"
+  },
+  {
+    "id": "372",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 56484,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2024-12-25"
+  },
+  {
+    "id": "373",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 86591,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-12-26"
+  },
+  {
+    "id": "374",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 48430,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2024-12-27"
+  },
+  {
+    "id": "375",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 12354,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2024-12-28"
+  },
+  {
+    "id": "376",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 103418,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2024-12-29"
+  },
+  {
+    "id": "377",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 142463,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2024-12-30"
+  },
+  {
+    "id": "378",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 35354,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2024-12-31"
+  },
+  {
+    "id": "379",
+    "userID": "tri",
+    "description": "Monthly Salary 1/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-01-01"
+  },
+  {
+    "id": "380",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 132654,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-01-01"
+  },
+  {
+    "id": "381",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 90186,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-01-02"
+  },
+  {
+    "id": "382",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 120548,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-01-03"
+  },
+  {
+    "id": "383",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 60736,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-01-04"
+  },
+  {
+    "id": "384",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 24529,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-01-05"
+  },
+  {
+    "id": "385",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 126238,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-01-06"
+  },
+  {
+    "id": "386",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 80827,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-01-07"
+  },
+  {
+    "id": "387",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 123696,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-01-08"
+  },
+  {
+    "id": "388",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 30964,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2025-01-09"
+  },
+  {
+    "id": "389",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 68018,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-01-10"
+  },
+  {
+    "id": "390",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 40590,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-01-11"
+  },
+  {
+    "id": "391",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 21651,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-01-12"
+  },
+  {
+    "id": "392",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 103588,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-01-13"
+  },
+  {
+    "id": "393",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 82154,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-01-14"
+  },
+  {
+    "id": "394",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 61272,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-01-15"
+  },
+  {
+    "id": "395",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 146234,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-01-16"
+  },
+  {
+    "id": "396",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 94044,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-01-17"
+  },
+  {
+    "id": "397",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 41434,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-01-18"
+  },
+  {
+    "id": "398",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 53003,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-01-19"
+  },
+  {
+    "id": "399",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 39442,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-01-20"
+  },
+  {
+    "id": "400",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 81951,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-01-21"
+  },
+  {
+    "id": "401",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 81217,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-01-22"
+  },
+  {
+    "id": "402",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 131998,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-01-23"
+  },
+  {
+    "id": "403",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 92816,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-01-24"
+  },
+  {
+    "id": "404",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 20231,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-01-25"
+  },
+  {
+    "id": "405",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 20633,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-01-26"
+  },
+  {
+    "id": "406",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 108378,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-01-27"
+  },
+  {
+    "id": "407",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 138113,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-01-28"
+  },
+  {
+    "id": "408",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 77348,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-01-29"
+  },
+  {
+    "id": "409",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 74812,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-01-30"
+  },
+  {
+    "id": "410",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 113164,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-01-31"
+  },
+  {
+    "id": "411",
+    "userID": "tri",
+    "description": "Monthly Salary 2/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-02-01"
+  },
+  {
+    "id": "412",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 58869,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-02-01"
+  },
+  {
+    "id": "413",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 60391,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-02-02"
+  },
+  {
+    "id": "414",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 36702,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-02-03"
+  },
+  {
+    "id": "415",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 70943,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-02-04"
+  },
+  {
+    "id": "416",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 31854,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-02-05"
+  },
+  {
+    "id": "417",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 70116,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-02-06"
+  },
+  {
+    "id": "418",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 73227,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-02-07"
+  },
+  {
+    "id": "419",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 112395,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-02-08"
+  },
+  {
+    "id": "420",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 100691,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-02-09"
+  },
+  {
+    "id": "421",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 119001,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-02-10"
+  },
+  {
+    "id": "422",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 40523,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-02-11"
+  },
+  {
+    "id": "423",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 23481,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-02-12"
+  },
+  {
+    "id": "424",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 26979,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-02-13"
+  },
+  {
+    "id": "425",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 69818,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-02-14"
+  },
+  {
+    "id": "426",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 86950,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-02-15"
+  },
+  {
+    "id": "427",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 140513,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-02-16"
+  },
+  {
+    "id": "428",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 80589,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-02-17"
+  },
+  {
+    "id": "429",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 90157,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2025-02-18"
+  },
+  {
+    "id": "430",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 33008,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2025-02-19"
+  },
+  {
+    "id": "431",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 102892,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-02-20"
+  },
+  {
+    "id": "432",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 30803,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-02-21"
+  },
+  {
+    "id": "433",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 27952,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2025-02-22"
+  },
+  {
+    "id": "434",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 59631,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-02-23"
+  },
+  {
+    "id": "435",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 37447,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-02-24"
+  },
+  {
+    "id": "436",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 114299,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-02-25"
+  },
+  {
+    "id": "437",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 23020,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-02-26"
+  },
+  {
+    "id": "438",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 93493,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2025-02-27"
+  },
+  {
+    "id": "439",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 14779,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-02-28"
+  },
+  {
+    "id": "440",
+    "userID": "tri",
+    "description": "Monthly Salary 3/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-03-01"
+  },
+  {
+    "id": "441",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 51049,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-03-01"
+  },
+  {
+    "id": "442",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 55257,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-03-02"
+  },
+  {
+    "id": "443",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 127615,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-03-03"
+  },
+  {
+    "id": "444",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 33147,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-03-04"
+  },
+  {
+    "id": "445",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 100862,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-03-05"
+  },
+  {
+    "id": "446",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 119144,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-03-06"
+  },
+  {
+    "id": "447",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 40057,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-03-07"
+  },
+  {
+    "id": "448",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 33282,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2025-03-08"
+  },
+  {
+    "id": "449",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 32203,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-03-09"
+  },
+  {
+    "id": "450",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 11320,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-03-10"
+  },
+  {
+    "id": "451",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 25831,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-03-11"
+  },
+  {
+    "id": "452",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 65594,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-03-12"
+  },
+  {
+    "id": "453",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 91230,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-03-13"
+  },
+  {
+    "id": "454",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 101126,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-03-14"
+  },
+  {
+    "id": "455",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 12882,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-03-15"
+  },
+  {
+    "id": "456",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 126145,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-03-16"
+  },
+  {
+    "id": "457",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 37660,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-03-17"
+  },
+  {
+    "id": "458",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 54370,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-03-18"
+  },
+  {
+    "id": "459",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 13474,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-03-19"
+  },
+  {
+    "id": "460",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 84851,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-03-20"
+  },
+  {
+    "id": "461",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 111036,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-03-21"
+  },
+  {
+    "id": "462",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 92350,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-03-22"
+  },
+  {
+    "id": "463",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 110514,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-03-23"
+  },
+  {
+    "id": "464",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 100194,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-03-24"
+  },
+  {
+    "id": "465",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 21115,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-03-25"
+  },
+  {
+    "id": "466",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 46260,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-03-26"
+  },
+  {
+    "id": "467",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 108055,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-03-27"
+  },
+  {
+    "id": "468",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 24692,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-03-28"
+  },
+  {
+    "id": "469",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 26203,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-03-29"
+  },
+  {
+    "id": "470",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 57695,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-03-30"
+  },
+  {
+    "id": "471",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 49482,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-03-31"
+  },
+  {
+    "id": "472",
+    "userID": "tri",
+    "description": "Monthly Salary 4/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-04-01"
+  },
+  {
+    "id": "473",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 121514,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-04-01"
+  },
+  {
+    "id": "474",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 64203,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-04-02"
+  },
+  {
+    "id": "475",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 87942,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-04-03"
+  },
+  {
+    "id": "476",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 38447,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-04-04"
+  },
+  {
+    "id": "477",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 140283,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-04-05"
+  },
+  {
+    "id": "478",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 101364,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-04-06"
+  },
+  {
+    "id": "479",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 138657,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-04-07"
+  },
+  {
+    "id": "480",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 55720,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-04-08"
+  },
+  {
+    "id": "481",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 19651,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-04-09"
+  },
+  {
+    "id": "482",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 64788,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-04-10"
+  },
+  {
+    "id": "483",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 137744,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-04-11"
+  },
+  {
+    "id": "484",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 108958,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-04-12"
+  },
+  {
+    "id": "485",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 37885,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-04-13"
+  },
+  {
+    "id": "486",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 21856,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-04-14"
+  },
+  {
+    "id": "487",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 11284,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-04-15"
+  },
+  {
+    "id": "488",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 48859,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-04-16"
+  },
+  {
+    "id": "489",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 26984,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-04-17"
+  },
+  {
+    "id": "490",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 96869,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-04-18"
+  },
+  {
+    "id": "491",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 119200,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-04-19"
+  },
+  {
+    "id": "492",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 112820,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-04-20"
+  },
+  {
+    "id": "493",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 114606,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2025-04-21"
+  },
+  {
+    "id": "494",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 65924,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-04-22"
+  },
+  {
+    "id": "495",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 64532,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-04-23"
+  },
+  {
+    "id": "496",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 83038,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-04-24"
+  },
+  {
+    "id": "497",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 125604,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-04-25"
+  },
+  {
+    "id": "498",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 97597,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-04-26"
+  },
+  {
+    "id": "499",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 98597,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2025-04-27"
+  },
+  {
+    "id": "500",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 128922,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-04-28"
+  },
+  {
+    "id": "501",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 122134,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-04-29"
+  },
+  {
+    "id": "502",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 17785,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-04-30"
+  },
+  {
+    "id": "503",
+    "userID": "tri",
+    "description": "Monthly Salary 5/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-05-01"
+  },
+  {
+    "id": "504",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 77273,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-05-01"
+  },
+  {
+    "id": "505",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 90036,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-05-02"
+  },
+  {
+    "id": "506",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 109063,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-05-03"
+  },
+  {
+    "id": "507",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 58912,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-05-04"
+  },
+  {
+    "id": "508",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 85403,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-05-05"
+  },
+  {
+    "id": "509",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 48704,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-05-06"
+  },
+  {
+    "id": "510",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 12718,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-05-07"
+  },
+  {
+    "id": "511",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 40246,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2025-05-08"
+  },
+  {
+    "id": "512",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 50298,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-05-09"
+  },
+  {
+    "id": "513",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 93591,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-05-10"
+  },
+  {
+    "id": "514",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 137954,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-05-11"
+  },
+  {
+    "id": "515",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 57059,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-05-12"
+  },
+  {
+    "id": "516",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 42935,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-05-13"
+  },
+  {
+    "id": "517",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 90442,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-05-14"
+  },
+  {
+    "id": "518",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 113016,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-05-15"
+  },
+  {
+    "id": "519",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 54544,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-05-16"
+  },
+  {
+    "id": "520",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 19001,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-05-17"
+  },
+  {
+    "id": "521",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 69681,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-05-18"
+  },
+  {
+    "id": "522",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 55332,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-05-19"
+  },
+  {
+    "id": "523",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 98022,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-05-20"
+  },
+  {
+    "id": "524",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 138781,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-05-21"
+  },
+  {
+    "id": "525",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 69035,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-05-22"
+  },
+  {
+    "id": "526",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 76179,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-05-23"
+  },
+  {
+    "id": "527",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 56339,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-05-24"
+  },
+  {
+    "id": "528",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 138352,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-05-25"
+  },
+  {
+    "id": "529",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 81949,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-05-26"
+  },
+  {
+    "id": "530",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 146674,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-05-27"
+  },
+  {
+    "id": "531",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 96379,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-05-28"
+  },
+  {
+    "id": "532",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 128122,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-05-29"
+  },
+  {
+    "id": "533",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 111583,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-05-30"
+  },
+  {
+    "id": "534",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 104834,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-05-31"
+  },
+  {
+    "id": "535",
+    "userID": "tri",
+    "description": "Monthly Salary 6/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-06-01"
+  },
+  {
+    "id": "536",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 16576,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2025-06-01"
+  },
+  {
+    "id": "537",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 87436,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-06-02"
+  },
+  {
+    "id": "538",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 88562,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-06-03"
+  },
+  {
+    "id": "539",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 82920,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-06-04"
+  },
+  {
+    "id": "540",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 46323,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-06-05"
+  },
+  {
+    "id": "541",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 60290,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-06-06"
+  },
+  {
+    "id": "542",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 83514,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-06-07"
+  },
+  {
+    "id": "543",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 85000,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2025-06-08"
+  },
+  {
+    "id": "544",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 19745,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-06-09"
+  },
+  {
+    "id": "545",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 109929,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-06-10"
+  },
+  {
+    "id": "546",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 39255,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-06-11"
+  },
+  {
+    "id": "547",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 137816,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-06-12"
+  },
+  {
+    "id": "548",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 137206,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-06-13"
+  },
+  {
+    "id": "549",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 52547,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-06-14"
+  },
+  {
+    "id": "550",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 133001,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-06-15"
+  },
+  {
+    "id": "551",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 118825,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2025-06-16"
+  },
+  {
+    "id": "552",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 16142,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-06-17"
+  },
+  {
+    "id": "553",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 94536,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-06-18"
+  },
+  {
+    "id": "554",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 42198,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-06-19"
+  },
+  {
+    "id": "555",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 35132,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-06-20"
+  },
+  {
+    "id": "556",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 82171,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-06-21"
+  },
+  {
+    "id": "557",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 74997,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2025-06-22"
+  },
+  {
+    "id": "558",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 126113,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-06-23"
+  },
+  {
+    "id": "559",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 53158,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2025-06-24"
+  },
+  {
+    "id": "560",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 149181,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-06-25"
+  },
+  {
+    "id": "561",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 136586,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-06-26"
+  },
+  {
+    "id": "562",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 43093,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-06-27"
+  },
+  {
+    "id": "563",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 134120,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-06-28"
+  },
+  {
+    "id": "564",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 54341,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-06-29"
+  },
+  {
+    "id": "565",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 92618,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-06-30"
+  },
+  {
+    "id": "566",
+    "userID": "tri",
+    "description": "Monthly Salary 7/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-07-01"
+  },
+  {
+    "id": "567",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 74196,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-07-01"
+  },
+  {
+    "id": "568",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 63739,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-07-02"
+  },
+  {
+    "id": "569",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 146214,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2025-07-03"
+  },
+  {
+    "id": "570",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 51475,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-07-04"
+  },
+  {
+    "id": "571",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 92646,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-07-05"
+  },
+  {
+    "id": "572",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 64188,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2025-07-06"
+  },
+  {
+    "id": "573",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 41676,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-07-07"
+  },
+  {
+    "id": "574",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 63252,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-07-08"
+  },
+  {
+    "id": "575",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 56326,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-07-09"
+  },
+  {
+    "id": "576",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 63335,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-07-10"
+  },
+  {
+    "id": "577",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 40082,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-07-11"
+  },
+  {
+    "id": "578",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 72193,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-07-12"
+  },
+  {
+    "id": "579",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 24791,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-07-13"
+  },
+  {
+    "id": "580",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 68655,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-07-14"
+  },
+  {
+    "id": "581",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 149660,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-07-15"
+  },
+  {
+    "id": "582",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 93041,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-07-16"
+  },
+  {
+    "id": "583",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 106627,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-07-17"
+  },
+  {
+    "id": "584",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 56329,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-07-18"
+  },
+  {
+    "id": "585",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 126396,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-07-19"
+  },
+  {
+    "id": "586",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 89261,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-07-20"
+  },
+  {
+    "id": "587",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 35538,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2025-07-21"
+  },
+  {
+    "id": "588",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 122353,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-07-22"
+  },
+  {
+    "id": "589",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 56656,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-07-23"
+  },
+  {
+    "id": "590",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 133708,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-07-24"
+  },
+  {
+    "id": "591",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 87228,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-07-25"
+  },
+  {
+    "id": "592",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 80026,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-07-26"
+  },
+  {
+    "id": "593",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 125564,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-07-27"
+  },
+  {
+    "id": "594",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 87612,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-07-28"
+  },
+  {
+    "id": "595",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 92963,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-07-29"
+  },
+  {
+    "id": "596",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 73069,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2025-07-30"
+  },
+  {
+    "id": "597",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 80431,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-07-31"
+  },
+  {
+    "id": "598",
+    "userID": "tri",
+    "description": "Monthly Salary 8/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-08-01"
+  },
+  {
+    "id": "599",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 44723,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-08-01"
+  },
+  {
+    "id": "600",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 80340,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-08-02"
+  },
+  {
+    "id": "601",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 30623,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-08-03"
+  },
+  {
+    "id": "602",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 67388,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-08-04"
+  },
+  {
+    "id": "603",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 68477,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-08-05"
+  },
+  {
+    "id": "604",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 23890,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-08-06"
+  },
+  {
+    "id": "605",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 96591,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-08-07"
+  },
+  {
+    "id": "606",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 98336,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-08-08"
+  },
+  {
+    "id": "607",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 13925,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-08-09"
+  },
+  {
+    "id": "608",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 52780,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-08-10"
+  },
+  {
+    "id": "609",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 91782,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-08-11"
+  },
+  {
+    "id": "610",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 61269,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-08-12"
+  },
+  {
+    "id": "611",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 98083,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-08-13"
+  },
+  {
+    "id": "612",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 121846,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-08-14"
+  },
+  {
+    "id": "613",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 113575,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-08-15"
+  },
+  {
+    "id": "614",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 32447,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-08-16"
+  },
+  {
+    "id": "615",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 120025,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-08-17"
+  },
+  {
+    "id": "616",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 122559,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-08-18"
+  },
+  {
+    "id": "617",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 113314,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-08-19"
+  },
+  {
+    "id": "618",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 34850,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2025-08-20"
+  },
+  {
+    "id": "619",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 97985,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-08-21"
+  },
+  {
+    "id": "620",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 89462,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-08-22"
+  },
+  {
+    "id": "621",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 108758,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2025-08-23"
+  },
+  {
+    "id": "622",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 115634,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-08-24"
+  },
+  {
+    "id": "623",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 88207,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-08-25"
+  },
+  {
+    "id": "624",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 81920,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-08-26"
+  },
+  {
+    "id": "625",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 126555,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-08-27"
+  },
+  {
+    "id": "626",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 134019,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-08-28"
+  },
+  {
+    "id": "627",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 88471,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2025-08-29"
+  },
+  {
+    "id": "628",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 27312,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-08-30"
+  },
+  {
+    "id": "629",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 112058,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-08-31"
+  },
+  {
+    "id": "630",
+    "userID": "tri",
+    "description": "Monthly Salary 9/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-09-01"
+  },
+  {
+    "id": "631",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 107562,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-09-01"
+  },
+  {
+    "id": "632",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 27263,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-09-02"
+  },
+  {
+    "id": "633",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 111319,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-09-03"
+  },
+  {
+    "id": "634",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 61253,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-09-04"
+  },
+  {
+    "id": "635",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 110592,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2025-09-05"
+  },
+  {
+    "id": "636",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 57117,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-09-06"
+  },
+  {
+    "id": "637",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 78257,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-09-07"
+  },
+  {
+    "id": "638",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 101146,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2025-09-08"
+  },
+  {
+    "id": "639",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 81522,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-09-09"
+  },
+  {
+    "id": "640",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 120399,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-09-10"
+  },
+  {
+    "id": "641",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 119001,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-09-11"
+  },
+  {
+    "id": "642",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 126578,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-09-12"
+  },
+  {
+    "id": "643",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 32715,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2025-09-13"
+  },
+  {
+    "id": "644",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 127414,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-09-14"
+  },
+  {
+    "id": "645",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 34600,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-09-15"
+  },
+  {
+    "id": "646",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 16758,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-09-16"
+  },
+  {
+    "id": "647",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 46135,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-09-17"
+  },
+  {
+    "id": "648",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 17317,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2025-09-18"
+  },
+  {
+    "id": "649",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 121268,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-09-19"
+  },
+  {
+    "id": "650",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 133435,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2025-09-20"
+  },
+  {
+    "id": "651",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 136981,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2025-09-21"
+  },
+  {
+    "id": "652",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 108230,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-09-22"
+  },
+  {
+    "id": "653",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 114500,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-09-23"
+  },
+  {
+    "id": "654",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 120993,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2025-09-24"
+  },
+  {
+    "id": "655",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 37517,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-09-25"
+  },
+  {
+    "id": "656",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 140656,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-09-26"
+  },
+  {
+    "id": "657",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 70647,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-09-27"
+  },
+  {
+    "id": "658",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 119781,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2025-09-28"
+  },
+  {
+    "id": "659",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 65864,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-09-29"
+  },
+  {
+    "id": "660",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 23080,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-09-30"
+  },
+  {
+    "id": "661",
+    "userID": "tri",
+    "description": "Monthly Salary 10/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-10-01"
+  },
+  {
+    "id": "662",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 52103,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-10-01"
+  },
+  {
+    "id": "663",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 125222,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-10-02"
+  },
+  {
+    "id": "664",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 22159,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-10-03"
+  },
+  {
+    "id": "665",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 50150,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2025-10-04"
+  },
+  {
+    "id": "666",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 138113,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-10-05"
+  },
+  {
+    "id": "667",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 105849,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-10-06"
+  },
+  {
+    "id": "668",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 110564,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-10-07"
+  },
+  {
+    "id": "669",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 99119,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-10-08"
+  },
+  {
+    "id": "670",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 44558,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-10-09"
+  },
+  {
+    "id": "671",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 129027,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-10-10"
+  },
+  {
+    "id": "672",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 110892,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-10-11"
+  },
+  {
+    "id": "673",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 13130,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-10-12"
+  },
+  {
+    "id": "674",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 54209,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2025-10-13"
+  },
+  {
+    "id": "675",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 144223,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-10-14"
+  },
+  {
+    "id": "676",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 75732,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-10-15"
+  },
+  {
+    "id": "677",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 65430,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-10-16"
+  },
+  {
+    "id": "678",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 62307,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-10-17"
+  },
+  {
+    "id": "679",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 53102,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-10-18"
+  },
+  {
+    "id": "680",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 71345,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-10-19"
+  },
+  {
+    "id": "681",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 97990,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-10-20"
+  },
+  {
+    "id": "682",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 86528,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-10-21"
+  },
+  {
+    "id": "683",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 81020,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-10-22"
+  },
+  {
+    "id": "684",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 122070,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-10-23"
+  },
+  {
+    "id": "685",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 62285,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-10-24"
+  },
+  {
+    "id": "686",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 19916,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-10-25"
+  },
+  {
+    "id": "687",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 130468,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-10-26"
+  },
+  {
+    "id": "688",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 126620,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-10-27"
+  },
+  {
+    "id": "689",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 67499,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-10-28"
+  },
+  {
+    "id": "690",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 89380,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2025-10-29"
+  },
+  {
+    "id": "691",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 115650,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-10-30"
+  },
+  {
+    "id": "692",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 139680,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-10-31"
+  },
+  {
+    "id": "693",
+    "userID": "tri",
+    "description": "Monthly Salary 11/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-11-01"
+  },
+  {
+    "id": "694",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 25562,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-11-01"
+  },
+  {
+    "id": "695",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 31676,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-11-02"
+  },
+  {
+    "id": "696",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 86728,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2025-11-03"
+  },
+  {
+    "id": "697",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 84449,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2025-11-04"
+  },
+  {
+    "id": "698",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 41161,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-11-05"
+  },
+  {
+    "id": "699",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 50098,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-11-06"
+  },
+  {
+    "id": "700",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 128532,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-11-07"
+  },
+  {
+    "id": "701",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 100019,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-11-08"
+  },
+  {
+    "id": "702",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 144254,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-11-09"
+  },
+  {
+    "id": "703",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 26778,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2025-11-10"
+  },
+  {
+    "id": "704",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 43865,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-11-11"
+  },
+  {
+    "id": "705",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 28315,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-11-12"
+  },
+  {
+    "id": "706",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 35659,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-11-13"
+  },
+  {
+    "id": "707",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 147735,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-11-14"
+  },
+  {
+    "id": "708",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 145147,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-11-15"
+  },
+  {
+    "id": "709",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 95244,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-11-16"
+  },
+  {
+    "id": "710",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 128272,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2025-11-17"
+  },
+  {
+    "id": "711",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 99315,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-11-18"
+  },
+  {
+    "id": "712",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 14317,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-11-19"
+  },
+  {
+    "id": "713",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 36182,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2025-11-20"
+  },
+  {
+    "id": "714",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 89340,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-11-21"
+  },
+  {
+    "id": "715",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 82189,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "yearly",
+    "date": "2025-11-22"
+  },
+  {
+    "id": "716",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 82075,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2025-11-23"
+  },
+  {
+    "id": "717",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 106992,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-11-24"
+  },
+  {
+    "id": "718",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 70478,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-11-25"
+  },
+  {
+    "id": "719",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 35119,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-11-26"
+  },
+  {
+    "id": "720",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 62510,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2025-11-27"
+  },
+  {
+    "id": "721",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 41996,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-11-28"
+  },
+  {
+    "id": "722",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 136849,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-11-29"
+  },
+  {
+    "id": "723",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 78652,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-11-30"
+  },
+  {
+    "id": "724",
+    "userID": "tri",
+    "description": "Monthly Salary 12/2025",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2025-12-01"
+  },
+  {
+    "id": "725",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 27818,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-12-01"
+  },
+  {
+    "id": "726",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 22206,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-12-02"
+  },
+  {
+    "id": "727",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 75111,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2025-12-03"
+  },
+  {
+    "id": "728",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 117758,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-12-04"
+  },
+  {
+    "id": "729",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 60158,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2025-12-05"
+  },
+  {
+    "id": "730",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 139649,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-12-06"
+  },
+  {
+    "id": "731",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 86327,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-12-07"
+  },
+  {
+    "id": "732",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 37224,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-12-08"
+  },
+  {
+    "id": "733",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 106508,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-12-09"
+  },
+  {
+    "id": "734",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 90061,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2025-12-10"
+  },
+  {
+    "id": "735",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 100474,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2025-12-11"
+  },
+  {
+    "id": "736",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 33055,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2025-12-12"
+  },
+  {
+    "id": "737",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 14722,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "monthly",
+    "date": "2025-12-13"
+  },
+  {
+    "id": "738",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 72693,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-12-14"
+  },
+  {
+    "id": "739",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 127843,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2025-12-15"
+  },
+  {
+    "id": "740",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 113226,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-12-16"
+  },
+  {
+    "id": "741",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 13081,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-12-17"
+  },
+  {
+    "id": "742",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 145127,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-12-18"
+  },
+  {
+    "id": "743",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 14901,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2025-12-19"
+  },
+  {
+    "id": "744",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 121687,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2025-12-20"
+  },
+  {
+    "id": "745",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 132512,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2025-12-21"
+  },
+  {
+    "id": "746",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 111750,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2025-12-22"
+  },
+  {
+    "id": "747",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 102492,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2025-12-23"
+  },
+  {
+    "id": "748",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 137288,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2025-12-24"
+  },
+  {
+    "id": "749",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 71309,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2025-12-25"
+  },
+  {
+    "id": "750",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 111178,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2025-12-26"
+  },
+  {
+    "id": "751",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 108295,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2025-12-27"
+  },
+  {
+    "id": "752",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 40149,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-12-28"
+  },
+  {
+    "id": "753",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 133674,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2025-12-29"
+  },
+  {
+    "id": "754",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 64088,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "monthly",
+    "date": "2025-12-30"
+  },
+  {
+    "id": "755",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 27700,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2025-12-31"
+  },
+  {
+    "id": "756",
+    "userID": "tri",
+    "description": "Monthly Salary 1/2026",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2026-01-01"
+  },
+  {
+    "id": "757",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 103922,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2026-01-01"
+  },
+  {
+    "id": "758",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 40841,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2026-01-02"
+  },
+  {
+    "id": "759",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 79353,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2026-01-03"
+  },
+  {
+    "id": "760",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 119647,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2026-01-04"
+  },
+  {
+    "id": "761",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 92356,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "monthly",
+    "date": "2026-01-05"
+  },
+  {
+    "id": "762",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 52367,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2026-01-06"
+  },
+  {
+    "id": "763",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 32152,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "weekly",
+    "date": "2026-01-07"
+  },
+  {
+    "id": "764",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 103053,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2026-01-08"
+  },
+  {
+    "id": "765",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 38919,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2026-01-09"
+  },
+  {
+    "id": "766",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 87453,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2026-01-10"
+  },
+  {
+    "id": "767",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 129754,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2026-01-11"
+  },
+  {
+    "id": "768",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 42003,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2026-01-12"
+  },
+  {
+    "id": "769",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 126586,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2026-01-13"
+  },
+  {
+    "id": "770",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 113943,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2026-01-14"
+  },
+  {
+    "id": "771",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 47414,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2026-01-15"
+  },
+  {
+    "id": "772",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 114384,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "yearly",
+    "date": "2026-01-16"
+  },
+  {
+    "id": "773",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 45320,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2026-01-17"
+  },
+  {
+    "id": "774",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 107766,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2026-01-18"
+  },
+  {
+    "id": "775",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 30882,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "one-time",
+    "date": "2026-01-19"
+  },
+  {
+    "id": "776",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 58462,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2026-01-20"
+  },
+  {
+    "id": "777",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 61375,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "weekly",
+    "date": "2026-01-21"
+  },
+  {
+    "id": "778",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 12598,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2026-01-22"
+  },
+  {
+    "id": "779",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 104820,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "yearly",
+    "date": "2026-01-23"
+  },
+  {
+    "id": "780",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 115018,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2026-01-24"
+  },
+  {
+    "id": "781",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 19077,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2026-01-25"
+  },
+  {
+    "id": "782",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 97291,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2026-01-26"
+  },
+  {
+    "id": "783",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 141024,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2026-01-27"
+  },
+  {
+    "id": "784",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 102879,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "monthly",
+    "date": "2026-01-28"
+  },
+  {
+    "id": "785",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 57496,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "one-time",
+    "date": "2026-01-29"
+  },
+  {
+    "id": "786",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 31808,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "one-time",
+    "date": "2026-01-30"
+  },
+  {
+    "id": "787",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 25730,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "yearly",
+    "date": "2026-01-31"
+  },
+  {
+    "id": "788",
+    "userID": "tri",
+    "description": "Monthly Salary 2/2026",
+    "amount": 5000000,
+    "type": "income",
+    "category": "Salary",
+    "frequency": "monthly",
+    "date": "2026-02-01"
+  },
+  {
+    "id": "789",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 137572,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2026-02-01"
+  },
+  {
+    "id": "790",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 119499,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2026-02-02"
+  },
+  {
+    "id": "791",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 14362,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "weekly",
+    "date": "2026-02-03"
+  },
+  {
+    "id": "792",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 82492,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2026-02-04"
+  },
+  {
+    "id": "793",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 126342,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2026-02-05"
+  },
+  {
+    "id": "794",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 63159,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2026-02-06"
+  },
+  {
+    "id": "795",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 81181,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2026-02-07"
+  },
+  {
+    "id": "796",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 76230,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2026-02-08"
+  },
+  {
+    "id": "797",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 26106,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2026-02-09"
+  },
+  {
+    "id": "798",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 37521,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2026-02-10"
+  },
+  {
+    "id": "799",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 91492,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "monthly",
+    "date": "2026-02-11"
+  },
+  {
+    "id": "800",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 72046,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2026-02-12"
+  },
+  {
+    "id": "801",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 103609,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2026-02-13"
+  },
+  {
+    "id": "802",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 35500,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2026-02-14"
+  },
+  {
+    "id": "803",
+    "userID": "tri",
+    "description": "Chi tiêu Health",
+    "amount": 95938,
+    "type": "expense",
+    "category": "Health",
+    "frequency": "yearly",
+    "date": "2026-02-15"
+  },
+  {
+    "id": "804",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 26067,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "one-time",
+    "date": "2026-02-16"
+  },
+  {
+    "id": "805",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 19808,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "yearly",
+    "date": "2026-02-17"
+  },
+  {
+    "id": "806",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 91799,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2026-02-18"
+  },
+  {
+    "id": "807",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 98962,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "weekly",
+    "date": "2026-02-19"
+  },
+  {
+    "id": "808",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 14612,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2026-02-20"
+  },
+  {
+    "id": "809",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 99709,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2026-02-21"
+  },
+  {
+    "id": "810",
+    "userID": "tri",
+    "description": "Chi tiêu Other",
+    "amount": 141410,
+    "type": "expense",
+    "category": "Other",
+    "frequency": "yearly",
+    "date": "2026-02-22"
+  },
+  {
+    "id": "811",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 22432,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "monthly",
+    "date": "2026-02-23"
+  },
+  {
+    "id": "812",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 97481,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "weekly",
+    "date": "2026-02-24"
+  },
+  {
+    "id": "813",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 110980,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2026-02-25"
+  },
+  {
+    "id": "814",
+    "userID": "tri",
+    "description": "Chi tiêu Food & Dining",
+    "amount": 108455,
+    "type": "expense",
+    "category": "Food & Dining",
+    "frequency": "one-time",
+    "date": "2026-02-26"
+  },
+  {
+    "id": "815",
+    "userID": "tri",
+    "description": "Chi tiêu Transportation",
+    "amount": 131338,
+    "type": "expense",
+    "category": "Transportation",
+    "frequency": "weekly",
+    "date": "2026-02-27"
+  },
+  {
+    "id": "816",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 105928,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "one-time",
+    "date": "2026-02-28"
+  },
+  {
+    "id": "817",
+    "userID": "tri",
+    "description": "Monthly Salary 3/2026",
+    "amount": 5000000,
     "type": "income",
     "category": "Salary",
     "frequency": "monthly",
     "date": "2026-03-01"
+  },
+  {
+    "id": "818",
+    "userID": "tri",
+    "description": "Chi tiêu Shopping",
+    "amount": 140145,
+    "type": "expense",
+    "category": "Shopping",
+    "frequency": "monthly",
+    "date": "2026-03-01"
+  },
+  {
+    "id": "819",
+    "userID": "tri",
+    "description": "Chi tiêu Entertainment",
+    "amount": 18921,
+    "type": "expense",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "date": "2026-03-02"
+  },
+  {
+    "id": "820",
+    "userID": "tri",
+    "description": "Chi tiêu Utilities",
+    "amount": 105294,
+    "type": "expense",
+    "category": "Utilities",
+    "frequency": "one-time",
+    "date": "2026-03-03"
   }
 ]

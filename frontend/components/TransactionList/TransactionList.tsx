@@ -46,15 +46,15 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800">Giao dịch gần đây</h3>
-          <p className="text-sm text-gray-500">Tìm thấy {filteredTransactions.length} kết quả</p>
+          <h3 className="text-lg font-semibold text-gray-800">Recent Transactions</h3>
+          <p className="text-sm text-gray-500">Found {filteredTransactions.length} results</p>
         </div>
 
         <div className="relative w-full md:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type        = "text"
-            placeholder = "Tìm kiếm mô tả..."
+            placeholder = "Search by description..."
             value       = {searchTerm}
             onChange    = {(e) => setSearchTerm(e.target.value)}
             className   = "w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
@@ -65,7 +65,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
       <div className="px-6 py-4 bg-gray-50 border-b border-gray-100 flex flex-wrap gap-3 items-center">
         <div className="flex items-center gap-2 text-gray-500 text-sm font-medium mr-2">
           <Filter size={16} />
-          <span>Bộ lọc:</span>
+          <span>Filters:</span>
         </div>
 
         <select
@@ -73,7 +73,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
           onChange  = {(e) => setCategoryFilter(e.target.value)}
           className = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer hover:border-gray-300 transition-colors"
         >
-          <option value="">Tất cả danh mục</option>
+          <option value="">All categories</option>
           {allCategoryOptions.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
@@ -87,8 +87,8 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
             value       = {startDate}
             onChange    = {(e) => setStartDate(e.target.value)}
             className   = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-300 transition-colors"
-            placeholder = "Từ ngày"
-            title       = "Từ ngày"
+            placeholder = "From date"
+            title       = "From date"
           />
           <span className="text-gray-400 hidden sm:inline">-</span>
           <input
@@ -96,8 +96,8 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
             value       = {endDate}
             onChange    = {(e) => setEndDate(e.target.value)}
             className   = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-300 transition-colors"
-            placeholder = "Đến ngày"
-            title       = "Đến ngày"
+            placeholder = "To date"
+            title       = "To date"
           />
         </div>
 
@@ -106,7 +106,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
             onClick={clearFilters}
             className="ml-auto text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1 px-3 py-1 rounded hover:bg-red-50 transition-colors"
           >
-            <X size={16} /> Xóa bộ lọc
+            <X size={16} /> Clear filters
           </button>
         )}
       </div>
@@ -115,11 +115,11 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
         <table className="w-full text-left text-sm text-gray-600">
           <thead className="bg-white border-b border-gray-100 text-xs uppercase font-medium text-gray-500">
             <tr>
-              <th className="px-6 py-4">Ngày</th>
-              <th className="px-6 py-4">Mô tả</th>
-              <th className="px-6 py-4">Danh mục</th>
-              <th className="px-6 py-4 text-right">Số tiền</th>
-              <th className="px-6 py-4 text-center">Thao tác</th>
+              <th className="px-6 py-4">Date</th>
+              <th className="px-6 py-4">Description</th>
+              <th className="px-6 py-4">Category</th>
+              <th className="px-6 py-4 text-right">Amount</th>
+              <th className="px-6 py-4 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -139,21 +139,21 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                 </td>
                 <td className={`px-6 py-4 text-right font-bold whitespace-nowrap ${t.type === TransactionType.INCOME ? 'text-emerald-600' : 'text-gray-800'}`}>
                   {t.type === TransactionType.INCOME ? '+' : '-'}
-                  {t.amount.toLocaleString('vi-VN')} đ
+                  {Math.round(t.amount).toLocaleString('en-US')} VND
                 </td>
                 <td className="px-6 py-4 text-center">
                   <div className="flex items-center justify-center gap-1">
                     <button
                       onClick={() => onEdit(t)}
                       className="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-full"
-                      title="Chỉnh sửa giao dịch"
+                      title="Edit transaction"
                     >
                       <Pencil size={16} />
                     </button>
                     <button
                       onClick={() => onDelete(t.id)}
                       className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
-                      title="Xóa giao dịch"
+                      title="Delete transaction"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -164,7 +164,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
             {filteredTransactions.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
-                  {hasActiveFilters ? 'Không tìm thấy giao dịch nào phù hợp với bộ lọc.' : 'Chưa có giao dịch. Bấm "Thêm giao dịch" để bắt đầu.'}
+                  {hasActiveFilters ? 'No transactions match your current filters.' : 'No transactions yet. Click "Add Transaction" to get started.'}
                 </td>
               </tr>
             )}

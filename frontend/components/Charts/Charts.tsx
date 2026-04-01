@@ -38,7 +38,7 @@ const formatStatMoney = (value: number) => {
   }
 
   const integerValue = Math.trunc(value);
-  return integerValue.toLocaleString('vi-VN');
+  return integerValue.toLocaleString('en-US');
 };
 
 export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
@@ -158,7 +158,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Phân bổ chi tiêu</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Expense Breakdown</h3>
         <div className="h-56">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -167,7 +167,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
                   <Cell key={entry.name} fill={entry.color} />
                 ))}
               </Pie>
-              <ReTooltip formatter={(value: number) => `${value.toLocaleString('vi-VN')} đ`} />
+              <ReTooltip formatter={(value: number) => `${Math.round(value).toLocaleString('en-US')} VND`} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -175,9 +175,9 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
         <div className="mt-4 overflow-x-auto">
           <div className="min-w-[440px] text-sm">
             <div className="grid grid-cols-[minmax(0,1fr)_90px_140px] text-xs font-semibold uppercase text-gray-500 pb-2">
-              <span>Danh mục</span>
-              <span className="text-right">Tỷ lệ</span>
-              <span className="text-right">Tổng tiền</span>
+              <span>Category</span>
+              <span className="text-right">Share</span>
+              <span className="text-right">Amount</span>
             </div>
 
             {categoryData.map((item) => (
@@ -190,7 +190,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
                   <span className="truncate text-gray-700">{item.name}</span>
                 </div>
                 <span className="text-right text-gray-700">{item.percentage.toFixed(1)}%</span>
-                <span className="text-right font-medium text-gray-800">{item.value.toLocaleString('vi-VN')} đ</span>
+                <span className="text-right font-medium text-gray-800">{Math.round(item.value).toLocaleString('en-US')} VND</span>
               </div>
             ))}
           </div>
@@ -198,7 +198,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
       </div>
 
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Dòng tiền (1 tháng gần nhất)</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Cash Flow (Latest Month)</h3>
 
         <div className="flex items-center gap-3 mb-4 text-sm">
           <button
@@ -211,7 +211,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
             }`}
           >
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            income
+            Income
           </button>
 
           <button
@@ -224,7 +224,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
             }`}
           >
             <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-            expense
+            Expense
           </button>
         </div>
 
@@ -235,7 +235,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
               <XAxis dataKey="label" tick={{ fontSize: 12 }} minTickGap={18} />
               <YAxis tick={{ fontSize: 12 }} />
               <ReTooltip
-                formatter={(value: number) => `${value.toLocaleString('vi-VN')} đ`}
+                formatter={(value: number) => `${Math.round(value).toLocaleString('en-US')} VND`}
                 labelFormatter={(_, payload) => {
                   const dateLabel = payload?.[0]?.payload?.date;
                   return dateLabel || '';
@@ -244,7 +244,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
               <Line
                 type="monotone"
                 dataKey="income"
-                name="income"
+                name="Income"
                 stroke="#10B981"
                 strokeWidth={2.5}
                 dot={false}
@@ -253,7 +253,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
               <Line
                 type="monotone"
                 dataKey="expense"
-                name="expense"
+                name="Expense"
                 stroke="#EF4444"
                 strokeWidth={2.5}
                 dot={false}
@@ -265,20 +265,20 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
 
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
           <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2">
-            <p className="text-emerald-700 text-xs font-medium uppercase">Trung bình thu</p>
-            <p className="text-emerald-800 font-semibold">{formatStatMoney(lineStats.averageIncome)} đ</p>
+            <p className="text-emerald-700 text-xs font-medium uppercase">Average Income</p>
+            <p className="text-emerald-800 font-semibold">{formatStatMoney(lineStats.averageIncome)} VND</p>
           </div>
           <div className="rounded-lg border border-red-100 bg-red-50 px-3 py-2">
-            <p className="text-red-700 text-xs font-medium uppercase">Trung bình chi</p>
-            <p className="text-red-800 font-semibold">{formatStatMoney(lineStats.averageExpense)} đ</p>
+            <p className="text-red-700 text-xs font-medium uppercase">Average Expense</p>
+            <p className="text-red-800 font-semibold">{formatStatMoney(lineStats.averageExpense)} VND</p>
           </div>
           <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2">
-            <p className="text-emerald-700 text-xs font-medium uppercase">Cao nhất thu</p>
-            <p className="text-emerald-800 font-semibold">{formatStatMoney(lineStats.maxIncome)} đ</p>
+            <p className="text-emerald-700 text-xs font-medium uppercase">Highest Income</p>
+            <p className="text-emerald-800 font-semibold">{formatStatMoney(lineStats.maxIncome)} VND</p>
           </div>
           <div className="rounded-lg border border-red-100 bg-red-50 px-3 py-2">
-            <p className="text-red-700 text-xs font-medium uppercase">Cao nhất chi</p>
-            <p className="text-red-800 font-semibold">{formatStatMoney(lineStats.maxExpense)} đ</p>
+            <p className="text-red-700 text-xs font-medium uppercase">Highest Expense</p>
+            <p className="text-red-800 font-semibold">{formatStatMoney(lineStats.maxExpense)} VND</p>
           </div>
         </div>
       </div>

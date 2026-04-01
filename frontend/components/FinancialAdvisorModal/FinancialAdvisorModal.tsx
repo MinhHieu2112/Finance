@@ -11,12 +11,12 @@ interface FinancialAdvisorModalProps {
   analysis: AnalysisResult | null;
 }
 
-const formatMoney = (value: number) => `${Math.round(value).toLocaleString('vi-VN')} đ`;
+const formatMoney = (value: number) => `${Math.round(value).toLocaleString('en-US')} VND`;
 
 const trendLabel: Record<'up' | 'down' | 'stable', string> = {
-  up: 'Tăng',
-  down: 'Giảm',
-  stable: 'Ổn định',
+  up: 'Up',
+  down: 'Down',
+  stable: 'Stable',
 };
 
 export const FinancialAdvisorModal: React.FC<FinancialAdvisorModalProps> = ({
@@ -45,7 +45,7 @@ export const FinancialAdvisorModal: React.FC<FinancialAdvisorModalProps> = ({
           <div className="bg-purple-100 p-2 rounded-full">
             <Sparkles className="text-purple-600" size={24} />
           </div>
-          <h2 className="text-xl font-bold text-gray-800">Góc nhìn tài chính</h2>
+          <h2 className="text-xl font-bold text-gray-800">Financial Insights</h2>
         </div>
 
         <div className="flex gap-2 mb-4">
@@ -69,7 +69,7 @@ export const FinancialAdvisorModal: React.FC<FinancialAdvisorModalProps> = ({
                 : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
             }`}
           >
-            Tóm tắt
+            Summary
           </button>
         </div>
 
@@ -77,44 +77,44 @@ export const FinancialAdvisorModal: React.FC<FinancialAdvisorModalProps> = ({
           {loading ? (
             <div className="flex flex-col items-center justify-center py-8">
               <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-sm text-gray-500 animate-pulse">Đang phân tích thói quen chi tiêu...</p>
+              <p className="text-sm text-gray-500 animate-pulse">Analyzing your spending patterns...</p>
             </div>
           ) : activeTab === 'analysis' ? (
             hasAnalysis && analysis ? (
               <div className="space-y-5 text-sm">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="rounded-lg border border-gray-200 bg-white p-3">
-                    <p className="text-xs text-gray-500 uppercase">Xu hướng chi</p>
+                    <p className="text-xs text-gray-500 uppercase">Expense Trend</p>
                     <p className="font-semibold text-gray-800">{trendLabel[analysis.trend.expenseTrend]}</p>
                   </div>
                   <div className="rounded-lg border border-gray-200 bg-white p-3">
-                    <p className="text-xs text-gray-500 uppercase">Dự đoán thu tháng tới</p>
+                    <p className="text-xs text-gray-500 uppercase">Next-Month Income Forecast</p>
                     <p className="font-semibold text-emerald-700">{formatMoney(analysis.trend.predictedNextMonthIncome)}</p>
                   </div>
                   <div className="rounded-lg border border-gray-200 bg-white p-3">
-                    <p className="text-xs text-gray-500 uppercase">Dự đoán chi tháng tới</p>
+                    <p className="text-xs text-gray-500 uppercase">Next-Month Expense Forecast</p>
                     <p className="font-semibold text-red-600">{formatMoney(analysis.trend.predictedNextMonthExpense)}</p>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-800 mb-2">Xu hướng theo tháng</h3>
+                  <h3 className="font-semibold text-gray-800 mb-2">Monthly Trend</h3>
                   <div className="space-y-1">
                     {analysis.trend.monthlySeries.length ? (
                       analysis.trend.monthlySeries.map((item) => (
                         <div key={item.month} className="flex justify-between bg-white border border-gray-200 rounded-lg px-3 py-2">
                           <span className="text-gray-600">{item.month}</span>
-                          <span className="text-gray-700">Thu {formatMoney(item.income)} | Chi {formatMoney(item.expense)}</span>
+                          <span className="text-gray-700">Income {formatMoney(item.income)} | Expense {formatMoney(item.expense)}</span>
                         </div>
                       ))
                     ) : (
-                      <p className="text-gray-500">Chưa đủ dữ liệu theo tháng.</p>
+                      <p className="text-gray-500">Not enough monthly data yet.</p>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-800 mb-2">Gợi ý tiết kiệm/cắt giảm</h3>
+                  <h3 className="font-semibold text-gray-800 mb-2">Savings Suggestions</h3>
                   <ul className="list-disc pl-5 space-y-1 text-gray-700">
                     {analysis.savingsPlan.map((tip, index) => (
                       <li key={`${tip}-${index}`}>{tip}</li>
@@ -123,7 +123,7 @@ export const FinancialAdvisorModal: React.FC<FinancialAdvisorModalProps> = ({
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-800 mb-2">Chi tiêu bất thường</h3>
+                  <h3 className="font-semibold text-gray-800 mb-2">Unusual Spending</h3>
                   {analysis.anomalies.length ? (
                     <div className="space-y-2">
                       {analysis.anomalies.map((item) => (
@@ -135,23 +135,23 @@ export const FinancialAdvisorModal: React.FC<FinancialAdvisorModalProps> = ({
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500">Chưa phát hiện giao dịch bất thường rõ ràng.</p>
+                    <p className="text-gray-500">No clear unusual transactions were detected.</p>
                   )}
                 </div>
               </div>
             ) : (
-              <p>Không có dữ liệu analysis. Vui lòng thử lại sau khi thêm giao dịch.</p>
+              <p>No analysis data is available yet. Add more transactions and try again.</p>
             )
           ) : (
             <div className="prose prose-sm">
-              {advice ? <div className="whitespace-pre-line">{advice}</div> : <p>Không thể tạo lời khuyên. Vui lòng thử lại.</p>}
+              {advice ? <div className="whitespace-pre-line">{advice}</div> : <p>Could not generate advice. Please try again.</p>}
             </div>
           )}
         </div>
 
         <div className="mt-6 flex justify-end">
           <Button variant="secondary" onClick={onClose}>
-            Đóng
+            Close
           </Button>
         </div>
       </div>

@@ -72,7 +72,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
         </button>
 
         <h2 className="text-xl font-bold mb-6 text-gray-800">
-          {mode === 'edit' ? 'Chỉnh sửa giao dịch' : 'Thêm giao dịch mới'}
+          {mode === 'edit' ? 'Edit Transaction' : 'Add New Transaction'}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -82,20 +82,20 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
               onClick   = {() => setType(TransactionType.EXPENSE)}
               className = {`flex-1 py-2 rounded-md text-sm font-medium transition-all ${type === TransactionType.EXPENSE ? 'bg-white text-red-500 shadow-sm' : 'text-gray-500'}`}
             >
-              Chi tiêu
+              Expense
             </button>
             <button
               type      = "button"
               onClick   = {() => setType(TransactionType.INCOME)}
               className = {`flex-1 py-2 rounded-md text-sm font-medium transition-all ${type === TransactionType.INCOME ? 'bg-white text-emerald-600 shadow-sm' : 'text-gray-500'}`}
             >
-              Thu nhập
+              Income
             </button>
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              {type === TransactionType.INCOME ? 'Nguồn thu' : 'Danh mục'}
+              {type === TransactionType.INCOME ? 'Income Source' : 'Category'}
             </label>
 
             {type === TransactionType.INCOME ? (
@@ -104,7 +104,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                placeholder="Ví dụ: Lương, Khách hàng A, Cổ tức..."
+                placeholder="Example: Salary, Client A, Dividends..."
                 required
               />
             ) : (
@@ -116,7 +116,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
                 >
                   {categoryOptions.length === 0 && (
-                    <option value="">Chưa có danh mục</option>
+                    <option value="">No categories available</option>
                   )}
                   {categoryOptions.map((cat) => (
                     <option key={cat} value={cat}>
@@ -129,7 +129,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Số tiền</label>
+            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Amount</label>
             <input
               type        = "number"
               min         = "0"
@@ -143,33 +143,33 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Mô tả</label>
+            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Description</label>
             <input
               type        = "text"
               value       = {description}
               onChange    = {(e) => setDescription(e.target.value)}
               className   = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-              placeholder = "Ví dụ: Ăn trưa, Tiền xăng, Lương..."
+              placeholder = "Example: Lunch, Fuel, Salary..."
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tần suất</label>
+              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Frequency</label>
               <select
                 value     = {frequency}
                 onChange  = {(e) => setFrequency(e.target.value as TransactionFrequency)}
                 className = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
               >
-                <option value={TransactionFrequency.WEEKLY}>weekly</option>
-                <option value={TransactionFrequency.MONTHLY}>monthly</option>
-                <option value={TransactionFrequency.YEARLY}>yearly</option>
-                <option value={TransactionFrequency.ONE_TIME}>one-time</option>
+                <option value={TransactionFrequency.WEEKLY}>Weekly</option>
+                <option value={TransactionFrequency.MONTHLY}>Monthly</option>
+                <option value={TransactionFrequency.YEARLY}>Yearly</option>
+                <option value={TransactionFrequency.ONE_TIME}>One-time</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Ngày</label>
+              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Date</label>
               <input
                 type      = "date"
                 value     = {date}
@@ -186,10 +186,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
               className="w-full py-3"
               disabled={type === TransactionType.EXPENSE && categoryOptions.length === 0}
             >
-              {mode === 'edit' ? 'Cập nhật giao dịch' : 'Lưu giao dịch'}
+              {mode === 'edit' ? 'Update Transaction' : 'Save Transaction'}
             </Button>
             {type === TransactionType.EXPENSE && categoryOptions.length === 0 && (
-              <p className="mt-2 text-xs text-red-500 text-center">Hãy tạo ít nhất một danh mục trước khi thêm giao dịch.</p>
+              <p className="mt-2 text-xs text-red-500 text-center">Please create at least one category before adding an expense.</p>
             )}
           </div>
         </form>

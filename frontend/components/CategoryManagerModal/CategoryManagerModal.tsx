@@ -29,7 +29,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const sortedCategories = useMemo(() => {
-    return [...categories].sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+    return [...categories].sort((a, b) => a.name.localeCompare(b.name, 'en'));
   }, [categories]);
 
   if (!isOpen) {
@@ -59,7 +59,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
     const trimmedName = name.trim();
 
     if (!trimmedName) {
-      setError('Tên danh mục là bắt buộc.');
+      setError('Category name is required.');
       return;
     }
 
@@ -69,7 +69,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
       await onCreate({ name: trimmedName, description: description.trim() });
       resetCreateForm();
     } catch (_error) {
-      setError('Không thể tạo danh mục. Vui lòng thử lại.');
+      setError('Unable to create category. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +82,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
 
     const trimmedName = editingName.trim();
     if (!trimmedName) {
-      setError('Tên danh mục là bắt buộc.');
+      setError('Category name is required.');
       return;
     }
 
@@ -92,14 +92,14 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
       await onUpdate(editingCategoryId, { name: trimmedName, description: editingDescription.trim() });
       cancelEdit();
     } catch (_error) {
-      setError('Không thể cập nhật danh mục. Vui lòng thử lại.');
+      setError('Unable to update category. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
+    if (!window.confirm('Are you sure you want to delete this category?')) {
       return;
     }
 
@@ -111,7 +111,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
         cancelEdit();
       }
     } catch (_error) {
-      setError('Không thể xóa danh mục. Vui lòng thử lại.');
+      setError('Unable to delete category. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -120,18 +120,18 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl w-full max-w-2xl p-6 relative shadow-2xl animate-fade-in-up max-h-[90vh] overflow-auto">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600" aria-label="Đóng">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600" aria-label="Close">
           <X size={22} />
         </button>
 
-        <h2 className="text-xl font-bold mb-5 text-gray-800">Quản lý danh mục</h2>
+        <h2 className="text-xl font-bold mb-5 text-gray-800">Manage Categories</h2>
 
         <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Tên danh mục"
+            placeholder="Category name"
             className="md:col-span-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
             required
           />
@@ -139,11 +139,11 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Mô tả (không bắt buộc)"
+            placeholder="Description (optional)"
             className="md:col-span-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
           />
           <div className="md:col-span-3">
-            <Button type="submit" isLoading={isSubmitting}>Thêm danh mục</Button>
+            <Button type="submit" isLoading={isSubmitting}>Add Category</Button>
           </div>
         </form>
 
@@ -153,9 +153,9 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
           <table className="w-full text-sm text-left text-gray-700">
             <thead className="bg-gray-50 text-xs uppercase text-gray-500">
               <tr>
-                <th className="px-4 py-3">Tên</th>
-                <th className="px-4 py-3">Mô tả</th>
-                <th className="px-4 py-3 text-center">Thao tác</th>
+                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Description</th>
+                <th className="px-4 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -192,8 +192,8 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                       <div className="flex items-center justify-center gap-2">
                         {isEditing ? (
                           <>
-                            <Button type="button" variant="secondary" onClick={cancelEdit} disabled={isSubmitting}>Hủy</Button>
-                            <Button type="button" onClick={handleSaveEdit} isLoading={isSubmitting}>Lưu</Button>
+                            <Button type="button" variant="secondary" onClick={cancelEdit} disabled={isSubmitting}>Cancel</Button>
+                            <Button type="button" onClick={handleSaveEdit} isLoading={isSubmitting}>Save</Button>
                           </>
                         ) : (
                           <>
@@ -201,7 +201,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                               type="button"
                               onClick={() => startEdit(category)}
                               className="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-full"
-                              title="Chỉnh sửa danh mục"
+                              title="Edit category"
                             >
                               <Pencil size={16} />
                             </button>
@@ -209,7 +209,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                               type="button"
                               onClick={() => handleDelete(category.id)}
                               className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
-                              title="Xóa danh mục"
+                              title="Delete category"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -223,7 +223,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
               {sortedCategories.length === 0 && (
                 <tr>
                   <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
-                    Chưa có danh mục nào. Hãy tạo danh mục đầu tiên.
+                    No categories yet. Create your first category.
                   </td>
                 </tr>
               )}

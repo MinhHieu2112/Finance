@@ -28,12 +28,12 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
     setError(null);
 
     if (!email || !password) {
-      setError('Vui long nhap day du email va mat khau.');
+      setError('Please enter both email and password.');
       return;
     }
 
     if (!isLogin && !username.trim()) {
-      setError('Vui long nhap ten dang nhap.');
+      setError('Please enter a username.');
       return;
     }
 
@@ -60,14 +60,14 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
       const data: AuthResponse = await response.json();
 
       if (!response.ok || !data.success) {
-        setError(data.message || 'Xac thuc that bai. Vui long thu lai.');
+        setError(data.message || 'Authentication failed. Please try again.');
         return;
       }
 
       onLogin({ ...data.user, token: data.token });
     } catch (err) {
       console.error(err);
-      setError('Khong the ket noi den may chu. Vui long thu lai.');
+      setError('Unable to connect to the server. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -81,7 +81,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
             SmartFinance
           </h1>
           <p className="text-gray-500">
-            {isLogin ? 'Chào mừng trở lại! Vui lòng đăng nhập.' : 'Tạo tài khoản để bắt đầu quản lý.'}
+            {isLogin ? 'Welcome back. Sign in to continue.' : 'Create your account to start managing your finances.'}
           </p>
         </div>
 
@@ -89,12 +89,12 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
           {!isLogin && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tên đăng nhập
+                Username
               </label>
               <input
                 type        = "text"
                 className   = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                placeholder = "Nguyen Van A"
+                placeholder = "john_doe"
                 value       = {username}
                 onChange    = {(e) => setUsername(e.target.value)}
               />
@@ -102,11 +102,11 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
             <input
               type        = "email"
               className   = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              placeholder = "ban@example.com"
+              placeholder = "you@example.com"
               value       = {email}
               onChange    = {(e) => setEmail(e.target.value)}
               required
@@ -114,7 +114,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               type        = "password"
               className   = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
@@ -130,13 +130,13 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
           )}
 
           <Button type="submit" className="w-full mt-6" disabled={loading}>
-            {isLogin ? 'Đăng nhập' : 'Tạo tài khoản'}
+            {loading ? (isLogin ? 'Signing In...' : 'Creating Account...') : (isLogin ? 'Sign In' : 'Create Account')}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <button onClick={() => setIsLogin(!isLogin)} className="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
-            {isLogin ? 'Chưa có tài khoản? Đăng ký ngay' : 'Đã có tài khoản? Đăng nhập'}
+            {isLogin ? "Don't have an account? Create one" : 'Already have an account? Sign in'}
           </button>
         </div>
       </div>
