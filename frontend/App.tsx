@@ -45,7 +45,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<DashboardPage user={user} onLogout={handleLogout} />} />
-            <Route path="/analysis" element={<AnalysisPage user={user} />} />
+            <Route path="/analysis" element={<AnalysisPage user={user} onLogout={handleLogout} />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>

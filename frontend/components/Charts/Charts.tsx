@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Transaction, TransactionType } from '../../types/Transactions';
 import {
   PieChart,
@@ -32,18 +32,7 @@ const formatShortDate = (date: Date) => {
   return `${day}/${month}`;
 };
 
-const formatStatMoney = (value: number) => {
-  if (!Number.isFinite(value)) {
-    return '0';
-  }
-
-  const integerValue = Math.trunc(value);
-  return integerValue.toLocaleString('en-US');
-};
-
 export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
-  const [visibleSeries, setVisibleSeries] = useState({ income: true, expense: true });
-
   const categoryData = useMemo(() => {
     const expenses   = transactions.filter((t) => t.type === TransactionType.EXPENSE);
     const map        = new Map<string, number>();
@@ -77,42 +66,43 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     const endDate = new Date(maxTime);
     endDate.setHours(0, 0, 0, 0);
 
-    const startDate = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 30);
     startDate.setHours(0, 0, 0, 0);
 
-    const grouped = new Map<string, { income: number; expense: number }>();
+    const groupedDailyNet = new Map<string, number>();
 
     transactions.forEach((t) => {
       const transactionDate = toDate(t.date);
 
-      if (transactionDate < startDate || transactionDate > endDate) {
+      const signedAmount = t.type === TransactionType.INCOME ? t.amount : -t.amount;
+
+      if (transactionDate < startDate) {
+        return;
+      }
+
+      if (transactionDate > endDate) {
         return;
       }
 
       const dateKey = formatDateKey(transactionDate);
-
-      if (!grouped.has(dateKey)) {
-        grouped.set(dateKey, { income: 0, expense: 0 });
-      }
-
-      const entry = grouped.get(dateKey)!;
-
-      if (t.type === TransactionType.INCOME) entry.income += t.amount;
-      else entry.expense += t.amount;
+      const currentValue = groupedDailyNet.get(dateKey) || 0;
+      groupedDailyNet.set(dateKey, currentValue + signedAmount);
     });
 
-    const result: Array<{ date: string; label: string; income: number; expense: number }> = [];
+    const result: Array<{ date: string; label: string; balance: number }> = [];
     const cursor = new Date(startDate);
+    let runningBalance = 0;
 
     while (cursor <= endDate) {
       const dateKey = formatDateKey(cursor);
-      const daily = grouped.get(dateKey) || { income: 0, expense: 0 };
+      const dailyNet = groupedDailyNet.get(dateKey) || 0;
+      runningBalance += dailyNet;
 
       result.push({
         date: dateKey,
         label: formatShortDate(cursor),
-        income: daily.income,
-        expense: daily.expense,
+        balance: runningBalance,
       });
 
       cursor.setDate(cursor.getDate() + 1);
@@ -120,38 +110,6 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
 
     return result;
   }, [transactions]);
-
-
-  const lineStats = useMemo(() => {
-    if (!timelineData.length) {
-      return {
-        averageIncome: 0,
-        averageExpense: 0,
-        maxIncome: 0,
-        maxExpense: 0,
-      };
-    }
-
-    const days = timelineData.length;
-    const totalIncome = timelineData.reduce((sum, item) => sum + item.income, 0);
-    const totalExpenseValue = timelineData.reduce((sum, item) => sum + item.expense, 0);
-    const maxIncome = timelineData.reduce((max, item) => Math.max(max, item.income), 0);
-    const maxExpense = timelineData.reduce((max, item) => Math.max(max, item.expense), 0);
-
-    return {
-      averageIncome: totalIncome / days,
-      averageExpense: totalExpenseValue / days,
-      maxIncome,
-      maxExpense,
-    };
-  }, [timelineData]);
-
-  const toggleSeries = (series: 'income' | 'expense') => {
-    setVisibleSeries((prev) => ({
-      ...prev,
-      [series]: !prev[series],
-    }));
-  };
 
   if (transactions.length === 0) return null;
 
@@ -180,7 +138,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
               <span className="text-right">Amount</span>
             </div>
 
-            {categoryData.map((item) => (
+            {categoryData.slice(0, 3).map((item) => (
               <div
                 key={item.name}
                 className="grid grid-cols-[minmax(0,1fr)_90px_140px] items-center py-2 border-t border-gray-100"
@@ -193,40 +151,16 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
                 <span className="text-right font-medium text-gray-800">{Math.round(item.value).toLocaleString('en-US')} VND</span>
               </div>
             ))}
+
+            {!categoryData.length && (
+              <p className="text-xs text-gray-500 border-t border-gray-100 pt-3">No expense data available.</p>
+            )}
           </div>
         </div>
       </div>
 
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Cash Flow (Latest Month)</h3>
-
-        <div className="flex items-center gap-3 mb-4 text-sm">
-          <button
-            type="button"
-            onClick={() => toggleSeries('income')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors ${
-              visibleSeries.income
-                ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
-                : 'border-gray-200 bg-gray-50 text-gray-400'
-            }`}
-          >
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            Income
-          </button>
-
-          <button
-            type="button"
-            onClick={() => toggleSeries('expense')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors ${
-              visibleSeries.expense
-                ? 'border-red-300 bg-red-50 text-red-700'
-                : 'border-gray-200 bg-gray-50 text-gray-400'
-            }`}
-          >
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-            Expense
-          </button>
-        </div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Money Flow</h3>
 
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
@@ -243,44 +177,19 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
               />
               <Line
                 type="monotone"
-                dataKey="income"
-                name="Income"
-                stroke="#10B981"
+                dataKey="balance"
+                name="Balance"
+                stroke="#2563EB"
                 strokeWidth={2.5}
                 dot={false}
-                hide={!visibleSeries.income}
-              />
-              <Line
-                type="monotone"
-                dataKey="expense"
-                name="Expense"
-                stroke="#EF4444"
-                strokeWidth={2.5}
-                dot={false}
-                hide={!visibleSeries.expense}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-          <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2">
-            <p className="text-emerald-700 text-xs font-medium uppercase">Average Income</p>
-            <p className="text-emerald-800 font-semibold">{formatStatMoney(lineStats.averageIncome)} VND</p>
-          </div>
-          <div className="rounded-lg border border-red-100 bg-red-50 px-3 py-2">
-            <p className="text-red-700 text-xs font-medium uppercase">Average Expense</p>
-            <p className="text-red-800 font-semibold">{formatStatMoney(lineStats.averageExpense)} VND</p>
-          </div>
-          <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2">
-            <p className="text-emerald-700 text-xs font-medium uppercase">Highest Income</p>
-            <p className="text-emerald-800 font-semibold">{formatStatMoney(lineStats.maxIncome)} VND</p>
-          </div>
-          <div className="rounded-lg border border-red-100 bg-red-50 px-3 py-2">
-            <p className="text-red-700 text-xs font-medium uppercase">Highest Expense</p>
-            <p className="text-red-800 font-semibold">{formatStatMoney(lineStats.maxExpense)} VND</p>
-          </div>
-        </div>
+        {!timelineData.length && (
+          <p className="text-xs text-gray-500 mt-3">No transactions found</p>
+        )}
       </div>
     </div>
   );

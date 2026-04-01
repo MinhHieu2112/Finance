@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnalysisResult } from '../../types/Analysis';
+import { Transaction } from '../../types/Transactions';
 import { User } from '../../types/Users';
+import { LogOut, User as UserIcon } from 'lucide-react';
 import { ResponsiveContainer,
          LineChart,
          Line,
@@ -12,6 +14,7 @@ import { ResponsiveContainer,
 
 interface AnalysisPageProps {
   user: User;
+  onLogout: () => void;
 }
 
 interface ForcastingTrendResponse {
@@ -29,6 +32,11 @@ interface DetectAnomaliesResponse {
   anomalies: AnalysisResult['anomalies'];
 }
 
+interface ListTransactionResponse {
+  success: boolean;
+  transactions: Transaction[];
+}
+
 const API_BASE_URL = 'http://localhost:4000/api';
 
 const trendLabel: Record<'up' | 'down' | 'stable', string> = {up: 'Up',
@@ -37,8 +45,26 @@ const trendLabel: Record<'up' | 'down' | 'stable', string> = {up: 'Up',
 
 const formatMoney   = (value: number) => `${Math.round(value).toLocaleString('en-US')} VND`;
 const formatPercent = (value: number) => `${Math.abs(value).toFixed(0)}%`;
+const formatSignedPercent = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(0)}%`;
 
 type TrendDirection = 'up' | 'down' | 'stable';
+
+interface MetricDriver {
+  category: string;
+  changePercent: number;
+  deltaAmount: number;
+}
+
+interface SavingsSnapshot {
+  rate: number | null;
+  monthlySurplus: number;
+  suggestedAllocation: number;
+}
+
+interface SuggestionCard {
+  headline: string;
+  action: string;
+}
 
 const getMetricValues = (
   monthlySeries: AnalysisResult['trend']['monthlySeries'],
@@ -46,8 +72,19 @@ const getMetricValues = (
 ) => monthlySeries.map((point) => (metric === 'expense' ? point.expense : point.income));
 
 const getTolerance = (values: number[]) => {
-  const average = values.reduce((sum, amount) => sum + Math.abs(amount), 0) / values.length;
-  return Math.max(50, average * 0.02);
+  const absoluteValues = values.map((amount) => Math.abs(amount)).filter((amount) => amount > 0);
+
+  if (absoluteValues.length === 0) {
+    return 20;
+  }
+
+  const sortedValues = [...absoluteValues].sort((a, b) => a - b);
+  const middleIndex = Math.floor(sortedValues.length / 2);
+  const median = sortedValues.length % 2 === 0
+    ? (sortedValues[middleIndex - 1] + sortedValues[middleIndex]) / 2
+    : sortedValues[middleIndex];
+
+  return Math.max(20, median * 0.03);
 };
 
 const getDirectionFromDelta = (delta: number, tolerance: number): TrendDirection => {
@@ -100,8 +137,94 @@ const buildCategoryAction = (category: string) => {
     return categoryActionMap[normalizedCategory] || {unit: 'non-essential purchases',
                                                    action: `Cut 2 ${category} purchases per week`,};};
 
+const getSavingsSnapshot = (monthlySeries: AnalysisResult['trend']['monthlySeries']): SavingsSnapshot => {
+  if (!monthlySeries.length) {
+    return {
+      rate: null,
+      monthlySurplus: 0,
+      suggestedAllocation: 0,
+    };
+  }
+
+  const latestMonth         = monthlySeries[monthlySeries.length - 1];
+  const monthlySurplus      = Math.max(0, latestMonth.income - latestMonth.expense);
+  const rate                = latestMonth.income > 0 ? (monthlySurplus / latestMonth.income) * 100 : null;
+  const baselineTarget      = monthlySurplus > 0 ? monthlySurplus * 0.6 : latestMonth.income * 0.08;
+  const suggestedAllocation = latestMonth.income > 0 ? Math.max(50000, Math.round(baselineTarget / 1000) * 1000) : 0;
+
+  return {
+    rate,
+    monthlySurplus,
+    suggestedAllocation,
+  };
+};
+
+const getMainDriver = (
+  transactions: Transaction[],
+  metric: 'expense' | 'income',
+): MetricDriver | null => {
+  const normalizedTransactions = transactions
+    .filter((item) => (metric === 'expense' ? item.type === 'expense' : item.type === 'income'))
+    .filter((item) => /^\d{4}-\d{2}-\d{2}$/.test(item.date));
+
+  if (normalizedTransactions.length === 0) {
+    return null;
+  }
+
+  const months = Array.from(new Set(normalizedTransactions.map((item) => item.date.slice(0, 7)))).sort();
+
+  if (months.length < 2) {
+    return null;
+  }
+
+  const previousMonth = months[months.length - 2];
+  const currentMonth = months[months.length - 1];
+
+  const previousTotals = new Map<string, number>();
+  const currentTotals = new Map<string, number>();
+
+  normalizedTransactions.forEach((item) => {
+    const monthKey = item.date.slice(0, 7);
+    if (monthKey === previousMonth) {
+      previousTotals.set(item.category, (previousTotals.get(item.category) || 0) + item.amount);
+    }
+
+    if (monthKey === currentMonth) {
+      currentTotals.set(item.category, (currentTotals.get(item.category) || 0) + item.amount);
+    }
+  });
+
+  const categorySet = new Set<string>([...previousTotals.keys(), ...currentTotals.keys()]);
+  const candidates: MetricDriver[] = [];
+
+  categorySet.forEach((category) => {
+    const previousValue = previousTotals.get(category) || 0;
+    const currentValue = currentTotals.get(category) || 0;
+    const deltaAmount = currentValue - previousValue;
+
+    if (deltaAmount === 0) {
+      return;
+    }
+
+    const changePercent = previousValue > 0 ? (deltaAmount / previousValue) * 100 : 100;
+
+    candidates.push({
+      category,
+      changePercent,
+      deltaAmount,
+    });
+  });
+
+  if (!candidates.length) {
+    return null;
+  }
+
+  return candidates.sort((a, b) => Math.abs(b.deltaAmount) - Math.abs(a.deltaAmount))[0];
+};
+
 const summarizeTrend = (monthlySeries: AnalysisResult['trend']['monthlySeries'],
-                        metric: 'expense' | 'income',) => {
+                        metric: 'expense' | 'income',
+                        driver: MetricDriver | null,) => {
   if (monthlySeries.length < 2) {
     return `Not enough monthly data yet to measure month-over-month ${metric} change.`;
   }
@@ -126,7 +249,18 @@ const summarizeTrend = (monthlySeries: AnalysisResult['trend']['monthlySeries'],
   }
 
   const movement = change > 0 ? 'increased' : 'decreased';
-  return `${metricLabel} ${movement} by ${formatPercent(change)} compared with last month.`;
+
+  const driverPhrase = (() => {
+    if (!driver) {
+      return '';
+    }
+
+    const driverDirection = driver.deltaAmount >= 0 ? 'higher' : 'lower';
+    const driverSubject = metric === 'expense' ? 'spending' : 'income';
+    return `, mainly driven by ${driverDirection} ${driverSubject} in ${driver.category} (${formatSignedPercent(driver.changePercent)}).`;
+  })();
+
+  return `${metricLabel} ${movement} by ${formatPercent(change)} compared with last month${driverPhrase}`;
 };
 
 const summarizeStreak = (monthlySeries: AnalysisResult['trend']['monthlySeries'],
@@ -158,26 +292,45 @@ const summarizeStreak = (monthlySeries: AnalysisResult['trend']['monthlySeries']
     return `${metricLabel} show a ${label} direction for ${consecutiveMonths} consecutive months.`;
 };
 
-const buildSuggestionCards = (analysis: AnalysisResult) => {
+const buildSuggestionCards = (analysis: AnalysisResult, savingsSnapshot: SavingsSnapshot): SuggestionCard[] => {
+  const rateLabel = savingsSnapshot.rate === null ? null : `(~${Math.round(savingsSnapshot.rate)}% of income)`;
   const cards = analysis.savingsPlan.map((tip) => {
     if (/low/i.test(tip)) {
+      const headline = rateLabel
+        ? `Your savings rate is currently low ${rateLabel}.`
+        : 'Your savings rate is currently low.';
+
+      const starterAmount = savingsSnapshot.suggestedAllocation > 0
+        ? Math.max(50000, Math.round(savingsSnapshot.suggestedAllocation * 0.6 / 1000) * 1000)
+        : 100000;
+
       return {
-        headline: 'Your savings rate is currently low.',
-        action: '💡Move 10-15% of your income into savings immediately on payday.',
+        headline,
+        action: `💡Start with an automatic transfer of about ${formatMoney(starterAmount)} on payday and cut 2 flexible purchases per week.`,
       };
     }
 
     if (/moderate/i.test(tip)) {
+      const headline = rateLabel
+        ? `Your savings rate is moderate ${rateLabel}.`
+        : 'Your savings rate is moderate.';
+
       return {
-        headline: 'Your savings rate is decent but can be stronger.',
-        action: '💡Increase your automatic transfer by 5% to build a larger safety buffer.',
+        headline,
+        action: '💡Increase your automatic transfer by 5% and commit to one no-spend day each week.',
       };
     }
 
     if (/healthy/i.test(tip)) {
+      const headline = rateLabel
+        ? `Your savings rate is healthy ${rateLabel}.`
+        : 'Your savings rate is healthy.';
+
+      const suggestedAmount = savingsSnapshot.suggestedAllocation > 0 ? savingsSnapshot.suggestedAllocation : 100000;
+
       return {
-        headline: 'Your savings rate is healthy.',
-        action: '💡Keep this pace and route part of the surplus to low-risk goals.',
+        headline,
+        action: `💡You could allocate about ${formatMoney(suggestedAmount)} per month to a low-risk savings goal.`,
       };
     }
 
@@ -214,13 +367,19 @@ const buildSuggestionCards = (analysis: AnalysisResult) => {
   return cards.slice(0, 4);
 };
 
-export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
+export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user, onLogout }) => {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [hasTransactions, setHasTransactions] = useState<boolean | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [visibleSeries, setVisibleSeries] = useState<{ income: boolean; expense: boolean }>({
+    income: true,
+    expense: true,
+  });
 
   useEffect(() => {
     const loadTransactions = async () => {
       try {
-        const [trendResponse, savingSuggestionResponse, anomaliesResponse] = await Promise.all([
+        const [trendResponse, savingSuggestionResponse, anomaliesResponse, transactionResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/analysis/forcasting-trend`, {
             headers: {Authorization: `Bearer ${user.token}`},
           }),
@@ -232,10 +391,24 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
           fetch(`${API_BASE_URL}/analysis/detect-anomalies`, {
             headers: {Authorization: `Bearer ${user.token}`},
           }),
+
+          fetch(`${API_BASE_URL}/transactions/list`, {
+            headers: {Authorization: `Bearer ${user.token}`},
+          }),
         ]);
 
-        if (!trendResponse.ok || !savingSuggestionResponse.ok || !anomaliesResponse.ok) {
+        if (!trendResponse.ok || !savingSuggestionResponse.ok || !anomaliesResponse.ok || !transactionResponse.ok) {
           throw new Error('Cannot load analysis data');
+        }
+
+        const transactionData: ListTransactionResponse = await transactionResponse.json();
+        const hasAnyTransactions = transactionData.transactions.length > 0;
+        setHasTransactions(hasAnyTransactions);
+        setTransactions(transactionData.transactions);
+
+        if (!hasAnyTransactions) {
+          setAnalysis(null);
+          return;
         }
 
         const trendData: ForcastingTrendResponse             = await trendResponse.json();
@@ -247,6 +420,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
                      anomalies  : anomaliesData.anomalies,});
       } catch (fetchError) {
         console.error(fetchError);
+        setHasTransactions(null);
       }
     };
 
@@ -274,18 +448,94 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
   const incomeTrendDirection = useMemo(() => getTrendDirection(recentMonthlySeries, 'income'),
                                              [recentMonthlySeries],);
 
-  const expenseNarratives = useMemo(() => {return [summarizeTrend(recentMonthlySeries, 'expense'),
+  const expenseDriver = useMemo(() => getMainDriver(transactions, 'expense'), [transactions]);
+  const incomeDriver = useMemo(() => getMainDriver(transactions, 'income'), [transactions]);
+  const savingsSnapshot = useMemo(() => getSavingsSnapshot(recentMonthlySeries), [recentMonthlySeries]);
+
+  const expenseNarratives = useMemo(() => {return [summarizeTrend(recentMonthlySeries, 'expense', expenseDriver),
                                                    summarizeStreak(recentMonthlySeries, 'expense'),];}, 
-                                          [recentMonthlySeries]);
+                                          [recentMonthlySeries, expenseDriver]);
 
-  const incomeNarratives = useMemo(() => {return [summarizeTrend(recentMonthlySeries, 'income'),
+  const incomeNarratives = useMemo(() => {return [summarizeTrend(recentMonthlySeries, 'income', incomeDriver),
                                                   summarizeStreak(recentMonthlySeries, 'income'),];}, 
-                                         [recentMonthlySeries]);
+                                         [recentMonthlySeries, incomeDriver]);
 
-  const suggestionCards = useMemo(() => buildSuggestionCards(effectiveAnalysis), [effectiveAnalysis]);
+  const suggestionCards = useMemo(() => buildSuggestionCards(effectiveAnalysis, savingsSnapshot),
+                                  [effectiveAnalysis, savingsSnapshot],);
+
+  const toggleTrendSeries = (series: 'income' | 'expense') => {
+    setVisibleSeries((previous) => ({
+      ...previous,
+      [series]: !previous[series],
+    }));
+  };
+
+  const handleLegendClick = (entry: { dataKey?: string }) => {
+    const dataKey = entry?.dataKey;
+    if (dataKey === 'income' || dataKey === 'expense') {
+      toggleTrendSeries(dataKey);
+    }
+  };
+
+  const renderLegendText = (value: string, entry: { dataKey?: string }) => {
+    const dataKey = entry?.dataKey;
+    const isVisible = dataKey === 'income' || dataKey === 'expense' ? visibleSeries[dataKey] : true;
+
+    return (
+      <span className={isVisible ? 'text-gray-700' : 'text-gray-400'}>
+        {value}
+      </span>
+    );
+  };
+
+  const renderTopNavbar = () => (
+    <header className="bg-white shadow-sm z-10 sticky top-0">
+      <div className="px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <div className="bg-primary rounded-lg p-2">
+            <span className="text-white font-bold text-lg">SF</span>
+          </div>
+          <span className="text-xl font-bold text-gray-800">SmartFinance</span>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-2 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
+            <UserIcon size={16} />
+            <span className="text-sm font-medium">{user.username}</span>
+          </div>
+          <button
+            onClick={onLogout}
+            className="p-2 text-gray-400 hover:text-danger transition-colors rounded-full hover:bg-gray-100"
+            title="Log out"
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+
+  if (hasTransactions === false) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {renderTopNavbar()}
+        <section className="p-6 md:p-8">
+          <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis</h2>
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+              <p className="text-sm text-gray-700 font-medium">No data available for analysis yet.</p>
+              <p className="text-xs text-gray-500 mt-1">Add at least one transaction to generate trend insights and suggestions.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
-    <section className="min-h-screen p-6 md:p-8 bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
+      {renderTopNavbar()}
+      <section className="p-6 md:p-8">
       <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis</h2>
 
@@ -340,9 +590,9 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
                 <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip formatter={(value: number) => formatMoney(value)} />
-                <Legend />
-                <Line type="monotone" dataKey="income" name="Income" stroke="#10B981" strokeWidth={2.5} />
-                <Line type="monotone" dataKey="expense" name="Expense" stroke="#EF4444" strokeWidth={2.5} />
+                <Legend onClick={handleLegendClick} formatter={renderLegendText} />
+                <Line type="monotone" dataKey="income" name="Income" stroke="#10B981" strokeWidth={2.5} hide={!visibleSeries.income} />
+                <Line type="monotone" dataKey="expense" name="Expense" stroke="#EF4444" strokeWidth={2.5} hide={!visibleSeries.expense} />
               </LineChart>
             </ResponsiveContainer>
           ) : (
@@ -376,11 +626,15 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
             ))}
           </div>
         ) : (
-          <p className="text-xs text-gray-500">No clear anomalies detected in your current data.</p>
+          <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-3">
+            <p className="text-xs font-semibold text-emerald-900">No unusual spending detected.</p>
+            <p className="text-xs text-emerald-800 mt-1">Your spending pattern is consistent and predictable.</p>
+          </div>
         )}
       </div>
       </div>
-    </section>
+      </section>
+    </div>
   );
 };
 

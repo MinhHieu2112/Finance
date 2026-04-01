@@ -135,7 +135,10 @@ export const FinancialAdvisorModal: React.FC<FinancialAdvisorModalProps> = ({
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500">No clear unusual transactions were detected.</p>
+                    <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-3">
+                      <p className="text-emerald-900 font-medium">No unusual spending detected.</p>
+                      <p className="text-emerald-800 text-xs mt-1">Your spending pattern is consistent and predictable.</p>
+                    </div>
                   )}
                 </div>
               </div>

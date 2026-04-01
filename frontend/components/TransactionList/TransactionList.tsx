@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Transaction, TransactionType } from '../../types/Transactions';
 import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil } from 'lucide-react';
 
@@ -10,10 +10,13 @@ interface TransactionListProps {
 }
 
 export const TransactionList: React.FC<TransactionListProps> = ({ transactions, categoryOptions, onDelete, onEdit }) => {
+  const ITEMS_PER_PAGE = 10;
+
   const [searchTerm, setSearchTerm]         = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [startDate, setStartDate]           = useState('');
   const [endDate, setEndDate]               = useState('');
+  const [currentPage, setCurrentPage]       = useState(1);
 
   const allCategoryOptions = useMemo(() => {
     const categoriesFromTransactions = transactions.map((t) => t.category);
@@ -38,9 +41,19 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
     setCategoryFilter('');
     setStartDate('');
     setEndDate('');
+    setCurrentPage(1);
   };
 
   const hasActiveFilters = searchTerm || categoryFilter || startDate || endDate;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, categoryFilter, startDate, endDate, transactions]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const pageStart = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedTransactions = filteredTransactions.slice(pageStart, pageStart + ITEMS_PER_PAGE);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -123,7 +136,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {filteredTransactions.map((t) => (
+            {paginatedTransactions.map((t) => (
               <tr key={t.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap text-gray-500">{t.date}</td>
                 <td className="px-6 py-4 font-medium text-gray-800 flex items-center gap-3">
@@ -171,6 +184,34 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
           </tbody>
         </table>
       </div>
+
+      {filteredTransactions.length > 0 && (
+        <div className="px-6 py-4 border-t border-gray-100 bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <p className="text-sm text-gray-500">
+            Showing {pageStart + 1}-{Math.min(pageStart + ITEMS_PER_PAGE, filteredTransactions.length)} of {filteredTransactions.length}
+          </p>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+              disabled={safeCurrentPage === 1}
+              className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg text-gray-700 disabled:text-gray-300 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-gray-600">Page {safeCurrentPage} / {totalPages}</span>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+              disabled={safeCurrentPage === totalPages}
+              className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg text-gray-700 disabled:text-gray-300 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
