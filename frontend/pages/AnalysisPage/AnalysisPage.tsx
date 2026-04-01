@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { AnalysisResult } from '../../types/Analysis';
 import { Transaction } from '../../types/Transactions';
 import { User } from '../../types/Users';
-import { LogOut, User as UserIcon } from 'lucide-react';
 import { ResponsiveContainer,
          LineChart,
          Line,
@@ -14,7 +13,6 @@ import { ResponsiveContainer,
 
 interface AnalysisPageProps {
   user: User;
-  onLogout: () => void;
 }
 
 interface ForcastingTrendResponse {
@@ -367,7 +365,7 @@ const buildSuggestionCards = (analysis: AnalysisResult, savingsSnapshot: Savings
   return cards.slice(0, 4);
 };
 
-export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user, onLogout }) => {
+export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [hasTransactions, setHasTransactions] = useState<boolean | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -488,54 +486,22 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user, onLogout }) =>
     );
   };
 
-  const renderTopNavbar = () => (
-    <header className="bg-white shadow-sm z-10 sticky top-0">
-      <div className="px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <div className="bg-primary rounded-lg p-2">
-            <span className="text-white font-bold text-lg">SF</span>
-          </div>
-          <span className="text-xl font-bold text-gray-800">SmartFinance</span>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:flex items-center gap-2 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
-            <UserIcon size={16} />
-            <span className="text-sm font-medium">{user.username}</span>
-          </div>
-          <button
-            onClick={onLogout}
-            className="p-2 text-gray-400 hover:text-danger transition-colors rounded-full hover:bg-gray-100"
-            title="Log out"
-          >
-            <LogOut size={20} />
-          </button>
-        </div>
-      </div>
-    </header>
-  );
-
   if (hasTransactions === false) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        {renderTopNavbar()}
-        <section className="p-6 md:p-8">
-          <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis</h2>
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <p className="text-sm text-gray-700 font-medium">No data available for analysis yet.</p>
-              <p className="text-xs text-gray-500 mt-1">Add at least one transaction to generate trend insights and suggestions.</p>
-            </div>
+      <section className="p-6 md:p-8">
+        <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis</h2>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <p className="text-sm text-gray-700 font-medium">No data available for analysis yet.</p>
+            <p className="text-xs text-gray-500 mt-1">Add at least one transaction to generate trend insights and suggestions.</p>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {renderTopNavbar()}
-      <section className="p-6 md:p-8">
+    <section className="p-6 md:p-8">
       <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis</h2>
 
@@ -633,8 +599,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user, onLogout }) =>
         )}
       </div>
       </div>
-      </section>
-    </div>
+    </section>
   );
 };
 

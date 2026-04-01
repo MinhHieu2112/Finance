@@ -4,6 +4,8 @@ import { LoginPage } from './pages/LoginPage/LoginPage';
 import { DashboardPage } from './pages/DashboardPage/DashboardPage';
 import { AnalysisPage } from './pages/AnalysisPage/AnalysisPage';
 import Sidebar from './components/Sidebar/Sidebar';
+import { Navbar } from './components/Navbar/Navbar';
+import { Footer } from './components/Footer/Footer';
 import { User } from './types/Users';
 
 const App: React.FC = () => {
@@ -41,13 +43,17 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gray-100">
       <div className="flex min-h-screen">
         <Sidebar />
-        <div className="flex-1 min-w-0">
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<DashboardPage user={user} onLogout={handleLogout} />} />
-            <Route path="/analysis" element={<AnalysisPage user={user} onLogout={handleLogout} />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
+        <div className="flex-1 min-w-0 flex flex-col">
+          <Navbar user={user} onLogout={handleLogout} />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<DashboardPage user={user} />} />
+              <Route path="/analysis" element={<AnalysisPage user={user} />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </main>
+          <Footer />
         </div>
       </div>
     </div>

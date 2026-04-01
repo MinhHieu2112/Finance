@@ -8,13 +8,12 @@ import { Button } from '../../components/Button/Button';
 import { Category} from '../../types/Categories';
 import { Transaction } from '../../types/Transactions';
 import { User } from '../../types/Users';
-import { Plus, Sparkles, LogOut, User as UserIcon, Tags } from 'lucide-react';
+import { Plus, Sparkles, Tags } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 
 interface DashboardPageProps {
   user: User;
-  onLogout: () => void;
 }
 
 interface ListTransactionResponse {
@@ -37,7 +36,7 @@ interface SaveCategoryResponse {
   category: Category;
 }
 
-export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) => {
+export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isFormOpen, setIsFormOpen]     = useState(false);
@@ -233,35 +232,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Top Navigation */}
-      <header className="bg-white shadow-sm z-10 sticky top-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary rounded-lg p-2">
-               <span className="text-white font-bold text-lg">SF</span>
-            </div>
-            <span className="text-xl font-bold text-gray-800">SmartFinance</span>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
-              <UserIcon size={16} />
-              <span className="text-sm font-medium">{user.username}</span>
-            </div>
-            <button 
-              onClick={onLogout}
-              className="p-2 text-gray-400 hover:text-danger transition-colors rounded-full hover:bg-gray-100"
-              title="Log out"
-            >
-              <LogOut size={20} />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Action Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
@@ -309,14 +280,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
           onDelete={deleteTransaction}
           onEdit={openEditForm}
         />
-      </main>
-
-      {/* Footer */}
-      <footer className = "bg-white border-t border-gray-200 mt-auto">
-        <div  className = "max-w-7xl mx-auto px-4 py-6 text-center text-gray-400 text-sm">
-          &copy; {new Date().getFullYear()} SmartFinance. Built for smarter personal finance management.
-        </div>
-      </footer>
+      
 
       {/* Add Transaction Modal */}
       {isFormOpen && (
