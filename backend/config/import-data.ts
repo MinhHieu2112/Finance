@@ -25,12 +25,22 @@ const categories = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'categories.json'), 'utf-8')
 );
 
+const categoriesByUser = users.flatMap((user: { userID: string }) =>
+  categories.map((category: { id: string; name: string; description?: string }) => ({
+    id: `${user.userID}-${category.id}`,
+    userID: user.userID,
+    name: category.name,
+    description: category.description ?? '',
+  }))
+);
+
 // IMPORT DATA INTO DB
 const importData = async () => {
   try {
-      await User.create(users);
-      await Category.create(categories);
-      await Transaction.create(transactions);
+    await Category.syncIndexes();
+    await User.create(users);
+    await Category.create(categoriesByUser);
+    await Transaction.create(transactions);
 
     console.log('Data successfully loaded!');
   } catch (err) {

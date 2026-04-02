@@ -1,16 +1,27 @@
+import { randomUUID } from 'node:crypto';
 import validator from 'validator'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import authRepository from './Repository';
 import AppError from '../../../utils/appError';
+import defaultCategories from '../../../config/categories.json';
+
+type defaultCategorySeed = {
+	id: string;
+	name: string;
+	description?: string;
+};
 
 class authService {
-	createToken(id: any) {
+	createToken(userData: { id: string; email: string; username: string }) {
 		const secret = process.env.JWT_SECRET;
 		if (!secret) {
 			throw new AppError('Missing JWT_SECRET in backend environment', 500);
 		}
-		return jwt.sign({ id }, secret)
+		return jwt.sign({ id	 : userData.id,
+						  email   : userData.email,
+						  username: userData.username, },
+						  secret)
 	}
 
 	async register(data: { username: string; email: string; password: string }) {
@@ -35,12 +46,33 @@ class authService {
 			throw new AppError('Email already exists', 409);
 		}
 
+		const existingByUsername = await authRepository.findUserByUsername(username);
+		if (existingByUsername) {
+			throw new AppError('Username already exists', 409);
+		}
+
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const user = await authRepository.createUser({username,
+		const userID = randomUUID();
+		const user = await authRepository.createUser({userID,
+													  username,
 													  email,
 													  password: hashedPassword,});
 
-		const userData = {id	  : user.id,
+		try {
+			const categoriesForUser = (defaultCategories as defaultCategorySeed[]).map((category) => ({
+				id: `${userID}-${category.id}`,
+				userID,
+				name: category.name,
+				description: category.description ?? '',
+			}));
+
+			await authRepository.createDefaultCategories(categoriesForUser);
+		} catch (_error) {
+			await authRepository.deleteUserByUserID(userID);
+			throw new AppError('Unable to initialize default categories for this account', 500);
+		}
+
+		const userData = {id	  : user.userID,
 						  username: user.username,
 						  email	  : user.email,};
 

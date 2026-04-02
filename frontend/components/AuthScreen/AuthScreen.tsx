@@ -57,14 +57,23 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         body: JSON.stringify(payload),
       });
 
-      const data: AuthResponse = await response.json();
+      const rawBody = await response.text();
+      let data: Partial<AuthResponse> = {};
+
+      if (rawBody) {
+        try {
+          data = JSON.parse(rawBody) as Partial<AuthResponse>;
+        } catch (_parseError) {
+          data = {};
+        }
+      }
 
       if (!response.ok || !data.success) {
         setError(data.message || 'Authentication failed. Please try again.');
         return;
       }
 
-      onLogin({ ...data.user, token: data.token });
+      onLogin({ ...(data.user as Pick<User, 'id' | 'username' | 'email'>), token: data.token as string });
     } catch (err) {
       console.error(err);
       setError('Unable to connect to the server. Please try again.');

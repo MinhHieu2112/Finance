@@ -2,7 +2,7 @@ import AppError from '../../../utils/appError';
 import categoryRepository from './Repository';
 
 class categoryService {
-	async editCategory(id: string, data: { name: string; description?: string }) {
+	async editCategory(id: string, userID: string, data: { name: string; description?: string }) {
 		const name = data.name?.trim();
 		const description = data.description?.trim() ?? '';
 
@@ -10,16 +10,21 @@ class categoryService {
 			throw new AppError('Category id is required', 400);
 		}
 
+		if (!userID) {
+			throw new AppError('User id is required', 400);
+		}
+
 		if (!name) {
 			throw new AppError('Category name is required', 400);
 		}
 
-		const existingCategory = await categoryRepository.findByName(name);
+		const existingCategory = await categoryRepository.findByName(userID, name);
 		if (existingCategory && existingCategory.id !== id) {
 			throw new AppError('Category already exists', 409);
 		}
 
 		const category = await categoryRepository.editCategoryById(id,
+															  userID,
 																  { name,
 																	description, });
 
