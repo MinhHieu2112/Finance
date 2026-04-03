@@ -11,7 +11,7 @@ class transactionService {
                                  type       : string, 
                                  category   : string, 
                                  frequency  : string,
-                                 date       : string }) {
+                                 date       : Date }) {
 
         const description = data.description?.trim();
         const type = data.type?.trim() as TransactionType;
@@ -48,14 +48,14 @@ class transactionService {
             }
         }
         
-        const transaction = await transactionRepository.addTransaction({id: randomUUID(),
-                                                                        userID: data.userID,
+        const transaction = await transactionRepository.addTransaction({id      : randomUUID(),
+                                                                        userID  : data.userID,
                                                                         description,
-                                                                        amount: data.amount,
+                                                                        amount  : data.amount,
                                                                         type,
                                                                         category,
                                                                         frequency,
-                                                                        date: data.date,});
+                                                                        date    : data.date,});
 
         return transaction;
 

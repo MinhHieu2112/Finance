@@ -1,6 +1,7 @@
 import AppError from '../../../utils/appError';
 import detectAnomaliesRepository from './Repository';
-import { type AdviceTransaction, type AnalysisAnomaly } from '../types';
+import { type transactionSchema } from '../../types/Transactions';
+import { type AnalysisAnomaly } from '../../types/Analysis';
 
 class detectAnomaliesService {
 	private mean(values: number[]) {
@@ -19,7 +20,7 @@ class detectAnomaliesService {
 		return Math.sqrt(variance);
 	}
 
-	private detect(transactions: AdviceTransaction[]) {
+	private detect(transactions: transactionSchema[]) {
 		const expenses = transactions.filter((transaction) => transaction.type === 'expense');
 		if (!expenses.length) {
 			return [] as AnalysisAnomaly[];

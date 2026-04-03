@@ -4,11 +4,13 @@ import { TransactionList } from '../../components/TransactionList/TransactionLis
 import { TransactionForm } from '../../components/TransactionForm/TransactionForm';
 import { Charts } from '../../components/Charts/Charts';
 import { CategoryManagerModal } from '../../components/CategoryManagerModal/CategoryManagerModal';
+import { AIAssistantModal } from '../../components/AIAssistantModal/AIAssistantModal';
+import { ReceiptOCRPanel } from '../../components/ReceiptOCRPanel/ReceiptOCRPanel';
 import { Button } from '../../components/Button/Button';
 import { Category} from '../../types/Categories';
 import { Transaction } from '../../types/Transactions';
 import { User } from '../../types/Users';
-import { Plus, Sparkles, Tags } from 'lucide-react';
+import { Plus, ScanText, Sparkles, Tags } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 
@@ -41,6 +43,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isFormOpen, setIsFormOpen]     = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
+  const [isReceiptOCROpen, setIsReceiptOCROpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const categoryOptions = useMemo(() => {
@@ -209,6 +213,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setIsCategoryModalOpen(true);
   };
 
+  const onAssistantTransactionCreated = (transaction: Transaction) => {
+    setTransactions((prev) => [transaction, ...prev.filter((item) => item.id !== transaction.id)]);
+  };
+
+  const closeAIAssistant = () => {
+    setIsAIAssistantOpen(false);
+  };
+
   const deleteTransaction = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
       const response = await fetch(`${API_BASE_URL}/transactions/delete/${id}`, {
@@ -227,8 +239,15 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   };
 
   const handleGetAdvice = () => {
-    // Assistant button is kept intentionally, but analysis is now displayed in the sidebar.
-    return;
+    setIsAIAssistantOpen(true);
+  };
+
+  const openReceiptOCR = () => {
+    setIsReceiptOCROpen(true);
+  };
+
+  const closeReceiptOCR = () => {
+    setIsReceiptOCROpen(false);
   };
 
   return (
@@ -245,13 +264,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
             </p>
           </div>
           <div className="flex gap-3 w-full sm:w-auto">
+            <Button
+              variant   = "secondary"
+              onClick   = {openReceiptOCR}
+              className = "flex-1 sm:flex-none"
+            >
+              <ScanText size={18} />
+              Receipt OCR
+            </Button>
             <Button 
               variant   = "secondary" 
               onClick   = {handleGetAdvice} 
               className = "flex-1 sm:flex-none"
             >
               <Sparkles size={18} className="text-purple-500" />
-              AI Assistant
+              BOT Assistant
             </Button>
             <Button
               variant   = "secondary"
@@ -280,7 +307,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
           onDelete={deleteTransaction}
           onEdit={openEditForm}
         />
-      
 
       {/* Add Transaction Modal */}
       {isFormOpen && (
@@ -301,6 +327,20 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         onCreate={createCategory}
         onUpdate={updateCategory}
         onDelete={deleteCategory}
+      />
+
+      <AIAssistantModal
+        isOpen={isAIAssistantOpen}
+        token={user.token}
+        onClose={closeAIAssistant}
+        onTransactionCreated={onAssistantTransactionCreated}
+      />
+
+      <ReceiptOCRPanel
+        isOpen={isReceiptOCROpen}
+        token={user.token}
+        onClose={closeReceiptOCR}
+        onTransactionCreated={onAssistantTransactionCreated}
       />
 
     </div>

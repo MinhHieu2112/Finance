@@ -1,5 +1,5 @@
 import transactionModel from '../../../models/Transaction';
-import { type AdviceTransaction } from '../types';
+import { type transactionSchema } from '../../types/Transactions';
 
 class forcastingTrendRepository {
 	async getRecentTransactions(limit: number, userID: string) {
@@ -7,7 +7,7 @@ class forcastingTrendRepository {
 			                   .sort({ date: -1 })
 			                   .limit(limit)
 			                   .select('id description amount type category frequency date -_id')
-			                   .lean<AdviceTransaction[]>();
+			                   .lean<transactionSchema[]>();
 	}
 }
 

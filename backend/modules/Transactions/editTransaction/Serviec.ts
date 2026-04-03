@@ -11,7 +11,7 @@ class transactionService {
 									type		: string, 
 									category	: string, 
 									frequency	: string,
-									date		: string }) {
+									date		: Date }) {
 		const description = data.description?.trim();
 		const type = data.type?.trim() as TransactionType;
 		const category = data.category?.trim();

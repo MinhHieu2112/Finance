@@ -32,6 +32,24 @@ const formatShortDate = (date: Date) => {
   return `${day}/${month}`;
 };
 
+const parseTransactionDate = (dateValue: string) => {
+  if (!dateValue) {
+    return null;
+  }
+
+  const normalized = dateValue.trim();
+  const parsed = /^\d{4}-\d{2}-\d{2}$/.test(normalized)
+    ? new Date(`${normalized}T00:00:00`)
+    : new Date(normalized);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  parsed.setHours(0, 0, 0, 0);
+  return parsed;
+};
+
 export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
   const categoryData = useMemo(() => {
     const expenses   = transactions.filter((t) => t.type === TransactionType.EXPENSE);
@@ -60,9 +78,18 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
       return [];
     }
 
-    const toDate = (dateValue: string) => new Date(`${dateValue}T00:00:00`);
+    const parsedTransactions = transactions
+      .map((transaction) => ({
+        ...transaction,
+        parsedDate: parseTransactionDate(transaction.date),
+      }))
+      .filter((transaction): transaction is typeof transaction & { parsedDate: Date } => Boolean(transaction.parsedDate));
 
-    const maxTime = Math.max(...transactions.map((t) => toDate(t.date).getTime()));
+    if (!parsedTransactions.length) {
+      return [];
+    }
+
+    const maxTime = Math.max(...parsedTransactions.map((transaction) => transaction.parsedDate.getTime()));
     const endDate = new Date(maxTime);
     endDate.setHours(0, 0, 0, 0);
 
@@ -72,10 +99,10 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
 
     const groupedDailyNet = new Map<string, number>();
 
-    transactions.forEach((t) => {
-      const transactionDate = toDate(t.date);
+    parsedTransactions.forEach((transaction) => {
+      const transactionDate = transaction.parsedDate;
 
-      const signedAmount = t.type === TransactionType.INCOME ? t.amount : -t.amount;
+      const signedAmount = transaction.type === TransactionType.INCOME ? transaction.amount : -transaction.amount;
 
       if (transactionDate < startDate) {
         return;

@@ -1,4 +1,4 @@
-import { type AnalysisAnomaly, type ForcastingTrendResult } from '../types';
+import { type AnalysisAnomaly, type ForcastingTrendResult } from '../../types/Analysis';
 
 class savingSuggestionService {
 	private mean(values: number[]) {

@@ -1,10 +1,21 @@
 import AppError from '../../../utils/appError';
 import forcastingTrendRepository from './Repository';
-import { type AdviceTransaction, type ForcastingTrendResult, type MonthlyPoint } from '../types';
+import { type transactionSchema } from '../../types/Transactions';
+import { type ForcastingTrendResult, type MonthlyPoint } from '../../types/Analysis';
 
 class forcastingTrendService {
-	private monthKey(dateInput: string): string | null {
-		const date = new Date(`${dateInput}T00:00:00`);
+	private monthKey(dateInput: string | Date): string | null {
+		const raw = dateInput instanceof Date
+			? dateInput.toISOString()
+			: String(dateInput || '').trim();
+		if (!raw) {
+			return null;
+		}
+
+		const date = /^\d{4}-\d{2}-\d{2}$/.test(raw)
+			? new Date(`${raw}T00:00:00`)
+			: new Date(raw);
+
 		if (Number.isNaN(date.getTime())) {
 			return null;
 		}
@@ -83,7 +94,7 @@ class forcastingTrendService {
 		return 'stable' as const;
 	}
 
-	private buildMonthlySeries(transactions: AdviceTransaction[]) {
+	private buildMonthlySeries(transactions: transactionSchema[]) {
 		const map = new Map<string, { income: number; expense: number }>();
 
 		transactions.forEach((transaction) => {

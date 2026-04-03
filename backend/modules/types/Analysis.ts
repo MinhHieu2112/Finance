@@ -1,13 +1,3 @@
-export interface AdviceTransaction {
-	id: string;
-	description: string;
-	amount: number;
-	type: string;
-	category: string;
-	frequency: string;
-	date: string;
-}
-
 export interface MonthlyPoint {
 	month: string;
 	income: number;
@@ -23,7 +13,7 @@ export interface ForcastingTrendResult {
 
 export interface AnalysisAnomaly {
 	id: string;
-	date: string;
+	date: Date;
 	description: string;
 	category: string;
 	amount: number;
