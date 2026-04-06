@@ -1,16 +1,104 @@
 import React, { useEffect, useState } from 'react';
-import { Transaction, TransactionFrequency, TransactionType, type TransactionPayload } from '../../types/Transactions';
+import { type CategoryOption } from '../../types/Categories';
+import {
+  Transaction,
+  TransactionFrequency,
+  TransactionType,
+  type TransactionPayload,
+  type TransactionPayloadDetail,
+} from '../../types/Transactions';
 import { Button } from '../Button/Button';
-import { X } from 'lucide-react';
+import { Plus, Trash2, X } from 'lucide-react';
 
 interface TransactionFormProps {
   onSave: (transaction: TransactionPayload) => Promise<void> | void;
   onClose: () => void;
-  categoryOptions: Array<{ _id: string; name: string }>;
+  categoryOptions: CategoryOption[];
   onManageCategories?: () => void;
   mode?: 'create' | 'edit';
   initialTransaction?: Transaction | null;
 }
+
+interface TransactionDetailInput {
+  id: string;
+  categoryId: string;
+  quantity: string;
+  amount: string;
+  name: string;
+}
+
+const createRowId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+const getTodayISO = () => new Date().toISOString().split('T')[0];
+
+const toDateInputValue = (dateValue?: string) => {
+  if (!dateValue) {
+    return getTodayISO();
+  }
+
+  const parsedDate = new Date(dateValue);
+  if (Number.isNaN(parsedDate.getTime())) {
+    return dateValue.slice(0, 10) || getTodayISO();
+  }
+
+  return parsedDate.toISOString().split('T')[0];
+};
+
+const createEmptyDetail = (defaultCategoryId = ''): TransactionDetailInput => ({
+  id: createRowId(),
+  categoryId: defaultCategoryId,
+  quantity: '1',
+  amount: '',
+  name: '',
+});
+
+const buildInitialDetails = (
+  categoryOptions: CategoryOption[],
+  transaction?: Transaction | null,
+): TransactionDetailInput[] => {
+  if (transaction?.details?.length) {
+    return transaction.details.map((detail) => ({
+      id: createRowId(),
+      categoryId: detail.categoryId || categoryOptions[0]?._id || '',
+      quantity: String(detail.quantity ?? 1),
+      amount: String(detail.amount ?? 0),
+      name: detail.name || '',
+    }));
+  }
+
+  return [createEmptyDetail(categoryOptions[0]?._id || '')];
+};
+
+const normalizeDetails = (
+  details: TransactionDetailInput[],
+  categoryOptions: CategoryOption[],
+): { normalizedDetails: TransactionPayloadDetail[]; invalidRows: number[] } => {
+  const normalizedDetails: TransactionPayloadDetail[] = [];
+  const invalidRows: number[] = [];
+
+  details.forEach((detail, index) => {
+    const matchedCategory = categoryOptions.find((category) => category._id === detail.categoryId);
+    const quantity = Number.parseInt(detail.quantity, 10);
+    const amount = Number.parseFloat(detail.amount);
+
+    if (!matchedCategory || !Number.isFinite(quantity) || quantity <= 0 || !Number.isFinite(amount) || amount < 0) {
+      invalidRows.push(index + 1);
+      return;
+    }
+
+    normalizedDetails.push({
+      categoryId: matchedCategory._id,
+      categoryName: matchedCategory.name,
+      quantity,
+      amount,
+      name: detail.name.trim(),
+    });
+  });
+
+  return {
+    normalizedDetails,
+    invalidRows,
+  };
+};
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({
   onSave,
@@ -21,91 +109,110 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   initialTransaction = null,
 }) => {
   const [description, setDescription] = useState(initialTransaction?.description || '');
-  const [amount, setAmount] = useState(initialTransaction ? String(initialTransaction.total_amount) : '');
   const [type, setType] = useState<TransactionType>(initialTransaction?.type || TransactionType.EXPENSE);
-  const [source, setSource] = useState(
-    initialTransaction?.type === TransactionType.INCOME ? (initialTransaction.details[0]?.categoryName || '') : ''
-  );
-  const [expenseCategoryId, setExpenseCategoryId] = useState(
-    initialTransaction?.type === TransactionType.EXPENSE
-      ? (initialTransaction.details[0]?.categoryId || categoryOptions[0]?._id || '')
-      : (categoryOptions[0]?._id || '')
-  );
   const [frequency, setFrequency] = useState<TransactionFrequency>(
-    initialTransaction?.frequency || TransactionFrequency.ONE_TIME
+    initialTransaction?.frequency || TransactionFrequency.ONE_TIME,
   );
-  const [date, setDate] = useState(initialTransaction?.date || new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(toDateInputValue(initialTransaction?.date));
+  const [details, setDetails] = useState<TransactionDetailInput[]>(
+    buildInitialDetails(categoryOptions, initialTransaction),
+  );
+  const [formError, setFormError] = useState('');
+
+  useEffect(() => {
+    setDescription(initialTransaction?.description || '');
+    setType(initialTransaction?.type || TransactionType.EXPENSE);
+    setFrequency(initialTransaction?.frequency || TransactionFrequency.ONE_TIME);
+    setDate(toDateInputValue(initialTransaction?.date));
+    setDetails(buildInitialDetails(categoryOptions, initialTransaction));
+    setFormError('');
+  }, [initialTransaction, mode]);
 
   useEffect(() => {
     if (!categoryOptions.length) {
-      setExpenseCategoryId('');
       return;
     }
 
-    if (!expenseCategoryId || !categoryOptions.some((category) => category._id === expenseCategoryId)) {
-      setExpenseCategoryId(categoryOptions[0]._id);
-    }
-  }, [categoryOptions, expenseCategoryId]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const parsedAmount = parseFloat(amount);
-    if (!description || !Number.isFinite(parsedAmount) || parsedAmount < 0) {
-      return;
-    }
-
-    if (type === TransactionType.EXPENSE) {
-      const selectedCategory = categoryOptions.find((category) => category._id === expenseCategoryId);
-      if (!selectedCategory) {
-        return;
+    setDetails((prevDetails) => prevDetails.map((detail) => {
+      if (detail.categoryId && categoryOptions.some((category) => category._id === detail.categoryId)) {
+        return detail;
       }
 
-      await onSave({
-        description,
-        total_amount: parsedAmount,
-        type,
-        frequency,
-        date,
-        details: [
-          {
-            categoryId: selectedCategory._id,
-            categoryName: selectedCategory.name,
-            amount: parsedAmount,
-            note: '',
-          },
-        ],
-      });
+      return {
+        ...detail,
+        categoryId: categoryOptions[0]._id,
+      };
+    }));
+  }, [categoryOptions]);
 
-      onClose();
+  const updateDetail = (detailId: string, patch: Partial<TransactionDetailInput>) => {
+    setDetails((prevDetails) => prevDetails.map((detail) => (
+      detail.id === detailId ? { ...detail, ...patch } : detail
+    )));
+
+    if (formError) {
+      setFormError('');
+    }
+  };
+
+  const addDetailAfter = (index: number) => {
+    setDetails((prevDetails) => {
+      const nextDetails = [...prevDetails];
+      nextDetails.splice(index + 1, 0, createEmptyDetail(categoryOptions[0]?._id || ''));
+      return nextDetails;
+    });
+
+    if (formError) {
+      setFormError('');
+    }
+  };
+
+  const removeDetail = (detailId: string) => {
+    setDetails((prevDetails) => {
+      if (prevDetails.length <= 1) {
+        return prevDetails;
+      }
+
+      return prevDetails.filter((detail) => detail.id !== detailId);
+    });
+  };
+
+  const totalAmountPreview = details.reduce((sum, detail) => {
+    const amountValue = Number.parseFloat(detail.amount);
+    return Number.isFinite(amountValue) && amountValue >= 0 ? sum + amountValue : sum;
+  }, 0);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const trimmedDescription = description.trim();
+    if (!trimmedDescription) {
+      setFormError('Description is required.');
       return;
     }
 
-    const incomeCategoryName = source.trim();
-    if (!incomeCategoryName) {
+    const { normalizedDetails, invalidRows } = normalizeDetails(details, categoryOptions);
+
+    if (invalidRows.length > 0) {
+      setFormError(`Invalid values at detail row ${Array.from(new Set(invalidRows)).join(', ')}.`);
       return;
     }
 
     await onSave({
-      description,
-      total_amount: parsedAmount,
+      description: trimmedDescription,
       type,
       frequency,
       date,
-      details: [
-        {
-          categoryName: incomeCategoryName,
-          amount: parsedAmount,
-          note: '',
-        },
-      ],
+      total_amount: normalizedDetails.reduce((sum, detail) => sum + detail.amount, 0),
+      details: normalizedDetails,
     });
+
     onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl animate-fade-in-up">
+      <div className="bg-white rounded-2xl w-full max-w-6xl p-6 lg:p-8 relative shadow-2xl animate-fade-in-up max-h-[92vh] overflow-y-auto">
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
           <X size={24} />
         </button>
@@ -114,123 +221,174 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           {mode === 'edit' ? 'Edit Transaction' : 'Add New Transaction'}
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex bg-gray-100 p-1 rounded-lg mb-4">
-            <button
-              type      = "button"
-              onClick   = {() => setType(TransactionType.EXPENSE)}
-              className = {`flex-1 py-2 rounded-md text-sm font-medium transition-all ${type === TransactionType.EXPENSE ? 'bg-white text-red-500 shadow-sm' : 'text-gray-500'}`}
-            >
-              Expense
-            </button>
-            <button
-              type      = "button"
-              onClick   = {() => setType(TransactionType.INCOME)}
-              className = {`flex-1 py-2 rounded-md text-sm font-medium transition-all ${type === TransactionType.INCOME ? 'bg-white text-emerald-600 shadow-sm' : 'text-gray-500'}`}
-            >
-              Income
-            </button>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              {type === TransactionType.INCOME ? 'Income Source' : 'Category'}
-            </label>
-
-            {type === TransactionType.INCOME ? (
-              <input
-                type="text"
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                placeholder="Example: Salary, Client A, Dividends..."
-                required
-              />
-            ) : (
-              <>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="rounded-xl border border-gray-200 p-4 bg-gray-50/40">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-end">
+              <div className="xl:col-span-2">
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Type</label>
                 <select
-                  value={expenseCategoryId}
-                  onChange={(e) => setExpenseCategoryId(e.target.value)}
-                  disabled={categoryOptions.length === 0}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
+                  value={type}
+                  onChange={(e) => setType(e.target.value as TransactionType)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
                 >
-                  {categoryOptions.length === 0 && (
-                    <option value="">No categories available</option>
-                  )}
-                  {categoryOptions.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
-                  ))}
+                  <option value={TransactionType.EXPENSE}>Expense</option>
+                  <option value={TransactionType.INCOME}>Income</option>
                 </select>
-              </>
-            )}
-          </div>
+              </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Amount</label>
-            <input
-              type        = "number"
-              min         = "0"
-              step        = "0.01"
-              value       = {amount}
-              onChange    = {(e) => setAmount(e.target.value)}
-              className   = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-              placeholder = "0"
-              required
-            />
-          </div>
+              <div className="xl:col-span-3">
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Description</label>
+                <input
+                  type="text"
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                    if (formError) {
+                      setFormError('');
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                  placeholder="Monthly expenses, Salary April..."
+                />
+              </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Description</label>
-            <input
-              type        = "text"
-              value       = {description}
-              onChange    = {(e) => setDescription(e.target.value)}
-              className   = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-              placeholder = "Example: Lunch, Fuel, Salary..."
-              required
-            />
-          </div>
+              <div className="xl:col-span-2">
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Frequency</label>
+                <select
+                  value={frequency}
+                  onChange={(e) => setFrequency(e.target.value as TransactionFrequency)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
+                >
+                  <option value={TransactionFrequency.WEEKLY}>Weekly</option>
+                  <option value={TransactionFrequency.MONTHLY}>Monthly</option>
+                  <option value={TransactionFrequency.YEARLY}>Yearly</option>
+                  <option value={TransactionFrequency.ONE_TIME}>One-time</option>
+                </select>
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Frequency</label>
-              <select
-                value     = {frequency}
-                onChange  = {(e) => setFrequency(e.target.value as TransactionFrequency)}
-                className = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
-              >
-                <option value={TransactionFrequency.WEEKLY}>Weekly</option>
-                <option value={TransactionFrequency.MONTHLY}>Monthly</option>
-                <option value={TransactionFrequency.YEARLY}>Yearly</option>
-                <option value={TransactionFrequency.ONE_TIME}>One-time</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Date</label>
-              <input
-                type      = "date"
-                value     = {date}
-                onChange  = {(e) => setDate(e.target.value)}
-                className = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                required
-              />
+              <div className="xl:col-span-2">
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Date</label>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                />
+              </div>
+
+              <div className="xl:col-span-3">
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Total Preview</label>
+                <div className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-white text-gray-700 font-semibold">
+                  {Math.round(totalAmountPreview).toLocaleString('en-US')} VND
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="pt-4">
+          <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Transaction Details</p>
+            <div className="space-y-3">
+              {details.map((detail, index) => (
+                <div key={detail.id} className="rounded-xl border border-gray-200 p-4 bg-gray-50/30">
+                  <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-end">
+                    <div className="xl:col-span-4">
+                      <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Category</label>
+                      <select
+                        value={detail.categoryId}
+                        onChange={(e) => updateDetail(detail.id, { categoryId: e.target.value })}
+                        disabled={categoryOptions.length === 0}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
+                      >
+                        {categoryOptions.length === 0 && <option value="">No categories available</option>}
+                        {categoryOptions.map((category) => (
+                          <option key={category._id} value={category._id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="xl:col-span-2">
+                      <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Quantity</label>
+                      <input
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={detail.quantity}
+                        onChange={(e) => updateDetail(detail.id, { quantity: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                        placeholder="1"
+                      />
+                    </div>
+
+                    <div className="xl:col-span-2">
+                      <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Amount</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={detail.amount}
+                        onChange={(e) => updateDetail(detail.id, { amount: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                        placeholder="0"
+                      />
+                    </div>
+
+                    <div className="xl:col-span-4">
+                      <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Name</label>
+                      <input
+                        type="text"
+                        value={detail.name}
+                        onChange={(e) => updateDetail(detail.id, { name: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                        placeholder="Detail name"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-3 flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => addDetailAfter(index)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
+                    >
+                      <Plus size={16} />
+                      Add detail
+                    </button>
+                    {details.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeDetail(detail.id)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-red-200 bg-white text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 size={16} />
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {formError && (
+            <p className="text-sm text-red-500">{formError}</p>
+          )}
+
+          <div className="pt-2">
             <Button
               type="submit"
               className="w-full py-3"
-              disabled={type === TransactionType.EXPENSE && categoryOptions.length === 0}
+              disabled={categoryOptions.length === 0}
             >
               {mode === 'edit' ? 'Update Transaction' : 'Save Transaction'}
             </Button>
-            {type === TransactionType.EXPENSE && categoryOptions.length === 0 && (
-              <p className="mt-2 text-xs text-red-500 text-center">Please create at least one category before adding an expense.</p>
+            {categoryOptions.length === 0 && (
+              <p className="mt-2 text-xs text-red-500 text-center">
+                Please create at least one category before adding transactions.
+              </p>
             )}
-            {type === TransactionType.EXPENSE && categoryOptions.length === 0 && onManageCategories && (
+            {categoryOptions.length === 0 && onManageCategories && (
               <div className="mt-2 text-center">
                 <button
                   type="button"

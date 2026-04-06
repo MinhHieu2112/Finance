@@ -41,11 +41,12 @@ class transactionService {
         const normalizedDetails = [];
         for (const detail of details) {
             const categoryId   = detail.categoryId;
-            const categoryName = detail.categoryName?.trim();
             const amount       = Number(detail.amount);
             const quantity     = Number(detail.quantity) || 1;
-            if (!categoryName) {
-                throw new AppError(`Transaction detail is missing categoryName`, 400);
+            const name         = detail.name?.trim() || '';
+
+            if (!categoryId) {
+                throw new AppError('Transaction detail is missing categoryId', 400);
             }
 
             if (!Number.isFinite(amount) || amount < 0) {
@@ -61,7 +62,9 @@ class transactionService {
                 throw new AppError('Category not found for this user', 400);
             }
             normalizedDetails.push({
-                    ...detail,
+                    categoryId,
+                    categoryName: existingCategory.name,
+                    name,
                     amount,
                     quantity
                 });

@@ -7,8 +7,18 @@ import { CategoryManagerModal } from '../../components/CategoryManagerModal/Cate
 import { AIAssistantModal } from '../../components/AIAssistantModal/AIAssistantModal';
 import { ReceiptOCRPanel } from '../../components/ReceiptOCRPanel/ReceiptOCRPanel';
 import { Button } from '../../components/Button/Button';
-import { Category} from '../../types/Categories';
-import { Transaction, type TransactionPayload } from '../../types/Transactions';
+import {
+  Category,
+  CategoryOption,
+  ListCategoryResponse,
+  SaveCategoryResponse,
+} from '../../types/Categories';
+import {
+  ListTransactionResponse,
+  SaveTransactionResponse,
+  Transaction,
+  type TransactionPayload,
+} from '../../types/Transactions';
 import { User } from '../../types/Users';
 import { Plus, ScanText, Sparkles, Tags } from 'lucide-react';
 
@@ -16,26 +26,6 @@ const API_BASE_URL = 'http://localhost:4000/api';
 
 interface DashboardPageProps {
   user: User;
-}
-
-interface ListTransactionResponse {
-  success: boolean;
-  transactions: Transaction[];
-}
-
-interface SaveTransactionResponse {
-  success: boolean;
-  transaction: Transaction;
-}
-
-interface ListCategoryResponse {
-  success: boolean;
-  categories: Category[];
-}
-
-interface SaveCategoryResponse {
-  success: boolean;
-  category: Category;
 }
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
@@ -52,7 +42,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     return Array.from(new Set(names));
   }, [categories]);
 
-  const categoryFormOptions = useMemo(() => {
+  const categoryFormOptions = useMemo<CategoryOption[]>(() => {
     return categories
       .map((category) => ({ _id: category._id, name: category.name.trim() }))
       .filter((category) => Boolean(category.name));
@@ -95,7 +85,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     loadDashboardData();
   }, [user.token]);
 
-  const addTransaction = async (newTx: TransactionPayload) => {
+  const createTransaction = async (newTx: TransactionPayload): Promise<Transaction> => {
     const response = await fetch(`${API_BASE_URL}/transactions/add`, {
       method: 'POST',
       headers: {
@@ -110,7 +100,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     }
 
     const data: SaveTransactionResponse = await response.json();
-    setTransactions((prev) => [data.transaction, ...prev]);
+    return data.transaction;
+  };
+
+  const addTransaction = async (newTx: TransactionPayload) => {
+    const createdTransaction = await createTransaction(newTx);
+    setTransactions((prev) => [createdTransaction, ...prev]);
   };
 
   const updateTransaction = async (id: string, updatedTx: TransactionPayload) => {

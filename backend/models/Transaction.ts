@@ -24,7 +24,7 @@ const transactionDetailSchema = new Schema({categoryId  : {type    : Schema.Type
                                              amount      : {type    : Number,
                                                             required: true,
                                                             min     : 0,},
-                                             note        : {type   : String,
+                                             name        : {type   : String,
                                                             default: '',
                                                             trim   : true,}},
                                             { _id: false }

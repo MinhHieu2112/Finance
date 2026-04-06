@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Transaction, TransactionType, getPrimaryCategoryName } from '../../types/Transactions';
-import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil } from 'lucide-react';
+import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -12,11 +12,22 @@ interface TransactionListProps {
 export const TransactionList: React.FC<TransactionListProps> = ({ transactions, categoryOptions, onDelete, onEdit }) => {
   const ITEMS_PER_PAGE = 10;
 
+  const formatDisplayDate = (rawDate: string) => {
+    const parsedDate = new Date(rawDate);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return rawDate;
+    }
+
+    const iso = parsedDate.toISOString();
+    return `${iso.slice(0, 10)} ${iso.slice(11, 16)}`;
+  };
+
   const [searchTerm, setSearchTerm]         = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [startDate, setStartDate]           = useState('');
   const [endDate, setEndDate]               = useState('');
   const [currentPage, setCurrentPage]       = useState(1);
+  const [expandedIds, setExpandedIds]       = useState<string[]>([]);
 
   const allCategoryOptions = useMemo(() => {
     const categoriesFromTransactions = transactions.flatMap((transaction) =>
@@ -54,10 +65,24 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
     setCurrentPage(1);
   }, [searchTerm, categoryFilter, startDate, endDate, transactions]);
 
+  useEffect(() => {
+    setExpandedIds((prev) => prev.filter((id) => transactions.some((transaction) => transaction._id === id)));
+  }, [transactions]);
+
   const totalPages = Math.max(1, Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
   const pageStart = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
   const paginatedTransactions = filteredTransactions.slice(pageStart, pageStart + ITEMS_PER_PAGE);
+
+  const toggleExpandedRow = (transactionId: string) => {
+    setExpandedIds((prev) => {
+      if (prev.includes(transactionId)) {
+        return prev.filter((id) => id !== transactionId);
+      }
+
+      return [...prev, transactionId];
+    });
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -140,46 +165,121 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {paginatedTransactions.map((t) => (
-              <tr key={t._id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap text-gray-500">{t.date}</td>
-                <td className="px-6 py-4 font-medium text-gray-800 flex items-center gap-3">
-                  <span className={`p-2 rounded-full flex-shrink-0 ${t.type === TransactionType.INCOME ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
-                    {t.type === TransactionType.INCOME ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                  </span>
-                  <span className="truncate max-w-[200px]" title={t.description}>
-                    {t.description}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap">
-                    {Array.from(new Set(t.details.map((detail) => detail.categoryName))).slice(0, 2).join(', ') || getPrimaryCategoryName(t)}
-                  </span>
-                </td>
-                <td className={`px-6 py-4 text-right font-bold whitespace-nowrap ${t.type === TransactionType.INCOME ? 'text-emerald-600' : 'text-gray-800'}`}>
-                  {t.type === TransactionType.INCOME ? '+' : '-'}
-                  {Math.round(t.total_amount).toLocaleString('en-US')} VND
-                </td>
-                <td className="px-6 py-4 text-center">
-                  <div className="flex items-center justify-center gap-1">
-                    <button
-                      onClick={() => onEdit(t)}
-                      className="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-full"
-                      title="Edit transaction"
-                    >
-                      <Pencil size={16} />
-                    </button>
-                    <button
-                      onClick={() => onDelete(t._id)}
-                      className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
-                      title="Delete transaction"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {paginatedTransactions.map((t) => {
+              const isExpanded = expandedIds.includes(t._id);
+
+              return (
+                <React.Fragment key={t._id}>
+                  <tr
+                    onClick={() => toggleExpandedRow(t._id)}
+                    className="hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-500" title={t.date}>
+                      {formatDisplayDate(t.date)}
+                    </td>
+                    <td className="px-6 py-4 font-medium text-gray-800">
+                      <div className="flex items-center gap-3">
+                        <span className={`p-2 rounded-full flex-shrink-0 ${t.type === TransactionType.INCOME ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
+                          {t.type === TransactionType.INCOME ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                        </span>
+                        <span className="truncate max-w-[200px]" title={t.description}>
+                          {t.description}
+                        </span>
+                        <span className="ml-auto text-gray-400">
+                          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap">
+                        {Array.from(new Set(t.details.map((detail) => detail.categoryName))).slice(0, 2).join(', ') || getPrimaryCategoryName(t)}
+                      </span>
+                    </td>
+                    <td className={`px-6 py-4 text-right font-bold whitespace-nowrap ${t.type === TransactionType.INCOME ? 'text-emerald-600' : 'text-gray-800'}`}>
+                      {t.type === TransactionType.INCOME ? '+' : '-'}
+                      {Math.round(t.total_amount).toLocaleString('en-US')} VND
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onEdit(t);
+                          }}
+                          className="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-full"
+                          title="Edit transaction"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onDelete(t._id);
+                          }}
+                          className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
+                          title="Delete transaction"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {isExpanded && (
+                    <tr className="bg-gray-50/70">
+                      <td colSpan={5} className="px-6 pb-4 pt-1">
+                        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                            <div>
+                              <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400">Type</p>
+                              <p className="text-sm font-medium text-gray-700 capitalize">{t.type}</p>
+                            </div>
+                            <div>
+                              <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400">Frequency</p>
+                              <p className="text-sm font-medium text-gray-700">{t.frequency}</p>
+                            </div>
+                            <div>
+                              <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400">Last updated</p>
+                              <p className="text-sm font-medium text-gray-700">{formatDisplayDate(t.updatedAt || t.createdAt || t.date)}</p>
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400 mb-2">
+                              Transaction Details
+                            </p>
+                            <div className="hidden sm:grid sm:grid-cols-12 gap-2 px-3 py-1 text-[11px] uppercase tracking-wide font-semibold text-gray-400">
+                              <span className="sm:col-span-6">Name</span>
+                              <span className="sm:col-span-2">Quantity</span>
+                              <span className="sm:col-span-4 text-right">Amount</span>
+                            </div>
+                            <div className="space-y-2">
+                              {t.details.map((detail, index) => (
+                                <div
+                                  key={`${t._id}-${index}`}
+                                  className="grid grid-cols-1 sm:grid-cols-12 gap-2 px-3 py-2 border border-gray-100 rounded-lg bg-gray-50"
+                                >
+                                  <div className="sm:col-span-6">
+                                    <p className="text-sm font-medium text-gray-700">{detail.name || '-'}</p>
+                                  </div>
+                                  <div className="sm:col-span-2">
+                                    <p className="text-sm font-medium text-gray-700">{detail.quantity ?? 1}</p>
+                                  </div>
+                                  <div className="sm:col-span-4 sm:text-right">
+                                    <span className={`text-sm font-semibold ${t.type === TransactionType.INCOME ? 'text-emerald-600' : 'text-gray-800'}`}>
+                                      {Math.round(detail.amount).toLocaleString('en-US')} VND
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
             {filteredTransactions.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center text-gray-400">

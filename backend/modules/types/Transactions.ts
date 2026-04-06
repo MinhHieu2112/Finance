@@ -17,7 +17,7 @@ export interface transactionDetailSchema {
 	categoryName: string;
 	quantity: number;
 	amount: number;
-	note: string;
+	name: string;
 }
 
 export interface transactionSchema {

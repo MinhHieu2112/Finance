@@ -14,9 +14,12 @@ export enum TransactionFrequency {
 export interface TransactionDetail {
   categoryId: string;
   categoryName: string;
+  quantity: number;
   amount: number;
-  note: string;
+  name: string;
 }
+
+export type TransactionPayloadDetail = TransactionDetail;
 
 export interface Transaction {
   _id: string;
@@ -37,12 +40,17 @@ export interface TransactionPayload {
   frequency: TransactionFrequency;
   date: string;
   total_amount: number;
-  details: Array<{
-    categoryId?: string;
-    categoryName: string;
-    amount: number;
-    note?: string;
-  }>;
+  details: TransactionPayloadDetail[];
+}
+
+export interface ListTransactionResponse {
+  success: boolean;
+  transactions: Transaction[];
+}
+
+export interface SaveTransactionResponse {
+  success: boolean;
+  transaction: Transaction;
 }
 
 export const getPrimaryCategoryName = (transaction: Transaction) => {

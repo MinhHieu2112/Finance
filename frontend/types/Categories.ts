@@ -7,3 +7,18 @@ export interface Category {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface CategoryOption {
+  _id: string;
+  name: string;
+}
+
+export interface ListCategoryResponse {
+  success: boolean;
+  categories: Category[];
+}
+
+export interface SaveCategoryResponse {
+  success: boolean;
+  category: Category;
+}

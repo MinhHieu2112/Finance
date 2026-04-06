@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnalysisResult } from '../../types/Analysis';
-import { Transaction } from '../../types/Transactions';
+import { ListTransactionResponse, Transaction } from '../../types/Transactions';
 import { User } from '../../types/Users';
 import { ResponsiveContainer,
          LineChart,
@@ -28,11 +28,6 @@ interface SavingSuggestionResponse {
 interface DetectAnomaliesResponse {
   success: boolean;
   anomalies: AnalysisResult['anomalies'];
-}
-
-interface ListTransactionResponse {
-  success: boolean;
-  transactions: Transaction[];
 }
 
 const API_BASE_URL = 'http://localhost:4000/api';

@@ -16,7 +16,7 @@ const TransactionDetailSchema = z.object({
   categoryName: z.string().trim(),
   quantity: z.number().int().min(1),
   amount: amountSchema,
-  note: z.string().trim().optional(),
+  name: z.string().trim().optional(),
 });
 
 const TransactionSchema = z.object({

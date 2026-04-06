@@ -29,7 +29,7 @@ class add_query_nlpService {
 						"categoryName" : string,
 						"quantity": number, .default to 1 if not clear from prompt.
 						"amount": number, .default to total_amount if not clear from prompt or if only one item in details.
-						"note": string
+						"name": string
 					}
 				"total_amount": "number", .default to sum of details.amount if not clear from prompt or if multiple items in details.
 			   },
@@ -162,8 +162,8 @@ class add_query_nlpService {
 		const result 	 = await this.detectIntent(userId, message);
 		const normalized = FinanceIntentSchema.safeParse(result);
 		
-		// console.log('Raw AI response:', result);
-		// console.log('Normalized AI response:', JSON.stringify(normalized, null, 2));
+		console.log('Raw AI response:', result);
+		console.log('Normalized AI response:', JSON.stringify(normalized, null, 2));
 
 		if (normalized.success) {
 			const payload = normalized.data;
@@ -187,7 +187,7 @@ class add_query_nlpService {
 									categoryName: d.categoryName,
 									quantity: d.quantity || 1,
 									amount: d.amount,
-									note: d.note || '',}
+									name: d.name || '',}
 						})
 					);
 
