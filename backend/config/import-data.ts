@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+
 import Transaction from '../models/Transaction';
 import User from '../models/Users';
 import Category from '../models/Category';
@@ -9,62 +10,39 @@ import Category from '../models/Category';
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 const DB = process.env.DATABASE_LOCAL!;
+mongoose.connect(DB);
 
-mongoose.connect(DB)
-  
-// READ JSON FILE
-const transactions = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, 'transactions.json'), 'utf-8')
-);
+const read = (file: string) =>
+  JSON.parse(fs.readFileSync(path.resolve(__dirname, file), 'utf-8'));
 
-const users = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, 'users.json'), 'utf-8')
-);
+const users        = read('users.json');
+const categories   = read('categories.json');
+const transactions = read('transactions.json');
 
-const categories = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, 'categories.json'), 'utf-8')
-);
-
-const categoriesByUser = users.flatMap((user: { userID: string }) =>
-  categories.map((category: { id: string; name: string; description?: string }) => ({
-    id: `${user.userID}-${category.id}`,
-    userID: user.userID,
-    name: category.name,
-    description: category.description ?? '',
-  }))
-);
-
-// IMPORT DATA INTO DB
 const importData = async () => {
   try {
-    await Category.syncIndexes();
-    await User.create(users);
-    await Category.create(categoriesByUser);
-    await Transaction.create(transactions);
-
-    console.log('Data successfully loaded!');
-  } catch (err) {
-    console.log(err);
-  }
-  process.exit();
-};
-
-// DELETE ALL DATA FROM DB
-const deleteData = async () => {
-  try {
-    await Transaction.deleteMany();
-    await Category.deleteMany();
     await User.deleteMany();
-    console.log('Data successfully deleted!');
+    await Category.deleteMany();
+    await Transaction.deleteMany();
 
+    await User.insertMany(users);
+    await Category.insertMany(categories);
+    await Transaction.insertMany(transactions);
+
+    console.log('✅ Import done');
   } catch (err) {
-    console.log(err);
+    console.error('❌ Error:', err);
   }
   process.exit();
 };
 
-if (process.argv[2] === '--import') {
-  importData();
-} else if (process.argv[2] === '--delete') {
-  deleteData();
-}
+const deleteData = async () => {
+  await User.deleteMany();
+  await Category.deleteMany();
+  await Transaction.deleteMany();
+  console.log('🧹 Deleted');
+  process.exit();
+};
+
+if (process.argv[2] === '--import') importData();
+if (process.argv[2] === '--delete') deleteData();

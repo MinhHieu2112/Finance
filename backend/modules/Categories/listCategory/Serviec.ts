@@ -1,13 +1,15 @@
 import categoryRepository from './Repository';
 import AppError from '../../../utils/appError';
+// import { toObjectId } from '../../../utils/objectId';
+import { Types } from 'mongoose';
 
 class categoryService {
-	async listCategories(userID: string) {
-		if (!userID) {
+	async listCategories(userId: Types.ObjectId) {
+		if (!userId) {
 			throw new AppError('User id is required', 400);
 		}
 
-		return categoryRepository.listCategories(userID);
+		return categoryRepository.listCategories(userId);
 	}
 }
 

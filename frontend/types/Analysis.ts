@@ -5,7 +5,7 @@ export interface MonthlyPoint {
 }
 
 export interface AnalysisAnomaly {
-  id: string;
+  _id: string;
   date: string;
   description: string;
   category: string;

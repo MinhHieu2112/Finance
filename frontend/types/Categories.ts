@@ -1,6 +1,7 @@
 // Category entity returned by backend API
 export interface Category {
-  id: string;
+  _id: string;
+  userId: string;
   name: string;
   description: string;
   createdAt?: string;

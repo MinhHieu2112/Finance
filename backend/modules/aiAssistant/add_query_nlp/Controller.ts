@@ -1,6 +1,6 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import AppError from '../../../utils/appError';
-import orchestratorService from './Serviec';
+import add_query_nlpService from './Serviec';
 
 const add_query_nlp = async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -11,7 +11,7 @@ const add_query_nlp = async (req: Request, res: Response, next: NextFunction) =>
 			throw new AppError('Prompt is required', 400);
 		}
 
-		const result = await orchestratorService.handlePrompt(authUser.id, prompt);
+		const result = await add_query_nlpService.handlePrompt(authUser.id, prompt);
 
 		res.status(200).json({
 			success: true,

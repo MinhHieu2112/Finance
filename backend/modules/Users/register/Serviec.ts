@@ -1,19 +1,41 @@
-import { randomUUID } from 'node:crypto';
 import validator from 'validator'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import authRepository from './Repository';
 import AppError from '../../../utils/appError';
 import defaultCategories from '../../../config/categories.json';
-
-type defaultCategorySeed = {
-	id: string;
-	name: string;
-	description?: string;
-};
+import { Types } from 'mongoose';
+import { CategorySchema, DefaultCategorySchema } from '../../types/Category';
 
 class authService {
-	createToken(userData: { id: string; email: string; username: string }) {
+	private prepareDefaultCategories(userId: Types.ObjectId) {
+		const deduped = new Map<string, CategorySchema>();
+
+		(defaultCategories as DefaultCategorySchema[]).forEach((category) => {
+			const name = category.name?.trim();
+			if (!name) {
+				return;
+			}
+
+			const key = name.toLowerCase();
+			if (!deduped.has(key)) {
+				deduped.set(key, {
+					userId,
+					name,
+					description: category.description?.trim() ?? '',
+				});
+			}
+		});
+
+		const categories = Array.from(deduped.values());
+		if (categories.length === 0) {
+			throw new AppError('Default categories configuration is invalid', 500);
+		}
+
+		return categories;
+	}
+
+	createToken(userData: { id: Types.ObjectId; email: string; username: string }) {
 		const secret = process.env.JWT_SECRET;
 		if (!secret) {
 			throw new AppError('Missing JWT_SECRET in backend environment', 500);
@@ -52,27 +74,21 @@ class authService {
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const userID = randomUUID();
-		const user = await authRepository.createUser({userID,
-													  username,
-													  email,
-													  password: hashedPassword,});
+		const user = await authRepository.createUser({username,
+													 email,
+													 password: hashedPassword,});
 
 		try {
-			const categoriesForUser = (defaultCategories as defaultCategorySeed[]).map((category) => ({
-				id: `${userID}-${category.id}`,
-				userID,
-				name: category.name,
-				description: category.description ?? '',
-			}));
+			const categoriesForUser = this.prepareDefaultCategories(user._id);
 
 			await authRepository.createDefaultCategories(categoriesForUser);
 		} catch (_error) {
-			await authRepository.deleteUserByUserID(userID);
+			await authRepository.deleteCategoriesByUserId(user._id);
+			await authRepository.deleteUserById(user._id);
 			throw new AppError('Unable to initialize default categories for this account', 500);
 		}
 
-		const userData = {id	  : user.userID,
+		const userData = {id	  : user._id,
 						  username: user.username,
 						  email	  : user.email,};
 

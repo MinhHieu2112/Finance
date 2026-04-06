@@ -1,14 +1,15 @@
-import { randomUUID } from 'node:crypto';
 import categoryRepository from './Repository';
 import AppError from '../../../utils/appError';
+import { Types } from 'mongoose';
+// import { toObjectId } from '../../../utils/objectId';
 
 class categoryService {
-	async addCategory(data: { userID: string; name: string; description?: string }) {
-		const userID = data.userID?.trim();
+	async addCategory(data: { userId: Types.ObjectId; name: string; description?: string }) {
+		const userId = data.userId;
 		const name = data.name?.trim();
 		const description = data.description?.trim() ?? '';
 
-		if (!userID) {
+		if (!userId) {
 			throw new AppError('User id is required', 400);
 		}
 
@@ -16,13 +17,12 @@ class categoryService {
 			throw new AppError('Category name is required', 400);
 		}
 
-		const existingCategory = await categoryRepository.findByName(userID, name);
+		const existingCategory = await categoryRepository.findByName(userId, name);
 		if (existingCategory) {
 			throw new AppError('Category already exists', 409);
 		}
 
-		return categoryRepository.addCategory({ id: randomUUID(),
-												   userID,
+		return categoryRepository.addCategory({ userId: userId,
 												   name,
 												   description, });
 	}

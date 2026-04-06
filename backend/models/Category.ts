@@ -1,10 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-const categorySchema = new Schema({id         : {type    : String,
-                                                 required: true,
-                                                 unique  : true,
-                                                 trim    : true,},
-                                   userID     : {type    : String,
+const categorySchema = new Schema({userId     : {type    : Schema.Types.ObjectId,
                                                  required: true,
                                                  ref     : 'User',
                                                  index   : true,},
@@ -19,6 +15,6 @@ const categorySchema = new Schema({id         : {type    : String,
                                  collection: 'categories'}
 );
 
-categorySchema.index({ userID: 1, name: 1 }, { unique: true });
+categorySchema.index({ userId: 1, name: 1 }, { unique: true });
 
 export default mongoose.model('Category', categorySchema);

@@ -8,7 +8,7 @@ import { AIAssistantModal } from '../../components/AIAssistantModal/AIAssistantM
 import { ReceiptOCRPanel } from '../../components/ReceiptOCRPanel/ReceiptOCRPanel';
 import { Button } from '../../components/Button/Button';
 import { Category} from '../../types/Categories';
-import { Transaction } from '../../types/Transactions';
+import { Transaction, type TransactionPayload } from '../../types/Transactions';
 import { User } from '../../types/Users';
 import { Plus, ScanText, Sparkles, Tags } from 'lucide-react';
 
@@ -47,9 +47,15 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [isReceiptOCROpen, setIsReceiptOCROpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
-  const categoryOptions = useMemo(() => {
+  const categoryNames = useMemo(() => {
     const names = categories.map((category) => category.name.trim()).filter(Boolean);
     return Array.from(new Set(names));
+  }, [categories]);
+
+  const categoryFormOptions = useMemo(() => {
+    return categories
+      .map((category) => ({ _id: category._id, name: category.name.trim() }))
+      .filter((category) => Boolean(category.name));
   }, [categories]);
 
   useEffect(() => {
@@ -89,7 +95,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     loadDashboardData();
   }, [user.token]);
 
-  const addTransaction = async (newTx: Omit<Transaction, 'id'>) => {
+  const addTransaction = async (newTx: TransactionPayload) => {
     const response = await fetch(`${API_BASE_URL}/transactions/add`, {
       method: 'POST',
       headers: {
@@ -107,7 +113,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setTransactions((prev) => [data.transaction, ...prev]);
   };
 
-  const updateTransaction = async (id: string, updatedTx: Omit<Transaction, 'id'>) => {
+  const updateTransaction = async (id: string, updatedTx: TransactionPayload) => {
     const response = await fetch(`${API_BASE_URL}/transactions/edit/${id}`, {
       method: 'PUT',
       headers: {
@@ -122,12 +128,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     }
 
     const data: SaveTransactionResponse = await response.json();
-    setTransactions((prev) => prev.map((t) => (t.id === id ? data.transaction : t)));
+    setTransactions((prev) => prev.map((t) => (t._id === id ? data.transaction : t)));
   };
 
-  const handleSaveTransaction = async (tx: Omit<Transaction, 'id'>) => {
+  const handleSaveTransaction = async (tx: TransactionPayload) => {
     if (editingTransaction) {
-      await updateTransaction(editingTransaction.id, tx);
+      await updateTransaction(editingTransaction._id, tx);
       return;
     }
 
@@ -149,7 +155,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     }
 
     const data: SaveCategoryResponse = await response.json();
-    setCategories((prev) => [data.category, ...prev.filter((item) => item.id !== data.category.id)]);
+    setCategories((prev) => [data.category, ...prev.filter((item) => item._id !== data.category._id)]);
   };
 
   const updateCategory = async (id: string, payload: { name: string; description: string }) => {
@@ -167,7 +173,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     }
 
     const data: SaveCategoryResponse = await response.json();
-    setCategories((prev) => prev.map((item) => (item.id === id ? data.category : item)));
+    setCategories((prev) => prev.map((item) => (item._id === id ? data.category : item)));
   };
 
   const deleteCategory = async (id: string) => {
@@ -182,7 +188,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       throw new Error('Cannot delete category');
     }
 
-    setCategories((prev) => prev.filter((item) => item.id !== id));
+    setCategories((prev) => prev.filter((item) => item._id !== id));
   };
 
   const openCreateForm = () => {
@@ -214,7 +220,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   };
 
   const onAssistantTransactionCreated = (transaction: Transaction) => {
-    setTransactions((prev) => [transaction, ...prev.filter((item) => item.id !== transaction.id)]);
+    setTransactions((prev) => [transaction, ...prev.filter((item) => item._id !== transaction._id)]);
   };
 
   const closeAIAssistant = () => {
@@ -234,7 +240,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         throw new Error('Cannot delete transaction');
       }
 
-      setTransactions((prev) => prev.filter((t) => t.id !== id));
+      setTransactions((prev) => prev.filter((t) => t._id !== id));
     }
   };
 
@@ -303,7 +309,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         <Charts          transactions = {transactions} />
         <TransactionList
           transactions={transactions}
-          categoryOptions={categoryOptions}
+          categoryOptions={categoryNames}
           onDelete={deleteTransaction}
           onEdit={openEditForm}
         />
@@ -313,7 +319,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         <TransactionForm 
           onSave={handleSaveTransaction}
           onClose={closeForm}
-          categoryOptions={categoryOptions}
+          categoryOptions={categoryFormOptions}
           onManageCategories={openCategoryManagerFromForm}
           mode={editingTransaction ? 'edit' : 'create'}
           initialTransaction={editingTransaction}

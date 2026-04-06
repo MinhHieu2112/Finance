@@ -11,13 +11,40 @@ export enum TransactionFrequency {
   ONE_TIME = 'one-time',
 }
 
-// The shape of a single Transaction object
-export interface Transaction {
-  id: string;
-  description: string;
+export interface TransactionDetail {
+  categoryId: string;
+  categoryName: string;
   amount: number;
+  note: string;
+}
+
+export interface Transaction {
+  _id: string;
+  userId: string;
+  description: string;
   type: TransactionType;
-  category: string;
   frequency: TransactionFrequency;
   date: string;
+  total_amount: number;
+  details: TransactionDetail[];
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+export interface TransactionPayload {
+  description: string;
+  type: TransactionType;
+  frequency: TransactionFrequency;
+  date: string;
+  total_amount: number;
+  details: Array<{
+    categoryId?: string;
+    categoryName: string;
+    amount: number;
+    note?: string;
+  }>;
+}
+
+export const getPrimaryCategoryName = (transaction: Transaction) => {
+  return transaction.details[0]?.categoryName || 'Other';
+};

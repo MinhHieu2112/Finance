@@ -16,7 +16,7 @@ const App: React.FC = () => {
     const savedUser = localStorage.getItem('smart_finance_user');
     if (savedUser) {
       const parsedUser = JSON.parse(savedUser) as Partial<User>;
-      if (parsedUser.id && parsedUser.username && parsedUser.email && parsedUser.token) {
+      if (parsedUser._id && parsedUser.username && parsedUser.email && parsedUser.token) {
         setUser(parsedUser as User);
       } else {
         localStorage.removeItem('smart_finance_user');

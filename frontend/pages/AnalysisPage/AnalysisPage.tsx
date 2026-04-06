@@ -183,12 +183,21 @@ const getMainDriver = (
 
   normalizedTransactions.forEach((item) => {
     const monthKey = item.date.slice(0, 7);
+    const detailTotals = new Map<string, number>();
+    item.details.forEach((detail) => {
+      detailTotals.set(detail.categoryName, (detailTotals.get(detail.categoryName) || 0) + detail.amount);
+    });
+
     if (monthKey === previousMonth) {
-      previousTotals.set(item.category, (previousTotals.get(item.category) || 0) + item.amount);
+      detailTotals.forEach((amount, categoryName) => {
+        previousTotals.set(categoryName, (previousTotals.get(categoryName) || 0) + amount);
+      });
     }
 
     if (monthKey === currentMonth) {
-      currentTotals.set(item.category, (currentTotals.get(item.category) || 0) + item.amount);
+      detailTotals.forEach((amount, categoryName) => {
+        currentTotals.set(categoryName, (currentTotals.get(categoryName) || 0) + amount);
+      });
     }
   });
 
@@ -468,20 +477,22 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
     }));
   };
 
-  const handleLegendClick = (entry: { dataKey?: string }) => {
-    const dataKey = entry?.dataKey;
+  const handleLegendClick = (entry: unknown) => {
+    const payload = entry as { dataKey?: unknown } | null | undefined;
+    const dataKey = payload?.dataKey;
     if (dataKey === 'income' || dataKey === 'expense') {
       toggleTrendSeries(dataKey);
     }
   };
 
-  const renderLegendText = (value: string, entry: { dataKey?: string }) => {
-    const dataKey = entry?.dataKey;
+  const renderLegendText = (value: string | number, entry: unknown) => {
+    const payload = entry as { dataKey?: unknown } | null | undefined;
+    const dataKey = payload?.dataKey;
     const isVisible = dataKey === 'income' || dataKey === 'expense' ? visibleSeries[dataKey] : true;
 
     return (
       <span className={isVisible ? 'text-gray-700' : 'text-gray-400'}>
-        {value}
+        {String(value)}
       </span>
     );
   };
@@ -555,7 +566,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value: number) => formatMoney(value)} />
+                <Tooltip formatter={(value: number | undefined) => formatMoney(value ?? 0)} />
                 <Legend onClick={handleLegendClick} formatter={renderLegendText} />
                 <Line type="monotone" dataKey="income" name="Income" stroke="#10B981" strokeWidth={2.5} hide={!visibleSeries.income} />
                 <Line type="monotone" dataKey="expense" name="Expense" stroke="#EF4444" strokeWidth={2.5} hide={!visibleSeries.expense} />
@@ -584,7 +595,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
         {effectiveAnalysis.anomalies.length ? (
           <div className="space-y-2">
             {effectiveAnalysis.anomalies.slice(0, 5).map((item) => (
-              <div key={item.id} className="rounded-lg border border-red-100 bg-red-50 p-3">
+              <div key={item._id} className="rounded-lg border border-red-100 bg-red-50 p-3">
                 <p className="text-xs font-medium text-red-700">{item.description} - {formatMoney(item.amount)}</p>
                 <p className="text-xs text-gray-600">{item.date} | {item.category}</p>
                 <p className="text-xs text-gray-700 mt-1">{item.reason}</p>

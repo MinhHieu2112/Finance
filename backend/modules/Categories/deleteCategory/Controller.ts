@@ -1,9 +1,10 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import categoryService from './Serviec';
+import { Types } from 'mongoose';
 
 const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const categoryId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+		const categoryId = new Types.ObjectId(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
 		const authUser = res.locals.authUser;
 
 		await categoryService.deleteCategory(categoryId, authUser.id);

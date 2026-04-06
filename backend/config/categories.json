@@ -1,42 +1,134 @@
 [
   {
-    "id": "c1",
+    "_id": "69d3bfbfec6ce4b68a144ebb",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
+    "name": "Salary",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ebc",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
+    "name": "Interest",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ebd",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
+    "name": "Rent",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ebe",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
     "name": "Food & Dining",
-    "description": "Daily food and household expenses"
+    "description": ""
   },
   {
-    "id": "c2",
+    "_id": "69d3bfbfec6ce4b68a144ebf",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
     "name": "Transportation",
-    "description": "Taxi, fuel, and travel"
+    "description": ""
   },
   {
-    "id": "c3",
-    "name": "Entertainment",
-    "description": "Movies, subscriptions, and leisure"
-  },
-  {
-    "id": "c4",
+    "_id": "69d3bfbfec6ce4b68a144ec0",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
     "name": "Utilities",
-    "description": "Electricity, water, internet"
+    "description": ""
   },
   {
-    "id": "c5",
-    "name": "Health",
-    "description": "Medical and wellness expenses"
+    "_id": "69d3bfbfec6ce4b68a144ec1",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
+    "name": "Entertainment",
+    "description": ""
   },
   {
-    "id": "c6",
+    "_id": "69d3bfbfec6ce4b68a144ec2",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
     "name": "Shopping",
-    "description": "Retail, groceries, and online purchases"
+    "description": ""
   },
   {
-    "id": "c7",
+    "_id": "69d3bfbfec6ce4b68a144ec3",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
+    "name": "Health",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ec4",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
     "name": "Investment",
-    "description": "Stocks, bonds, and other investments"
+    "description": ""
   },
   {
-    "id": "c8",
+    "_id": "69d3bfbfec6ce4b68a144ec5",
+    "userId": "69d3bfbfec6ce4b68a144eb9",
     "name": "Other",
-    "description": "Miscellaneous or uncategorized expenses"
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ec6",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Salary",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ec7",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Interest",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ec8",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Rent",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ec9",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Food & Dining",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144eca",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Transportation",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ecb",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Utilities",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ecc",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Entertainment",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ecd",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Shopping",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ece",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Health",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ecf",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Investment",
+    "description": ""
+  },
+  {
+    "_id": "69d3bfbfec6ce4b68a144ed0",
+    "userId": "69d3bfbfec6ce4b68a144eba",
+    "name": "Other",
+    "description": ""
   }
 ]

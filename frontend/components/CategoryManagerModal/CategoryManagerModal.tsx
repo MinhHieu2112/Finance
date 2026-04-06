@@ -42,7 +42,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   };
 
   const startEdit = (category: Category) => {
-    setEditingCategoryId(category.id);
+    setEditingCategoryId(category._id);
     setEditingName(category.name);
     setEditingDescription(category.description || '');
     setError(null);
@@ -160,10 +160,10 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             </thead>
             <tbody className="divide-y divide-gray-100">
               {sortedCategories.map((category) => {
-                const isEditing = editingCategoryId === category.id;
+                const isEditing = editingCategoryId === category._id;
 
                 return (
-                  <tr key={category.id}>
+                  <tr key={category._id}>
                     <td className="px-4 py-3 align-top">
                       {isEditing ? (
                         <input
@@ -207,7 +207,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                             </button>
                             <button
                               type="button"
-                              onClick={() => handleDelete(category.id)}
+                              onClick={() => handleDelete(category._id)}
                               className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
                               title="Delete category"
                             >

@@ -1,8 +1,9 @@
 import categoryModel from '../../../models/Category';
+import { type Types } from 'mongoose';
 
 class categoryRepository {
-	async listCategories(userID: string) {
-		return categoryModel.find({ userID }).sort({ createdAt: -1 });
+	async listCategories(userId: Types.ObjectId) {
+		return categoryModel.find({ userId }).sort({ createdAt: -1 });
 	}
 }
 

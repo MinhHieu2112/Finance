@@ -12,8 +12,8 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ transactions }) => {
     let expense = 0;
 
     transactions.forEach((t) => {
-      if (t.type === TransactionType.INCOME) income += t.amount;
-      else expense += t.amount;
+      if (t.type === TransactionType.INCOME) income += t.total_amount;
+      else expense += t.total_amount;
     });
 
     return { income, expense, balance: income - expense };

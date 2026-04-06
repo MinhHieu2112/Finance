@@ -1,9 +1,9 @@
 import AppError from '../../../utils/appError';
-import { randomUUID } from 'node:crypto';
-import orchestratorRepository from './Repository';
+import add_query_nlpRepository from './Repository';
 import {FinanceIntentSchema} from '../../../utils/normalized';
 import { GoogleGenAI } from '@google/genai';
 import { type IntentDetectionResult } from '../../types/aiAssistant';
+import { Types } from 'mongoose';
 
 class add_query_nlpService {
 	private buildPrompt(text: string, categories: string[]) {
@@ -21,11 +21,17 @@ class add_query_nlpService {
 			  "transactions": [
 				{
 			    "description": string,
-			    "total_amount": "number",
-				"type": "income" | "expense",
-			    "category": string,
+				"type": "income" | "expense",			    
 			    "frequency": "weekly" | "monthly" | "yearly" | "one-time", .default to one-time if not clear from prompt.
 			    "date": Date, .Use Current Date if not clear from prompt.
+				"details": [
+					{
+						"categoryName" : string,
+						"quantity": number, .default to 1 if not clear from prompt.
+						"amount": number, .default to total_amount if not clear from prompt or if only one item in details.
+						"note": string
+					}
+				"total_amount": "number", .default to sum of details.amount if not clear from prompt or if multiple items in details.
 			   },
 			   ....], | null,
 			  "query": {
@@ -59,9 +65,9 @@ class add_query_nlpService {
 		].join('\n');
 	}
 
-	async detectIntent(userID: string, prompt: string): Promise<IntentDetectionResult> {
+	async detectIntent(userId: Types.ObjectId, prompt: string): Promise<IntentDetectionResult> {
 
-		const categories = await orchestratorRepository.listCategoryNames(userID);
+		const categories = await add_query_nlpRepository.listCategoryNames(userId);
 		const apiKey 	 = process.env.GEMINI_API_KEY?.trim();
 
 		if (!apiKey) {
@@ -95,8 +101,12 @@ class add_query_nlpService {
 		}
 
 		if (query.category_keywords?.length) {
-			filter.category = {
-			$in: query.category_keywords.map((k: string) => new RegExp(k, 'i'))
+			filter.details = {
+				$elemMatch: {
+					categoryName: {
+						$in: query.category_keywords.map((k: string) => new RegExp(k, 'i')),
+					},
+				},
 			};
 		}
 
@@ -105,8 +115,8 @@ class add_query_nlpService {
 
 			query.time.forEach((t: any) => {
 			t.months.forEach((month: number) => {
-				const from = new Date(t.year, month - 1, 1).toISOString().slice(0, 10);
-				const to   = new Date(t.year, month, 1).toISOString().slice(0, 10);
+				const from = new Date(t.year, month - 1, 1);
+				const to   = new Date(t.year, month, 1);
 
 				orConditions.push({
 				date: { $gte: from, $lt: to }
@@ -120,9 +130,9 @@ class add_query_nlpService {
 		return filter;
 	}
 
-	async handlePrompt(userID: string, prompt: string): Promise<any> {
+	async handlePrompt(userId: Types.ObjectId, prompt: string): Promise<any> {
 		const message = prompt.trim();
-		if (!userID) {
+		if (!userId) {
 			throw new AppError('User id is required', 400);
 		}
 
@@ -149,7 +159,7 @@ class add_query_nlpService {
 		// const result 	 = 	JSON.parse(rawJson) as IntentDetectionResult;
 
 		
-		const result 	 = await this.detectIntent(userID, message);
+		const result 	 = await this.detectIntent(userId, message);
 		const normalized = FinanceIntentSchema.safeParse(result);
 		
 		// console.log('Raw AI response:', result);
@@ -159,32 +169,55 @@ class add_query_nlpService {
 			const payload = normalized.data;
 
 			if (payload.intent === 'add' && payload.transactions) {
-				const transactions = await Promise.all(
-					payload.transactions.map((transaction) => orchestratorRepository.addTransaction({
-					id: randomUUID(),
-					userID,
-					description: transaction.description,
-					amount: transaction.total_amount,
-					type: transaction.type,
-					category: transaction.category,
-					frequency: transaction.frequency,
-					date: transaction.date,
-				})),
+				const results = await Promise.all(
+				payload.transactions.map(async (t) => {
+
+					// map details
+					const details = await Promise.all(
+						t.details.map(async (d) => {
+
+							const categoryId = await add_query_nlpRepository.findCategoryByName(userId,
+																					  			d.categoryName);
+
+							if (!categoryId) {
+								throw new AppError(`Category not found: ${d.categoryName}`, 404);
+							}
+
+							return {categoryId,
+									categoryName: d.categoryName,
+									quantity: d.quantity || 1,
+									amount: d.amount,
+									note: d.note || '',}
+						})
+					);
+
+					const totalAmount = details.reduce((sum, d) => sum + d.amount, 0);
+
+					return add_query_nlpRepository.addTransaction({
+						userId,
+						description: t.description,
+						type: t.type,
+						frequency: t.frequency,
+						date: t.date,
+						total_amount: totalAmount,
+						details,
+					});
+				})
 			);
 
-				return {
-					intent: 'add',
-					data: transactions,
-				};
+			return {
+				intent: 'add',
+				data: results,
+			};
 			} else if (payload.intent === 'query' && payload.query) {
 				
-				const query 	   = this.buildQuerryFilter(payload.query);
-				query.userID = userID;
-				const transactions = await orchestratorRepository.queryTransaction(query);
+				const query  = this.buildQuerryFilter(payload.query);
+				query.userId = userId;
+				const result = await add_query_nlpRepository.queryTransaction(query);
 
 				return {
 					intent: 'query',
-					data: transactions,
+					data: result,
 				};
 			}
 		} else { 

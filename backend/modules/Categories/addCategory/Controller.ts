@@ -6,7 +6,7 @@ const addCategory = async (req: Request, res: Response, next: NextFunction) => {
 		const { name, description } = req.body;
 		const authUser = res.locals.authUser;
 
-		const category = await categoryService.addCategory({ userID: authUser.id,
+		const category = await categoryService.addCategory({ userId: authUser.id,
 														name,
 														description, });
 

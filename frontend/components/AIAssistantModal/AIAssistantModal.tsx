@@ -40,13 +40,14 @@ const isValidTransaction = (value: unknown): value is Transaction => {
 	}
 
 	const candidate = value as Record<string, unknown>;
-	return typeof candidate.id === 'string'
+	return typeof candidate._id === 'string'
+		&& typeof candidate.userId === 'string'
 		&& typeof candidate.description === 'string'
-		&& typeof candidate.amount === 'number'
+		&& typeof candidate.total_amount === 'number'
 		&& typeof candidate.type === 'string'
-		&& typeof candidate.category === 'string'
 		&& typeof candidate.frequency === 'string'
-		&& typeof candidate.date === 'string';
+		&& typeof candidate.date === 'string'
+		&& Array.isArray(candidate.details);
 };
 
 export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
@@ -121,7 +122,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			}
 
 			const matched = (orchestrationData.result.data || []).filter(isValidTransaction);
-			const total = matched.reduce((sum, transaction) => sum + (Number(transaction.amount) || 0), 0);
+			const total = matched.reduce((sum, transaction) => sum + (Number(transaction.total_amount) || 0), 0);
 			setQueryResult({
 				answer: matched.length
 					? `Found ${matched.length} transaction(s), total ${formatMoney(total)}.`
@@ -186,9 +187,11 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 								<p className="font-semibold text-emerald-800">Transaction created ({createdTransactions.length})</p>
 								<div className="space-y-2 max-h-44 overflow-y-auto">
 									{createdTransactions.map((transaction) => (
-										<div key={transaction.id} className="rounded-lg border border-emerald-200 bg-white px-3 py-2">
+										<div key={transaction._id} className="rounded-lg border border-emerald-200 bg-white px-3 py-2">
 											<p className="font-medium text-gray-800">{transaction.description}</p>
-											<p className="text-xs text-gray-600">{formatMoney(transaction.amount)} | {transaction.type} | {transaction.category} | {transaction.date}</p>
+											<p className="text-xs text-gray-600">
+												{formatMoney(transaction.total_amount)} | {transaction.type} | {transaction.details[0]?.categoryName || 'Other'} | {transaction.date}
+											</p>
 										</div>
 									))}
 								</div>
@@ -210,9 +213,11 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 										<p className="font-semibold text-gray-700">Matched transactions</p>
 										<div className="space-y-2 max-h-44 overflow-y-auto">
 											{queryResult.transactions.map((transaction) => (
-												<div key={transaction.id} className="rounded-lg border border-gray-200 bg-white px-3 py-2">
+												<div key={transaction._id} className="rounded-lg border border-gray-200 bg-white px-3 py-2">
 													<p className="font-medium text-gray-800">{transaction.description}</p>
-													<p className="text-xs text-gray-600">{formatMoney(transaction.amount)} | {transaction.category} | {transaction.date}</p>
+													<p className="text-xs text-gray-600">
+														{formatMoney(transaction.total_amount)} | {transaction.details[0]?.categoryName || 'Other'} | {transaction.date}
+													</p>
 												</div>
 											))}
 										</div>

@@ -1,9 +1,10 @@
 import transactionRepository from './Repository';
 import { type transactionSchema } from '../../types/Transactions';
+import { Types } from "mongoose"
 
 class transactionService {
-	async listTransactions(userID: string): Promise<transactionSchema[]> {
-		return transactionRepository.listTransactions(userID);
+	async listTransactions(id: Types.ObjectId): Promise<transactionSchema[]> {
+		return transactionRepository.listTransactions(id);
 	}
 }
 

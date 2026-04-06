@@ -1,8 +1,10 @@
 import AppError from '../../../utils/appError';
 import categoryRepository from './Repository';
+// import { toObjectId } from '../../../utils/objectId';
+import { Types } from 'mongoose';
 
 class categoryService {
-	async editCategory(id: string, userID: string, data: { name: string; description?: string }) {
+	async editCategory(id: Types.ObjectId, userId: Types.ObjectId, data: { name: string; description?: string }) {
 		const name = data.name?.trim();
 		const description = data.description?.trim() ?? '';
 
@@ -10,7 +12,7 @@ class categoryService {
 			throw new AppError('Category id is required', 400);
 		}
 
-		if (!userID) {
+		if (!userId) {
 			throw new AppError('User id is required', 400);
 		}
 
@@ -18,13 +20,13 @@ class categoryService {
 			throw new AppError('Category name is required', 400);
 		}
 
-		const existingCategory = await categoryRepository.findByName(userID, name);
-		if (existingCategory && existingCategory.id !== id) {
+		const existingCategory = await categoryRepository.findByName(userId, name);
+		if (existingCategory && existingCategory._id.toString() !== id.toString()) {
 			throw new AppError('Category already exists', 409);
 		}
 
 		const category = await categoryRepository.editCategoryById(id,
-															  userID,
+											  userId,
 																  { name,
 																	description, });
 

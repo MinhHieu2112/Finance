@@ -1,12 +1,13 @@
 import transactionModel from '../../../models/Transaction';
 import { type transactionSchema } from '../../types/Transactions';
+import { type Types } from 'mongoose';
 
 class forcastingTrendRepository {
-	async getRecentTransactions(limit: number, userID: string) {
-		return transactionModel.find({ userID })
+	async getRecentTransactions(limit: number, userId: Types.ObjectId) {
+		return transactionModel.find({ userId })
 			                   .sort({ date: -1 })
 			                   .limit(limit)
-			                   .select('id description amount type category frequency date -_id')
+							   .select('_id userId description type frequency date total_amount details createdAt updatedAt')
 			                   .lean<transactionSchema[]>();
 	}
 }

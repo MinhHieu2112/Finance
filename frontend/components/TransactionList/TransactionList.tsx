@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Transaction, TransactionType } from '../../types/Transactions';
+import { Transaction, TransactionType, getPrimaryCategoryName } from '../../types/Transactions';
 import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil } from 'lucide-react';
 
 interface TransactionListProps {
@@ -19,7 +19,9 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
   const [currentPage, setCurrentPage]       = useState(1);
 
   const allCategoryOptions = useMemo(() => {
-    const categoriesFromTransactions = transactions.map((t) => t.category);
+    const categoriesFromTransactions = transactions.flatMap((transaction) =>
+      transaction.details.map((detail) => detail.categoryName),
+    );
     return Array.from(new Set([...categoryOptions, ...categoriesFromTransactions])).filter(Boolean);
   }, [transactions, categoryOptions]);
 
@@ -27,7 +29,9 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
     return transactions
       .filter((t) => {
         const matchesSearch    = t.description.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory  = categoryFilter ? t.category === categoryFilter : true;
+        const matchesCategory  = categoryFilter
+          ? t.details.some((detail) => detail.categoryName === categoryFilter)
+          : true;
         const matchesStartDate = startDate ? new Date(t.date) >= new Date(startDate) : true;
         const matchesEndDate   = endDate ? new Date(t.date) <= new Date(endDate) : true;
 
@@ -130,14 +134,14 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
             <tr>
               <th className="px-6 py-4">Date</th>
               <th className="px-6 py-4">Description</th>
-              <th className="px-6 py-4">Category</th>
+              <th className="px-6 py-4">Categories</th>
               <th className="px-6 py-4 text-right">Amount</th>
               <th className="px-6 py-4 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {paginatedTransactions.map((t) => (
-              <tr key={t.id} className="hover:bg-gray-50 transition-colors">
+              <tr key={t._id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap text-gray-500">{t.date}</td>
                 <td className="px-6 py-4 font-medium text-gray-800 flex items-center gap-3">
                   <span className={`p-2 rounded-full flex-shrink-0 ${t.type === TransactionType.INCOME ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
@@ -148,11 +152,13 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap">{t.category}</span>
+                  <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap">
+                    {Array.from(new Set(t.details.map((detail) => detail.categoryName))).slice(0, 2).join(', ') || getPrimaryCategoryName(t)}
+                  </span>
                 </td>
                 <td className={`px-6 py-4 text-right font-bold whitespace-nowrap ${t.type === TransactionType.INCOME ? 'text-emerald-600' : 'text-gray-800'}`}>
                   {t.type === TransactionType.INCOME ? '+' : '-'}
-                  {Math.round(t.amount).toLocaleString('en-US')} VND
+                  {Math.round(t.total_amount).toLocaleString('en-US')} VND
                 </td>
                 <td className="px-6 py-4 text-center">
                   <div className="flex items-center justify-center gap-1">
@@ -164,7 +170,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                       <Pencil size={16} />
                     </button>
                     <button
-                      onClick={() => onDelete(t.id)}
+                      onClick={() => onDelete(t._id)}
                       className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
                       title="Delete transaction"
                     >

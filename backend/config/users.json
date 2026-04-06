@@ -1,14 +1,14 @@
 [
   {
-    "userID": "tri",
+    "_id": "69d3bfbfec6ce4b68a144eb9",
     "username": "tri",
     "email": "tri@gmail.com",
-    "password": "$2b$10$6Jc3Jk2PPN/fb/z6l6K9TOUm7ke5lJOEl1vO9HmIbtss6jmdAYGb6"
+    "password": "$2b$10$SteEw43vU4.Rsk3O/P6pv.XH274hzKnooj90QhulguWlS7/NBHo5a"
   },
   {
-    "userID": "hieu",
+    "_id": "69d3bfbfec6ce4b68a144eba",
     "username": "hieu",
     "email": "hieu@gmail.com",
-    "password": "$2b$10$6Jc3Jk2PPN/fb/z6l6K9TOUm7ke5lJOEl1vO9HmIbtss6jmdAYGb6"
+    "password": "$2b$10$SteEw43vU4.Rsk3O/P6pv.XH274hzKnooj90QhulguWlS7/NBHo5a"
   }
 ]

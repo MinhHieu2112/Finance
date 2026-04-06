@@ -12,7 +12,7 @@ export interface ForcastingTrendResult {
 }
 
 export interface AnalysisAnomaly {
-	id: string;
+	_id: string;
 	date: Date;
 	description: string;
 	category: string;

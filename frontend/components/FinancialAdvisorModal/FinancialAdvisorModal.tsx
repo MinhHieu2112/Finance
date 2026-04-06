@@ -127,7 +127,7 @@ export const FinancialAdvisorModal: React.FC<FinancialAdvisorModalProps> = ({
                   {analysis.anomalies.length ? (
                     <div className="space-y-2">
                       {analysis.anomalies.map((item) => (
-                        <div key={item.id} className="rounded-lg border border-red-100 bg-red-50 p-3">
+                        <div key={item._id} className="rounded-lg border border-red-100 bg-red-50 p-3">
                           <p className="font-medium text-red-700">{item.description} - {formatMoney(item.amount)}</p>
                           <p className="text-xs text-gray-600">{item.date} | {item.category}</p>
                           <p className="text-xs text-gray-700 mt-1">{item.reason}</p>

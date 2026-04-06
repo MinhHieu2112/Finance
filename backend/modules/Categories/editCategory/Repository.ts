@@ -1,12 +1,13 @@
 import categoryModel from '../../../models/Category';
+import { type Types } from 'mongoose';
 
 class categoryRepository {
-	async findByName(userID: string, name: string) {
-		return categoryModel.findOne({ userID, name });
+	async findByName(userId: Types.ObjectId, name: string) {
+		return categoryModel.findOne({ userId, name });
 	}
 
-	async editCategoryById(id: string, userID: string, data: { name: string; description: string }) {
-		return categoryModel.findOneAndUpdate({ id, userID },
+	async editCategoryById(categoryId: Types.ObjectId, userId: Types.ObjectId, data: { name: string; description: string }) {
+		return categoryModel.findOneAndUpdate({ _id: categoryId, userId },
 											  data,
 											  { new: true, runValidators: true });
 	}

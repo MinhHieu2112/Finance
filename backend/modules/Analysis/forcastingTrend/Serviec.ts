@@ -2,6 +2,7 @@ import AppError from '../../../utils/appError';
 import forcastingTrendRepository from './Repository';
 import { type transactionSchema } from '../../types/Transactions';
 import { type ForcastingTrendResult, type MonthlyPoint } from '../../types/Analysis';
+import { Types } from 'mongoose';
 
 class forcastingTrendService {
 	private monthKey(dateInput: string | Date): string | null {
@@ -108,10 +109,11 @@ class forcastingTrendService {
 			}
 
 			const point = map.get(key)!;
+			const amount = Number(transaction.total_amount) || 0;
 			if (transaction.type === 'income') {
-				point.income += Number(transaction.amount) || 0;
+				point.income += amount;
 			} else {
-				point.expense += Number(transaction.amount) || 0;
+				point.expense += amount;
 			}
 		});
 
@@ -133,12 +135,12 @@ class forcastingTrendService {
 		};
 	}
 
-	async getForcastingTrend(userID: string) {
-		if (!userID) {
+	async getForcastingTrend(userId: Types.ObjectId) {
+		if (!userId) {
 			throw new AppError('User id is required for forecasting trend', 400);
 		}
 
-		const transactions  = await forcastingTrendRepository.getRecentTransactions(500, userID);
+		const transactions  = await forcastingTrendRepository.getRecentTransactions(500, userId);
 		const monthlySeries = this.buildMonthlySeries(transactions);
 
 		return this.toForcastingTrend(monthlySeries);

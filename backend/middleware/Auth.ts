@@ -1,9 +1,11 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import AppError from '../utils/appError';
+import { type Types } from 'mongoose';
 
 interface TokenPayload {
-	id?: string;
+	id?: Types.ObjectId;
 	email?: string;
 	username?: string;
 }
@@ -25,6 +27,10 @@ const protect = (req: Request, res: Response, next: NextFunction) => {
 		const decoded = jwt.verify(token, secret) as TokenPayload;
 		if (!decoded.id || !decoded.email || !decoded.username) {
 			return next(new AppError('Invalid token payload', 401));
+		}
+
+		if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
+			return next(new AppError('Invalid token user id', 401));
 		}
 
 		res.locals.authUser = {id		: decoded.id,

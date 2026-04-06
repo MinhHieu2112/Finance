@@ -6,7 +6,7 @@ const API_BASE_URL = 'http://localhost:4000/api';
 
 interface AuthResponse {
   success: boolean;
-  user: Pick<User, 'id' | 'username' | 'email'>;
+  user: { id?: string; _id?: string; username: string; email: string };
   token: string;
   message?: string;
 }
@@ -73,7 +73,19 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         return;
       }
 
-      onLogin({ ...(data.user as Pick<User, 'id' | 'username' | 'email'>), token: data.token as string });
+      const backendUser = data.user as AuthResponse['user'];
+      const normalizedUserId = backendUser._id || backendUser.id;
+      if (!normalizedUserId) {
+        setError('Authentication response is missing user id.');
+        return;
+      }
+
+      onLogin({
+        _id: normalizedUserId,
+        username: backendUser.username,
+        email: backendUser.email,
+        token: data.token as string,
+      });
     } catch (err) {
       console.error(err);
       setError('Unable to connect to the server. Please try again.');

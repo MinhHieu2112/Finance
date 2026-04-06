@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Transaction, TransactionFrequency, TransactionType } from '../../types/Transactions';
+import { Transaction, TransactionFrequency, TransactionType, type TransactionPayload } from '../../types/Transactions';
 import { Button } from '../Button/Button';
 import { X } from 'lucide-react';
 
 interface TransactionFormProps {
-  onSave: (transaction: Omit<Transaction, 'id'>) => Promise<void> | void;
+  onSave: (transaction: TransactionPayload) => Promise<void> | void;
   onClose: () => void;
-  categoryOptions: string[];
+  categoryOptions: Array<{ _id: string; name: string }>;
+  onManageCategories?: () => void;
   mode?: 'create' | 'edit';
   initialTransaction?: Transaction | null;
 }
@@ -15,19 +16,20 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   onSave,
   onClose,
   categoryOptions,
+  onManageCategories,
   mode = 'create',
   initialTransaction = null,
 }) => {
   const [description, setDescription] = useState(initialTransaction?.description || '');
-  const [amount, setAmount] = useState(initialTransaction ? String(initialTransaction.amount) : '');
+  const [amount, setAmount] = useState(initialTransaction ? String(initialTransaction.total_amount) : '');
   const [type, setType] = useState<TransactionType>(initialTransaction?.type || TransactionType.EXPENSE);
   const [source, setSource] = useState(
-    initialTransaction?.type === TransactionType.INCOME ? initialTransaction.category : ''
+    initialTransaction?.type === TransactionType.INCOME ? (initialTransaction.details[0]?.categoryName || '') : ''
   );
-  const [expenseCategory, setExpenseCategory] = useState(
+  const [expenseCategoryId, setExpenseCategoryId] = useState(
     initialTransaction?.type === TransactionType.EXPENSE
-      ? initialTransaction.category
-      : categoryOptions[0] || ''
+      ? (initialTransaction.details[0]?.categoryId || categoryOptions[0]?._id || '')
+      : (categoryOptions[0]?._id || '')
   );
   const [frequency, setFrequency] = useState<TransactionFrequency>(
     initialTransaction?.frequency || TransactionFrequency.ONE_TIME
@@ -36,30 +38,67 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
   useEffect(() => {
     if (!categoryOptions.length) {
-      setExpenseCategory('');
+      setExpenseCategoryId('');
       return;
     }
 
-    if (!expenseCategory || !categoryOptions.includes(expenseCategory)) {
-      setExpenseCategory(categoryOptions[0]);
+    if (!expenseCategoryId || !categoryOptions.some((category) => category._id === expenseCategoryId)) {
+      setExpenseCategoryId(categoryOptions[0]._id);
     }
-  }, [categoryOptions, expenseCategory]);
+  }, [categoryOptions, expenseCategoryId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const transactionCategory =
-      type === TransactionType.INCOME ? source.trim() : expenseCategory;
+    const parsedAmount = parseFloat(amount);
+    if (!description || !Number.isFinite(parsedAmount) || parsedAmount < 0) {
+      return;
+    }
 
-    if (!description || !amount || !transactionCategory) return;
+    if (type === TransactionType.EXPENSE) {
+      const selectedCategory = categoryOptions.find((category) => category._id === expenseCategoryId);
+      if (!selectedCategory) {
+        return;
+      }
+
+      await onSave({
+        description,
+        total_amount: parsedAmount,
+        type,
+        frequency,
+        date,
+        details: [
+          {
+            categoryId: selectedCategory._id,
+            categoryName: selectedCategory.name,
+            amount: parsedAmount,
+            note: '',
+          },
+        ],
+      });
+
+      onClose();
+      return;
+    }
+
+    const incomeCategoryName = source.trim();
+    if (!incomeCategoryName) {
+      return;
+    }
 
     await onSave({
       description,
-      amount: parseFloat(amount),
+      total_amount: parsedAmount,
       type,
-      category: transactionCategory,
       frequency,
       date,
+      details: [
+        {
+          categoryName: incomeCategoryName,
+          amount: parsedAmount,
+          note: '',
+        },
+      ],
     });
     onClose();
   };
@@ -110,8 +149,8 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             ) : (
               <>
                 <select
-                  value={expenseCategory}
-                  onChange={(e) => setExpenseCategory(e.target.value)}
+                  value={expenseCategoryId}
+                  onChange={(e) => setExpenseCategoryId(e.target.value)}
                   disabled={categoryOptions.length === 0}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
                 >
@@ -119,8 +158,8 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                     <option value="">No categories available</option>
                   )}
                   {categoryOptions.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
                     </option>
                   ))}
                 </select>
@@ -190,6 +229,17 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             </Button>
             {type === TransactionType.EXPENSE && categoryOptions.length === 0 && (
               <p className="mt-2 text-xs text-red-500 text-center">Please create at least one category before adding an expense.</p>
+            )}
+            {type === TransactionType.EXPENSE && categoryOptions.length === 0 && onManageCategories && (
+              <div className="mt-2 text-center">
+                <button
+                  type="button"
+                  onClick={onManageCategories}
+                  className="text-xs text-primary hover:underline"
+                >
+                  Open Category Manager
+                </button>
+              </div>
             )}
           </div>
         </form>

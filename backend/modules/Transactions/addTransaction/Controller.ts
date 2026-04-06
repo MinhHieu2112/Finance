@@ -1,19 +1,18 @@
 import transactionService from './Serviec';
 import { type Request, type Response, type NextFunction } from 'express';
-import AppError from '../../../utils/appError';
 
 const addTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { description, amount, type, category, frequency, date } = req.body;
+        const { description, type, frequency, date, total_amount, details } = req.body;
         const authUser = res.locals.authUser;
 
-        const transaction = await transactionService.addTransaction({userID: authUser.id,
+        const transaction = await transactionService.addTransaction({userId: authUser.id,
                                                                      description,
-                                                                     amount,
                                                                      type,
-                                                                     category,
                                                                      frequency,
-                                                                     date});
+                                                                     date,
+                                                                     total_amount,
+                                                                     details});
         res.status(201).json({success: true, transaction});
     } catch (error) {
         next(error);

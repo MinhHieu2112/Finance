@@ -1,4 +1,5 @@
 import { z } from "zod";
+// import { ca } from "zod/v4/locales";
 
 const amountSchema = z.preprocess((val) => {
   if (typeof val === "number") return val;
@@ -11,13 +12,21 @@ const amountSchema = z.preprocess((val) => {
   return val;
 }, z.number());
 
+const TransactionDetailSchema = z.object({
+  categoryName: z.string().trim(),
+  quantity: z.number().int().min(1),
+  amount: amountSchema,
+  note: z.string().trim().optional(),
+});
+
 const TransactionSchema = z.object({
   description: z.string().trim(),
   total_amount: z.coerce.number(),
   type: z.enum(["income", "expense"]),
-  category: z.string().trim(),
+  // category: z.string().trim(),
   frequency: z.enum(["weekly", "monthly", "yearly", "one-time"]),
-  date: z.coerce.date()
+  date: z.coerce.date(),
+  details: z.array(TransactionDetailSchema)
 });
 
 const TimePeriodSchema = z.object({

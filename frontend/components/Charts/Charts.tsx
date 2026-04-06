@@ -56,8 +56,10 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     const map        = new Map<string, number>();
 
     expenses.forEach((t) => {
-      const current = map.get(t.category) || 0;
-      map.set(t.category, current + t.amount);
+      t.details.forEach((detail) => {
+        const current = map.get(detail.categoryName) || 0;
+        map.set(detail.categoryName, current + detail.amount);
+      });
     });
 
     const rows = Array.from(map.entries())
@@ -102,7 +104,9 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     parsedTransactions.forEach((transaction) => {
       const transactionDate = transaction.parsedDate;
 
-      const signedAmount = transaction.type === TransactionType.INCOME ? transaction.amount : -transaction.amount;
+      const signedAmount = transaction.type === TransactionType.INCOME
+        ? transaction.total_amount
+        : -transaction.total_amount;
 
       if (transactionDate < startDate) {
         return;

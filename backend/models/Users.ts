@@ -1,9 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-const usersSchema = new Schema({userID      : {type    : String,
-                                               required: true,
-                                               unique  : true,},
-                                username    : {type    : String,
+const usersSchema = new Schema({username    : {type    : String,
                                                required: true,
                                                unique  : true,},
                                 email       : {type    : String,

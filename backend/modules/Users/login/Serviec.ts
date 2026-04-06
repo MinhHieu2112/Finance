@@ -30,16 +30,16 @@ class authService {
 
 		const user = await authRepository.findUserByEmail(email);
 		if (!user) {
-			throw new AppError('Invalid email or password', 401);
+			throw new AppError('Invalid email', 401);
 		}
 
 		const isPasswordValid = await bcrypt.compare(password, user.password);
 		if (!isPasswordValid) {
-			throw new AppError('Invalid email or password', 401);
+			throw new AppError('Invalid password', 401);
 		}
 
 		const userData = {
-			id: user.userID,
+			id: user._id,
 			username: user.username,
 			email: user.email,
 		};

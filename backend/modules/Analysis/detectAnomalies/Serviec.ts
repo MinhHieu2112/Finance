@@ -2,6 +2,14 @@ import AppError from '../../../utils/appError';
 import detectAnomaliesRepository from './Repository';
 import { type transactionSchema } from '../../types/Transactions';
 import { type AnalysisAnomaly } from '../../types/Analysis';
+import { Types } from 'mongoose';
+
+type normalizedExpensePoint = {
+	date: Date;
+	description: string;
+	category: string;
+	amount: number;
+};
 
 class detectAnomaliesService {
 	private mean(values: number[]) {
@@ -20,31 +28,60 @@ class detectAnomaliesService {
 		return Math.sqrt(variance);
 	}
 
+	private normalizeExpenses(transactions: transactionSchema[]) {
+		const rows: normalizedExpensePoint[] = [];
+
+		transactions
+			.filter((transaction) => transaction.type === 'expense')
+			.forEach((transaction) => {
+				const transactionDate = transaction.date instanceof Date ? transaction.date : new Date(transaction.date);
+				if (Number.isNaN(transactionDate.getTime())) {
+					return;
+				}
+
+				transaction.details.forEach((detail) => {
+					const amount = Number(detail.amount) || 0;
+					if (amount <= 0) {
+						return;
+					}
+
+					rows.push({
+						date: transactionDate,
+						description: transaction.description,
+						category: detail.categoryName,
+						amount,
+					});
+				});
+			});
+
+		return rows;
+	}
+
 	private detect(transactions: transactionSchema[]) {
-		const expenses = transactions.filter((transaction) => transaction.type === 'expense');
+		const expenses = this.normalizeExpenses(transactions);
 		if (!expenses.length) {
 			return [] as AnalysisAnomaly[];
 		}
 
 		const byCategory = new Map<string, number[]>();
-		expenses.forEach((transaction) => {
-			if (!byCategory.has(transaction.category)) {
-				byCategory.set(transaction.category, []);
+		expenses.forEach((item) => {
+			if (!byCategory.has(item.category)) {
+				byCategory.set(item.category, []);
 			}
-			byCategory.get(transaction.category)!.push(Number(transaction.amount) || 0);
+			byCategory.get(item.category)!.push(item.amount);
 		});
 
-		const globalAmounts = expenses.map((transaction) => Number(transaction.amount) || 0);
+		const globalAmounts = expenses.map((item) => item.amount);
 		const globalMean 	= this.mean(globalAmounts);
 		const globalStd 	= this.stdDev(globalAmounts);
 
 		return expenses
-			.map((transaction) => {
-				const categoryValues   = byCategory.get(transaction.category) || [];
+			.map((item) => {
+				const categoryValues   = byCategory.get(item.category) || [];
 				const useCategoryStats = categoryValues.length >= 3;
 				const refMean 		   = useCategoryStats ? this.mean(categoryValues) : globalMean;
 				const refStd 		   = useCategoryStats ? this.stdDev(categoryValues) : globalStd;
-				const amount 		   = Number(transaction.amount) || 0;
+				const amount 		   = item.amount;
 
 				let threshold = refMean + 2 * refStd;
 				if (refStd === 0) {
@@ -58,13 +95,13 @@ class detectAnomaliesService {
 
 				const ratio  = refMean > 0 ? amount / refMean : 0;
 				const reason = ratio > 0
-					? `About ${ratio.toFixed(2)}x higher than your average ${transaction.category} spending`
+					? `About ${ratio.toFixed(2)}x higher than your average ${item.category} spending`
 					: 'Unusually large transaction compared with your spending history';
 
-				return {id          : transaction.id,
-					    date        : transaction.date,
-					    description : transaction.description,
-					    category    : transaction.category,
+				return {
+					    date        : item.date,
+					    description : item.description,
+					    category    : item.category,
 					    amount,
 					    reason,};
 			})
@@ -73,11 +110,11 @@ class detectAnomaliesService {
 			.slice(0, 10);
 	}
 
-	async getDetectAnomalies(userID: string) {
-		if (!userID) {
+	async getDetectAnomalies(userId: Types.ObjectId) {
+		if (!userId) {
 			throw new AppError('User id is required for anomaly detection', 400);
 		}
-		const transactions = await detectAnomaliesRepository.getRecentTransactions(500, userID);
+		const transactions = await detectAnomaliesRepository.getRecentTransactions(500, userId);
 		return this.detect(transactions);
 	}
 }
