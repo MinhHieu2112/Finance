@@ -65,7 +65,7 @@ class transactionService {
                 });
         }
 
-        totalAmount = normalizedDetails.reduce((sum, item) => sum + item.amount, 0);
+        totalAmount = normalizedDetails.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
     
         const transaction = await transactionRepository.addTransaction({userId      : data.userId,
                                                                         description : description,

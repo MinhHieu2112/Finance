@@ -1,32 +1,35 @@
-import { z } from "zod";
+import { z } from 'zod';
+import { de } from 'zod/locales';
 // import { ca } from "zod/v4/locales";
 
-const amountSchema = z.preprocess((val) => {
-  if (typeof val === "number") return val;
-  if (typeof val === "string") {
-    const clean = val.toLowerCase().replace(/,/g, "");
-    if (clean.endsWith("k")) return parseFloat(clean) * 1000;
-    if (clean.endsWith("tr") || clean.endsWith("cu")) return parseFloat(clean) * 1000000;
+export const amountSchema = z.preprocess((val) => {
+  if (typeof val === 'number') return val;
+  if (typeof val === 'string') {
+    const clean = val.toLowerCase().replace(/,/g, '');
+    if (clean.endsWith('k')) return parseFloat(clean) * 1000;
+    if (clean.endsWith('tr') || clean.endsWith('cu')) return parseFloat(clean) * 1000000;
     return parseFloat(clean);
   }
   return val;
 }, z.number());
 
-const TransactionDetailSchema = z.object({
+export const TransactionDetailSchema = z.object({
   categoryName: z.string().trim(),
   quantity: z.number().int().min(1),
-  amount: amountSchema,
+  amount: z.number().min(0),
   name: z.string().trim().optional(),
 });
 
-const TransactionSchema = z.object({
-  description: z.string().trim(),
-  total_amount: z.coerce.number(),
-  type: z.enum(["income", "expense"]),
-  // category: z.string().trim(),
-  frequency: z.enum(["weekly", "monthly", "yearly", "one-time"]),
-  date: z.coerce.date(),
+export const TransactionSchema = z.object({
+  description: z.string().trim().default('No description'),
+  type: z.enum(['income', 'expense']),
+  frequency: z.enum(['weekly', 'monthly', 'yearly', 'one-time']),
+  date: z.union([z.string(), z.date()]).transform(val => new Date(val)),
   details: z.array(TransactionDetailSchema)
+});
+
+export const FinancetSchema = z.object({
+  transactions: z.array(TransactionSchema)
 });
 
 const TimePeriodSchema = z.object({
@@ -34,20 +37,20 @@ const TimePeriodSchema = z.object({
   months: z.array(z.number().min(1).max(12)),
 });
 
-const QuerySchema = z.object({
-  type: z.enum(["income", "expense"]),
+export const QuerySchema = z.object({
+  type: z.enum(['income', 'expense']),
   category_keywords: z.array(z.string()),
   time: z.array(TimePeriodSchema),
 });
 
-export const FinanceIntentSchema = z.discriminatedUnion("intent", [
+export const FinanceIntentSchema = z.discriminatedUnion('intent', [
   z.object({
-    intent: z.literal("add"),
+    intent: z.literal('add'),
     transactions: z.array(TransactionSchema),
     query: z.null(),
   }),
   z.object({
-    intent: z.literal("query"),
+    intent: z.literal('query'),
     transactions: z.null(),
     query: QuerySchema,
   }),

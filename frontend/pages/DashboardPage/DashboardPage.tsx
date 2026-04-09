@@ -36,6 +36,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [isReceiptOCROpen, setIsReceiptOCROpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [receiptDraftPayload, setReceiptDraftPayload] = useState<TransactionPayload | null>(null);
 
   const categoryNames = useMemo(() => {
     const names = categories.map((category) => category.name.trim()).filter(Boolean);
@@ -188,17 +189,20 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
 
   const openCreateForm = () => {
     setEditingTransaction(null);
+    setReceiptDraftPayload(null);
     setIsFormOpen(true);
   };
 
   const openEditForm = (transaction: Transaction) => {
     setEditingTransaction(transaction);
+    setReceiptDraftPayload(null);
     setIsFormOpen(true);
   };
 
   const closeForm = () => {
     setIsFormOpen(false);
     setEditingTransaction(null);
+    setReceiptDraftPayload(null);
   };
 
   const openCategoryManager = () => {
@@ -249,6 +253,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
 
   const closeReceiptOCR = () => {
     setIsReceiptOCROpen(false);
+  };
+
+  const onReceiptDraftPrepared = (draftTransaction: TransactionPayload) => {
+    setEditingTransaction(null);
+    setReceiptDraftPayload(draftTransaction);
+    setIsReceiptOCROpen(false);
+    setIsFormOpen(true);
   };
 
   return (
@@ -318,6 +329,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
           onManageCategories={openCategoryManagerFromForm}
           mode={editingTransaction ? 'edit' : 'create'}
           initialTransaction={editingTransaction}
+          initialPayload={receiptDraftPayload}
         />
       )}
 
@@ -341,7 +353,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         isOpen={isReceiptOCROpen}
         token={user.token}
         onClose={closeReceiptOCR}
-        onTransactionCreated={onAssistantTransactionCreated}
+        onDraftPrepared={onReceiptDraftPrepared}
       />
 
     </div>

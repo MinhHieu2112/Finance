@@ -5,7 +5,6 @@ import {
   TransactionFrequency,
   TransactionType,
   type TransactionPayload,
-  type TransactionPayloadDetail,
 } from '../../types/Transactions';
 import { Button } from '../Button/Button';
 import { Plus, Trash2, X } from 'lucide-react';
@@ -17,6 +16,7 @@ interface TransactionFormProps {
   onManageCategories?: () => void;
   mode?: 'create' | 'edit';
   initialTransaction?: Transaction | null;
+  initialPayload?: TransactionPayload | null;
 }
 
 interface TransactionDetailInput {
@@ -54,6 +54,7 @@ const createEmptyDetail = (defaultCategoryId = ''): TransactionDetailInput => ({
 const buildInitialDetails = (
   categoryOptions: CategoryOption[],
   transaction?: Transaction | null,
+  payload?: TransactionPayload | null,
 ): TransactionDetailInput[] => {
   if (transaction?.details?.length) {
     return transaction.details.map((detail) => ({
@@ -65,40 +66,38 @@ const buildInitialDetails = (
     }));
   }
 
+  if (payload?.details?.length) {
+    return payload.details.map((detail) => ({
+      id: createRowId(),
+      categoryId: detail.categoryId || categoryOptions[0]?._id || '',
+      quantity: String(detail.quantity ?? 1),
+      amount: String(detail.amount ?? 0),
+      name: detail.name || '',
+    }));
+  }
+
   return [createEmptyDetail(categoryOptions[0]?._id || '')];
 };
 
-const normalizeDetails = (
-  details: TransactionDetailInput[],
-  categoryOptions: CategoryOption[],
-): { normalizedDetails: TransactionPayloadDetail[]; invalidRows: number[] } => {
-  const normalizedDetails: TransactionPayloadDetail[] = [];
-  const invalidRows: number[] = [];
+const getInitialDescription = (
+  transaction?: Transaction | null,
+  payload?: TransactionPayload | null,
+) => transaction?.description || payload?.description || '';
 
-  details.forEach((detail, index) => {
-    const matchedCategory = categoryOptions.find((category) => category._id === detail.categoryId);
-    const quantity = Number.parseInt(detail.quantity, 10);
-    const amount = Number.parseFloat(detail.amount);
+const getInitialType = (
+  transaction?: Transaction | null,
+  payload?: TransactionPayload | null,
+) => transaction?.type || payload?.type || TransactionType.EXPENSE;
 
-    if (!matchedCategory || !Number.isFinite(quantity) || quantity <= 0 || !Number.isFinite(amount) || amount < 0) {
-      invalidRows.push(index + 1);
-      return;
-    }
+const getInitialFrequency = (
+  transaction?: Transaction | null,
+  payload?: TransactionPayload | null,
+) => transaction?.frequency || payload?.frequency || TransactionFrequency.ONE_TIME;
 
-    normalizedDetails.push({
-      categoryId: matchedCategory._id,
-      categoryName: matchedCategory.name,
-      quantity,
-      amount,
-      name: detail.name.trim(),
-    });
-  });
-
-  return {
-    normalizedDetails,
-    invalidRows,
-  };
-};
+const getInitialDate = (
+  transaction?: Transaction | null,
+  payload?: TransactionPayload | null,
+) => toDateInputValue(transaction?.date || payload?.date);
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({
   onSave,
@@ -107,26 +106,27 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   onManageCategories,
   mode = 'create',
   initialTransaction = null,
+  initialPayload = null,
 }) => {
-  const [description, setDescription] = useState(initialTransaction?.description || '');
-  const [type, setType] = useState<TransactionType>(initialTransaction?.type || TransactionType.EXPENSE);
+  const [description, setDescription] = useState(getInitialDescription(initialTransaction, initialPayload));
+  const [type, setType] = useState<TransactionType>(getInitialType(initialTransaction, initialPayload));
   const [frequency, setFrequency] = useState<TransactionFrequency>(
-    initialTransaction?.frequency || TransactionFrequency.ONE_TIME,
+    getInitialFrequency(initialTransaction, initialPayload),
   );
-  const [date, setDate] = useState(toDateInputValue(initialTransaction?.date));
+  const [date, setDate] = useState(getInitialDate(initialTransaction, initialPayload));
   const [details, setDetails] = useState<TransactionDetailInput[]>(
-    buildInitialDetails(categoryOptions, initialTransaction),
+    buildInitialDetails(categoryOptions, initialTransaction, initialPayload),
   );
   const [formError, setFormError] = useState('');
 
   useEffect(() => {
-    setDescription(initialTransaction?.description || '');
-    setType(initialTransaction?.type || TransactionType.EXPENSE);
-    setFrequency(initialTransaction?.frequency || TransactionFrequency.ONE_TIME);
-    setDate(toDateInputValue(initialTransaction?.date));
-    setDetails(buildInitialDetails(categoryOptions, initialTransaction));
+    setDescription(getInitialDescription(initialTransaction, initialPayload));
+    setType(getInitialType(initialTransaction, initialPayload));
+    setFrequency(getInitialFrequency(initialTransaction, initialPayload));
+    setDate(getInitialDate(initialTransaction, initialPayload));
+    setDetails(buildInitialDetails(categoryOptions, initialTransaction, initialPayload));
     setFormError('');
-  }, [initialTransaction, mode]);
+  }, [initialTransaction, initialPayload, mode, categoryOptions]);
 
   useEffect(() => {
     if (!categoryOptions.length) {
@@ -179,7 +179,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
   const totalAmountPreview = details.reduce((sum, detail) => {
     const amountValue = Number.parseFloat(detail.amount);
-    return Number.isFinite(amountValue) && amountValue >= 0 ? sum + amountValue : sum;
+    const quantityValue = Number.parseInt(detail.quantity, 10);
+    return Number.isFinite(amountValue) && amountValue >= 0 && Number.isFinite(quantityValue) && quantityValue > 0
+      ? sum + amountValue * quantityValue
+      : sum;
   }, 0);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -191,19 +194,23 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       return;
     }
 
-    const { normalizedDetails, invalidRows } = normalizeDetails(details, categoryOptions);
-
-    if (invalidRows.length > 0) {
-      setFormError(`Invalid values at detail row ${Array.from(new Set(invalidRows)).join(', ')}.`);
-      return;
-    }
+    const normalizedDetails = details.map((detail) => {
+      const matchedCategory = categoryOptions.find((category) => category._id === detail.categoryId);
+      return {
+        categoryId: detail.categoryId,
+        categoryName: matchedCategory?.name || '',
+        quantity: Number.parseInt(detail.quantity, 10) || 1,
+        amount: Number.parseFloat(detail.amount) || 0,
+        name: detail.name,
+      };
+    });
 
     await onSave({
       description: trimmedDescription,
       type,
       frequency,
       date,
-      total_amount: normalizedDetails.reduce((sum, detail) => sum + detail.amount, 0),
+      total_amount: normalizedDetails.reduce((sum, detail) => sum + (detail.amount * detail.quantity), 0),
       details: normalizedDetails,
     });
 

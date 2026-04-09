@@ -6,7 +6,7 @@ const API_BASE_URL = 'http://localhost:4000/api';
 
 interface AuthResponse {
   success: boolean;
-  user: { id?: string; _id?: string; username: string; email: string };
+  user: { id: string; username: string; email: string };
   token: string;
   message?: string;
 }
@@ -57,34 +57,18 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         body: JSON.stringify(payload),
       });
 
-      const rawBody = await response.text();
-      let data: Partial<AuthResponse> = {};
-
-      if (rawBody) {
-        try {
-          data = JSON.parse(rawBody) as Partial<AuthResponse>;
-        } catch (_parseError) {
-          data = {};
-        }
-      }
+      const data = await response.json() as AuthResponse;
 
       if (!response.ok || !data.success) {
         setError(data.message || 'Authentication failed. Please try again.');
         return;
       }
 
-      const backendUser = data.user as AuthResponse['user'];
-      const normalizedUserId = backendUser._id || backendUser.id;
-      if (!normalizedUserId) {
-        setError('Authentication response is missing user id.');
-        return;
-      }
-
       onLogin({
-        _id: normalizedUserId,
-        username: backendUser.username,
-        email: backendUser.email,
-        token: data.token as string,
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email,
+        token: data.token,
       });
     } catch (err) {
       console.error(err);

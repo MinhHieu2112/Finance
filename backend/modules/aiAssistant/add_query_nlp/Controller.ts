@@ -5,13 +5,9 @@ import add_query_nlpService from './Serviec';
 const add_query_nlp = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authUser   = res.locals.authUser;
-		const { prompt } = req.body as { prompt?: string };
+		const { data } = req.body as { data: string };
 
-		if (!prompt?.trim()) {
-			throw new AppError('Prompt is required', 400);
-		}
-
-		const result = await add_query_nlpService.handlePrompt(authUser.id, prompt);
+		const result = await add_query_nlpService.handlePrompt(authUser.id, data);
 
 		res.status(200).json({
 			success: true,

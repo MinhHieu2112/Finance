@@ -1,10 +1,20 @@
+import { Types } from 'mongoose';
+
+interface transactionDetail{
+	categoryName: string;
+	quantity: number;
+	amount: number;
+	name: string;
+	
+}
+
 export interface IntentTransactionPayload {
-	type: 'income' | 'expense';
 	description: string;
-	total_amount: number;
-	date: Date;
-	category: string;
+	type: 'income' | 'expense';
 	frequency: 'weekly' | 'monthly' | 'yearly' | 'one-time';
+	date: Date;
+	total_amount: number;
+	details: transactionDetail[];
 }
 
 export interface IntentQueryPayload {

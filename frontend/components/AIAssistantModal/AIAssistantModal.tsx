@@ -14,15 +14,15 @@ interface QuerySummary {
 
 interface OrchestratorResponse {
 	success: boolean;
-	result:
-		| {
-			intent: 'add';
-			data: Transaction[];
-		}
-		| {
-			intent: 'query';
-			data: Transaction[];
-		};
+	result: Record<string, unknown>;
+}
+
+interface AddQueryResponse {
+	success: boolean;
+	result: {
+		intent: 'add' | 'query';
+		data: Transaction[];
+	};
 }
 
 interface AIAssistantModalProps {
@@ -33,22 +33,6 @@ interface AIAssistantModalProps {
 }
 
 const formatMoney = (value: number) => `${Math.round(value).toLocaleString('en-US')} VND`;
-
-const isValidTransaction = (value: unknown): value is Transaction => {
-	if (!value || typeof value !== 'object') {
-		return false;
-	}
-
-	const candidate = value as Record<string, unknown>;
-	return typeof candidate._id === 'string'
-		&& typeof candidate.userId === 'string'
-		&& typeof candidate.description === 'string'
-		&& typeof candidate.total_amount === 'number'
-		&& typeof candidate.type === 'string'
-		&& typeof candidate.frequency === 'string'
-		&& typeof candidate.date === 'string'
-		&& Array.isArray(candidate.details);
-};
 
 export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 	isOpen,
@@ -90,13 +74,15 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			setCreatedTransactions([]);
 			setDetectedIntent(null);
 
-			const orchestratorResponse = await fetch(`${API_BASE_URL}/nlp/add&query`, {
+			const formData = new FormData();
+			formData.append('prompt', prompt);
+
+			const orchestratorResponse = await fetch(`${API_BASE_URL}/nlp/mcp-tools`, {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json',
 					Authorization: `Bearer ${token}`,
 				},
-				body: JSON.stringify({ prompt }),
+				body: formData,
 			});
 
 			if (!orchestratorResponse.ok) {
@@ -104,10 +90,28 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			}
 
 			const orchestrationData = await orchestratorResponse.json() as OrchestratorResponse;
-			setDetectedIntent(orchestrationData.result.intent);
 
-			if (orchestrationData.result.intent === 'add') {
-				const created = (orchestrationData.result.data || []).filter(isValidTransaction);
+			const addQueryResponse = await fetch(`${API_BASE_URL}/nlp/add&query`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({ data: orchestrationData.result }),
+			});
+
+			if (!addQueryResponse.ok) {
+				throw new Error(await parseErrorMessage(addQueryResponse));
+			}
+
+			const addQueryData = await addQueryResponse.json() as AddQueryResponse;
+			if (!addQueryData?.result?.intent || !Array.isArray(addQueryData?.result?.data)) {
+				throw new Error('Invalid response format from AI service.');
+			}
+			setDetectedIntent(addQueryData.result.intent);
+
+			if (addQueryData.result.intent === 'add') {
+				const created = addQueryData.result.data || [];
 				setCreatedTransactions(created);
 
 				created.forEach((transaction) => {
@@ -115,13 +119,13 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 				});
 
 				if (!created.length) {
-					setError('AI response did not include a valid transaction payload.');
+					setError('AI did not create any transaction from this prompt.');
 				}
 
 				return;
 			}
 
-			const matched = (orchestrationData.result.data || []).filter(isValidTransaction);
+			const matched = addQueryData.result.data || [];
 			const total = matched.reduce((sum, transaction) => sum + (Number(transaction.total_amount) || 0), 0);
 			setQueryResult({
 				answer: matched.length

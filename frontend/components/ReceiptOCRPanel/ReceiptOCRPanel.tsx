@@ -1,55 +1,41 @@
 import React, { useState } from 'react';
 import { ScanText, X } from 'lucide-react';
 import { Button } from '../Button/Button';
-import { type Transaction } from '../../types/Transactions';
+import { type TransactionPayload } from '../../types/Transactions';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 
-interface ParsedTransaction {
-	description: string;
-	amount: number;
-	type: 'income' | 'expense';
-	category: string;
-	frequency: string;
-	date: string;
-	confidence: 'high' | 'medium' | 'low';
-	sourceText: string;
-	item?: string;
-	quantity?: number;
-	unitPrice?: number;
-	totalAmount?: number;
-}
-
 interface OCRResponse {
 	success: boolean;
-	rawText: string;
-	parsed: ParsedTransaction;
-	transaction: Transaction;
+	result: TransactionPayload[];
 }
 
 interface ReceiptOCRPanelProps {
 	isOpen: boolean;
 	token: string;
 	onClose: () => void;
-	onTransactionCreated: (transaction: Transaction) => void;
+	onDraftPrepared: (draft: TransactionPayload) => void;
 }
-
-const formatMoney = (value: number) => `${Math.round(value).toLocaleString('en-US')} VND`;
 
 export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 	isOpen,
 	token,
 	onClose,
-	onTransactionCreated,
+	onDraftPrepared,
 }) => {
 	const [receiptFile, setReceiptFile] = useState<File | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [ocrResult, setOcrResult] = useState<OCRResponse | null>(null);
 
 	if (!isOpen) {
 		return null;
 	}
+
+	const resetAndClose = () => {
+		setReceiptFile(null);
+		setError(null);
+		onClose();
+	};
 
 	const parseErrorMessage = async (response: Response) => {
 		const fallback = 'Request failed. Please try again.';
@@ -74,7 +60,7 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 			const formData = new FormData();
 			formData.append('receipt', receiptFile);
 
-			const response = await fetch(`${API_BASE_URL}/analysis/assistant/receipt-ocr`, {
+			const mcp_response = await fetch(`${API_BASE_URL}/nlp/mcp-tools`, {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -82,25 +68,34 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 				body: formData,
 			});
 
-			if (!response.ok) {
-				throw new Error(await parseErrorMessage(response));
+			if (!mcp_response.ok) {
+				throw new Error(await parseErrorMessage(mcp_response));
 			}
 
-			const data = await response.json() as OCRResponse;
-			setOcrResult(data);
-			onTransactionCreated(data.transaction);
+			const orchestrationData = await mcp_response.json();
+			// const receiptPayload = orchestrationData?.result?.data || orchestrationData?.result || orchestrationData;
+
+			const receiptData = await fetch(`${API_BASE_URL}/nlp/add-by-receipt-image`, {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ data: orchestrationData.result }),
+			});
+
+			if (!receiptData.ok) {
+				throw new Error(await parseErrorMessage(receiptData));
+			}
+			
+			const data = await receiptData.json() as OCRResponse;
+			onDraftPrepared(data.result[0] as TransactionPayload);
+			resetAndClose();
 		} catch (submitError) {
 			setError(submitError instanceof Error ? submitError.message : 'Cannot process this receipt image right now.');
 		} finally {
 			setIsSubmitting(false);
 		}
-	};
-
-	const resetAndClose = () => {
-		setReceiptFile(null);
-		setError(null);
-		setOcrResult(null);
-		onClose();
 	};
 
 	return (
@@ -116,7 +111,7 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 						</div>
 						<div>
 							<h2 className="text-lg font-bold text-gray-900">Receipt OCR</h2>
-							<p className="text-sm text-gray-500">Upload receipt image and auto-create a transaction.</p>
+							<p className="text-sm text-gray-500">Upload receipt image to pre-fill a transaction form for review.</p>
 						</div>
 					</div>
 					<button type="button" onClick={resetAndClose} className="text-gray-400 hover:text-gray-600" aria-label="Close">
@@ -134,22 +129,8 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 
 					<Button onClick={handleReceiptOCR} isLoading={isSubmitting}>
 						<ScanText size={16} />
-						Extract And Create Transaction
+						Extract And Review Transaction
 					</Button>
-
-					{ocrResult && (
-						<div className="space-y-3 rounded-xl border border-amber-200 bg-white p-4 text-sm">
-							<div>
-								<p className="font-semibold text-gray-900">OCR parsed transaction</p>
-								<p className="text-gray-700">{ocrResult.parsed.description} | {formatMoney(ocrResult.parsed.amount)}</p>
-								<p className="text-gray-700">{ocrResult.parsed.category} | {ocrResult.parsed.date}</p>
-							</div>
-							<details>
-								<summary className="cursor-pointer text-xs text-gray-600">View OCR raw text</summary>
-								<pre className="mt-2 text-xs bg-gray-50 border border-gray-200 rounded-lg p-3 overflow-auto whitespace-pre-wrap">{ocrResult.rawText}</pre>
-							</details>
-						</div>
-					)}
 
 					{error && (
 						<div className="rounded-lg border border-red-100 bg-red-50 text-red-700 px-3 py-2 text-sm">
