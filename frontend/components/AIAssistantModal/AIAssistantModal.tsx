@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../Button/Button';
 import { Transaction } from '../../types/Transactions';
 import { Sparkles, X } from 'lucide-react';
-
-const API_BASE_URL = 'http://localhost:4000/api';
+import { api, getApiErrorMessage } from '../../lib/api';
 
 interface QuerySummary {
 	answer: string;
@@ -27,7 +26,6 @@ interface AddQueryResponse {
 
 interface AIAssistantModalProps {
 	isOpen: boolean;
-	token: string;
 	onClose: () => void;
 	onTransactionCreated: (transaction: Transaction) => void;
 }
@@ -36,7 +34,6 @@ const formatMoney = (value: number) => `${Math.round(value).toLocaleString('en-U
 
 export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 	isOpen,
-	token,
 	onClose,
 	onTransactionCreated,
 }) => {
@@ -51,22 +48,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 		return null;
 	}
 
-	const parseErrorMessage = async (response: Response) => {
-		const fallback = 'Request failed. Please try again.';
-		try {
-			const data = await response.json() as { message?: string; error?: string };
-			return data.message || data.error || fallback;
-		} catch {
-			return fallback;
-		}
-	};
-
 	const handleUnifiedPrompt = async () => {
-		if (!prompt.trim()) {
-			setError('Please enter a prompt.');
-			return;
-		}
-
 		try {
 			setError(null);
 			setIsSubmitting(true);
@@ -77,37 +59,14 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			const formData = new FormData();
 			formData.append('prompt', prompt);
 
-			const orchestratorResponse = await fetch(`${API_BASE_URL}/nlp/mcp-tools`, {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-				body: formData,
-			});
+			const orchestratorResponse = await api.post<OrchestratorResponse>('/nlp/mcp-tools', formData);
+			const orchestrationData = orchestratorResponse.data;
 
-			if (!orchestratorResponse.ok) {
-				throw new Error(await parseErrorMessage(orchestratorResponse));
-			}
+			const addQueryResponse = await api.post<AddQueryResponse>('/nlp/add&query',
+				{ data: orchestrationData.result },
+			);
 
-			const orchestrationData = await orchestratorResponse.json() as OrchestratorResponse;
-
-			const addQueryResponse = await fetch(`${API_BASE_URL}/nlp/add&query`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify({ data: orchestrationData.result }),
-			});
-
-			if (!addQueryResponse.ok) {
-				throw new Error(await parseErrorMessage(addQueryResponse));
-			}
-
-			const addQueryData = await addQueryResponse.json() as AddQueryResponse;
-			if (!addQueryData?.result?.intent || !Array.isArray(addQueryData?.result?.data)) {
-				throw new Error('Invalid response format from AI service.');
-			}
+			const addQueryData = addQueryResponse.data;
 			setDetectedIntent(addQueryData.result.intent);
 
 			if (addQueryData.result.intent === 'add') {
@@ -137,7 +96,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			});
 
 		} catch (submitError) {
-			setError(submitError instanceof Error ? submitError.message : 'Cannot process this prompt right now.');
+			setError(getApiErrorMessage(submitError, 'Cannot process this prompt right now.'));
 		} finally {
 			setIsSubmitting(false);
 		}

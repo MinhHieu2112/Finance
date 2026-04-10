@@ -56,20 +56,14 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmedName = name.trim();
-
-    if (!trimmedName) {
-      setError('Category name is required.');
-      return;
-    }
 
     try {
       setError(null);
       setIsSubmitting(true);
-      await onCreate({ name: trimmedName, description: description.trim() });
+      await onCreate({ name, description });
       resetCreateForm();
-    } catch (_error) {
-      setError('Unable to create category. Please try again.');
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'Unable to create category. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -80,19 +74,13 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
       return;
     }
 
-    const trimmedName = editingName.trim();
-    if (!trimmedName) {
-      setError('Category name is required.');
-      return;
-    }
-
     try {
       setError(null);
       setIsSubmitting(true);
-      await onUpdate(editingCategoryId, { name: trimmedName, description: editingDescription.trim() });
+      await onUpdate(editingCategoryId, { name: editingName, description: editingDescription });
       cancelEdit();
-    } catch (_error) {
-      setError('Unable to update category. Please try again.');
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'Unable to update category. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -110,8 +98,8 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
       if (editingCategoryId === id) {
         cancelEdit();
       }
-    } catch (_error) {
-      setError('Unable to delete category. Please try again.');
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'Unable to delete category. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -133,7 +121,6 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             onChange={(e) => setName(e.target.value)}
             placeholder="Category name"
             className="md:col-span-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-            required
           />
           <input
             type="text"

@@ -10,6 +10,7 @@ import { ResponsiveContainer,
          YAxis,
          Tooltip,
          Legend,} from 'recharts';
+import { api } from '../../lib/api';
 
 interface AnalysisPageProps {
   user: User;
@@ -29,8 +30,6 @@ interface DetectAnomaliesResponse {
   success: boolean;
   anomalies: AnalysisResult['anomalies'];
 }
-
-const API_BASE_URL = 'http://localhost:4000/api';
 
 const trendLabel: Record<'up' | 'down' | 'stable', string> = {up: 'Up',
                                                               down: 'Down',
@@ -382,28 +381,13 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
     const loadTransactions = async () => {
       try {
         const [trendResponse, savingSuggestionResponse, anomaliesResponse, transactionResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/analysis/forcasting-trend`, {
-            headers: {Authorization: `Bearer ${user.token}`},
-          }),
-
-          fetch(`${API_BASE_URL}/analysis/saving-suggestion`, {
-            headers: {Authorization: `Bearer ${user.token}`},
-          }),
-
-          fetch(`${API_BASE_URL}/analysis/detect-anomalies`, {
-            headers: {Authorization: `Bearer ${user.token}`},
-          }),
-
-          fetch(`${API_BASE_URL}/transactions/list`, {
-            headers: {Authorization: `Bearer ${user.token}`},
-          }),
+          api.get<ForcastingTrendResponse>('/analysis/forcasting-trend'),
+          api.get<SavingSuggestionResponse>('/analysis/saving-suggestion'),
+          api.get<DetectAnomaliesResponse>('/analysis/detect-anomalies'),
+          api.get<ListTransactionResponse>('/transactions/list'),
         ]);
 
-        if (!trendResponse.ok || !savingSuggestionResponse.ok || !anomaliesResponse.ok || !transactionResponse.ok) {
-          throw new Error('Cannot load analysis data');
-        }
-
-        const transactionData: ListTransactionResponse = await transactionResponse.json();
+        const transactionData = transactionResponse.data;
         const hasAnyTransactions = transactionData.transactions.length > 0;
         setHasTransactions(hasAnyTransactions);
         setTransactions(transactionData.transactions);
@@ -413,9 +397,9 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
           return;
         }
 
-        const trendData: ForcastingTrendResponse             = await trendResponse.json();
-        const savingSuggestionData: SavingSuggestionResponse = await savingSuggestionResponse.json();
-        const anomaliesData: DetectAnomaliesResponse         = await anomaliesResponse.json();
+        const trendData = trendResponse.data;
+        const savingSuggestionData = savingSuggestionResponse.data;
+        const anomaliesData = anomaliesResponse.data;
 
         setAnalysis({trend      : trendData.trend,
                      savingsPlan: savingSuggestionData.savingsPlan,

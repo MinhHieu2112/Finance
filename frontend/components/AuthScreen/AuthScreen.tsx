@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../Button/Button';
 import { User } from '../../types/Users';
-
-const API_BASE_URL = 'http://localhost:4000/api';
+import { api, getApiErrorMessage } from '../../lib/api';
 
 interface AuthResponse {
   success: boolean;
@@ -27,16 +26,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
     e.preventDefault();
     setError(null);
 
-    if (!email || !password) {
-      setError('Please enter both email and password.');
-      return;
-    }
-
-    if (!isLogin && !username.trim()) {
-      setError('Please enter a username.');
-      return;
-    }
-
     try {
       setLoading(true);
 
@@ -46,20 +35,13 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         : {
             email,
             password,
-            username: username.trim(),
+            username,
           };
 
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await api.post<AuthResponse>(endpoint, payload);
+      const data = response.data;
 
-      const data = await response.json() as AuthResponse;
-
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         setError(data.message || 'Authentication failed. Please try again.');
         return;
       }
@@ -71,8 +53,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         token: data.token,
       });
     } catch (err) {
-      console.error(err);
-      setError('Unable to connect to the server. Please try again.');
+      setError(getApiErrorMessage(err, 'Unable to connect to the server. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -114,7 +95,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
               placeholder = "you@example.com"
               value       = {email}
               onChange    = {(e) => setEmail(e.target.value)}
-              required
             />
           </div>
 
@@ -126,7 +106,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
               placeholder = "••••••••"
               value       = {password}
               onChange    = {(e) => setPassword(e.target.value)}
-              required
             />
           </div>
 

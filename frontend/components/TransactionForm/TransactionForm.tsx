@@ -117,7 +117,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   const [details, setDetails] = useState<TransactionDetailInput[]>(
     buildInitialDetails(categoryOptions, initialTransaction, initialPayload),
   );
-  const [formError, setFormError] = useState('');
 
   useEffect(() => {
     setDescription(getInitialDescription(initialTransaction, initialPayload));
@@ -125,7 +124,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     setFrequency(getInitialFrequency(initialTransaction, initialPayload));
     setDate(getInitialDate(initialTransaction, initialPayload));
     setDetails(buildInitialDetails(categoryOptions, initialTransaction, initialPayload));
-    setFormError('');
   }, [initialTransaction, initialPayload, mode, categoryOptions]);
 
   useEffect(() => {
@@ -149,10 +147,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     setDetails((prevDetails) => prevDetails.map((detail) => (
       detail.id === detailId ? { ...detail, ...patch } : detail
     )));
-
-    if (formError) {
-      setFormError('');
-    }
   };
 
   const addDetailAfter = (index: number) => {
@@ -161,10 +155,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       nextDetails.splice(index + 1, 0, createEmptyDetail(categoryOptions[0]?._id || ''));
       return nextDetails;
     });
-
-    if (formError) {
-      setFormError('');
-    }
   };
 
   const removeDetail = (detailId: string) => {
@@ -188,12 +178,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const trimmedDescription = description.trim();
-    if (!trimmedDescription) {
-      setFormError('Description is required.');
-      return;
-    }
-
     const normalizedDetails = details.map((detail) => {
       const matchedCategory = categoryOptions.find((category) => category._id === detail.categoryId);
       return {
@@ -206,7 +190,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     });
 
     await onSave({
-      description: trimmedDescription,
+      description,
       type,
       frequency,
       date,
@@ -248,12 +232,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                 <input
                   type="text"
                   value={description}
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                    if (formError) {
-                      setFormError('');
-                    }
-                  }}
+                  onChange={(e) => setDescription(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                   placeholder="Monthly expenses, Salary April..."
                 />
@@ -378,34 +357,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             </div>
           </div>
 
-          {formError && (
-            <p className="text-sm text-red-500">{formError}</p>
-          )}
-
           <div className="pt-2">
             <Button
               type="submit"
               className="w-full py-3"
-              disabled={categoryOptions.length === 0}
             >
               {mode === 'edit' ? 'Update Transaction' : 'Save Transaction'}
             </Button>
-            {categoryOptions.length === 0 && (
-              <p className="mt-2 text-xs text-red-500 text-center">
-                Please create at least one category before adding transactions.
-              </p>
-            )}
-            {categoryOptions.length === 0 && onManageCategories && (
-              <div className="mt-2 text-center">
-                <button
-                  type="button"
-                  onClick={onManageCategories}
-                  className="text-xs text-primary hover:underline"
-                >
-                  Open Category Manager
-                </button>
-              </div>
-            )}
           </div>
         </form>
       </div>

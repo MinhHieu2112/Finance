@@ -7,22 +7,17 @@ import { CategoryManagerModal } from '../../components/CategoryManagerModal/Cate
 import { AIAssistantModal } from '../../components/AIAssistantModal/AIAssistantModal';
 import { ReceiptOCRPanel } from '../../components/ReceiptOCRPanel/ReceiptOCRPanel';
 import { Button } from '../../components/Button/Button';
-import {
-  Category,
-  CategoryOption,
-  ListCategoryResponse,
-  SaveCategoryResponse,
-} from '../../types/Categories';
-import {
-  ListTransactionResponse,
-  SaveTransactionResponse,
-  Transaction,
-  type TransactionPayload,
-} from '../../types/Transactions';
+import { Category,
+         CategoryOption,
+         ListCategoryResponse,
+         SaveCategoryResponse,} from '../../types/Categories';
+import { ListTransactionResponse,
+         SaveTransactionResponse,
+         Transaction,
+         type TransactionPayload,} from '../../types/Transactions';
 import { User } from '../../types/Users';
 import { Plus, ScanText, Sparkles, Tags } from 'lucide-react';
-
-const API_BASE_URL = 'http://localhost:4000/api';
+import { api, getApiErrorMessage } from '../../lib/api';
 
 interface DashboardPageProps {
   user: User;
@@ -53,28 +48,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     const loadDashboardData = async () => {
       try {
         const [transactionResponse, categoryResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/transactions/list`, {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }),
-          fetch(`${API_BASE_URL}/categories/list`, {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }),
+          api.get<ListTransactionResponse>('/transactions/list'),
+          api.get<ListCategoryResponse>('/categories/list'),
         ]);
 
-        if (!transactionResponse.ok) {
-          throw new Error('Cannot load transactions');
-        }
-
-        if (!categoryResponse.ok) {
-          throw new Error('Cannot load categories');
-        }
-
-        const transactionData: ListTransactionResponse = await transactionResponse.json();
-        const categoryData: ListCategoryResponse = await categoryResponse.json();
+        const transactionData = transactionResponse.data;
+        const categoryData = categoryResponse.data;
 
         setTransactions(transactionData.transactions);
         setCategories(categoryData.categories);
@@ -87,20 +66,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   }, [user.token]);
 
   const createTransaction = async (newTx: TransactionPayload): Promise<Transaction> => {
-    const response = await fetch(`${API_BASE_URL}/transactions/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: JSON.stringify(newTx),
-    });
-
-    if (!response.ok) {
-      throw new Error('Cannot create transaction');
-    }
-
-    const data: SaveTransactionResponse = await response.json();
+    const response = await api.post<SaveTransactionResponse>('/transactions/add', newTx);
+    const data = response.data;
     return data.transaction;
   };
 
@@ -110,20 +77,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   };
 
   const updateTransaction = async (id: string, updatedTx: TransactionPayload) => {
-    const response = await fetch(`${API_BASE_URL}/transactions/edit/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: JSON.stringify(updatedTx),
-    });
-
-    if (!response.ok) {
-      throw new Error('Cannot update transaction');
-    }
-
-    const data: SaveTransactionResponse = await response.json();
+    const response = await api.put<SaveTransactionResponse>(`/transactions/edit/${id}`, updatedTx);
+    const data = response.data;
     setTransactions((prev) => prev.map((t) => (t._id === id ? data.transaction : t)));
   };
 
@@ -137,54 +92,32 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   };
 
   const createCategory = async (payload: { name: string; description: string }) => {
-    const response = await fetch(`${API_BASE_URL}/categories/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error('Cannot create category');
+    try {
+      const response = await api.post<SaveCategoryResponse>('/categories/add', payload);
+      const data = response.data;
+      setCategories((prev) => [data.category, ...prev.filter((item) => item._id !== data.category._id)]);
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error, 'Cannot create category'));
     }
-
-    const data: SaveCategoryResponse = await response.json();
-    setCategories((prev) => [data.category, ...prev.filter((item) => item._id !== data.category._id)]);
   };
 
   const updateCategory = async (id: string, payload: { name: string; description: string }) => {
-    const response = await fetch(`${API_BASE_URL}/categories/edit/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error('Cannot update category');
+    try {
+      const response = await api.put<SaveCategoryResponse>(`/categories/edit/${id}`, payload);
+      const data = response.data;
+      setCategories((prev) => prev.map((item) => (item._id === id ? data.category : item)));
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error, 'Cannot update category'));
     }
-
-    const data: SaveCategoryResponse = await response.json();
-    setCategories((prev) => prev.map((item) => (item._id === id ? data.category : item)));
   };
 
   const deleteCategory = async (id: string) => {
-    const response = await fetch(`${API_BASE_URL}/categories/delete/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Cannot delete category');
+    try {
+      await api.delete(`/categories/delete/${id}`);
+      setCategories((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error, 'Cannot delete category'));
     }
-
-    setCategories((prev) => prev.filter((item) => item._id !== id));
   };
 
   const openCreateForm = () => {
@@ -228,16 +161,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
 
   const deleteTransaction = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
-      const response = await fetch(`${API_BASE_URL}/transactions/delete/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Cannot delete transaction');
-      }
+      await api.delete(`/transactions/delete/${id}`);
 
       setTransactions((prev) => prev.filter((t) => t._id !== id));
     }
@@ -344,14 +268,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
 
       <AIAssistantModal
         isOpen={isAIAssistantOpen}
-        token={user.token}
         onClose={closeAIAssistant}
         onTransactionCreated={onAssistantTransactionCreated}
       />
 
       <ReceiptOCRPanel
         isOpen={isReceiptOCROpen}
-        token={user.token}
         onClose={closeReceiptOCR}
         onDraftPrepared={onReceiptDraftPrepared}
       />

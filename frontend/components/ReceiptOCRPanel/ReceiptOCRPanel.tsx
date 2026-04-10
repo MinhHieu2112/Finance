@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { ScanText, X } from 'lucide-react';
 import { Button } from '../Button/Button';
 import { type TransactionPayload } from '../../types/Transactions';
-
-const API_BASE_URL = 'http://localhost:4000/api';
+import { api, getApiErrorMessage } from '../../lib/api';
 
 interface OCRResponse {
 	success: boolean;
@@ -12,14 +11,12 @@ interface OCRResponse {
 
 interface ReceiptOCRPanelProps {
 	isOpen: boolean;
-	token: string;
 	onClose: () => void;
 	onDraftPrepared: (draft: TransactionPayload) => void;
 }
 
 export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 	isOpen,
-	token,
 	onClose,
 	onDraftPrepared,
 }) => {
@@ -37,62 +34,30 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 		onClose();
 	};
 
-	const parseErrorMessage = async (response: Response) => {
-		const fallback = 'Request failed. Please try again.';
-		try {
-			const data = await response.json() as { message?: string; error?: string };
-			return data.message || data.error || fallback;
-		} catch {
-			return fallback;
-		}
-	};
-
 	const handleReceiptOCR = async () => {
-		if (!receiptFile) {
-			setError('Please choose a receipt image first.');
-			return;
-		}
-
 		try {
 			setError(null);
 			setIsSubmitting(true);
 
 			const formData = new FormData();
-			formData.append('receipt', receiptFile);
-
-			const mcp_response = await fetch(`${API_BASE_URL}/nlp/mcp-tools`, {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-				body: formData,
-			});
-
-			if (!mcp_response.ok) {
-				throw new Error(await parseErrorMessage(mcp_response));
+			if (receiptFile) {
+				formData.append('receipt', receiptFile);
 			}
 
-			const orchestrationData = await mcp_response.json();
+			const mcpResponse = await api.post('/nlp/mcp-tools', formData);
+			const orchestrationData = mcpResponse.data as { result: unknown };
 			// const receiptPayload = orchestrationData?.result?.data || orchestrationData?.result || orchestrationData;
 
-			const receiptData = await fetch(`${API_BASE_URL}/nlp/add-by-receipt-image`, {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ data: orchestrationData.result }),
-			});
+			const receiptData = await api.post<OCRResponse>(
+				'/nlp/add-by-receipt-image',
+				{ data: orchestrationData.result }
+			);
 
-			if (!receiptData.ok) {
-				throw new Error(await parseErrorMessage(receiptData));
-			}
-			
-			const data = await receiptData.json() as OCRResponse;
+			const data = receiptData.data;
 			onDraftPrepared(data.result[0] as TransactionPayload);
 			resetAndClose();
 		} catch (submitError) {
-			setError(submitError instanceof Error ? submitError.message : 'Cannot process this receipt image right now.');
+			setError(getApiErrorMessage(submitError, 'Cannot process this receipt image right now.'));
 		} finally {
 			setIsSubmitting(false);
 		}
