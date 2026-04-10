@@ -1,8 +1,7 @@
 import transactionRepository from './Repository';
 import AppError from '../../../utils/appError';
-import { TransactionFrequency, TransactionType } from '../../types/Transactions';
-import {type editTransactionSchema,
-		type transactionDetailSchema } from '../../types/Transactions';
+import { TransactionFrequency, TransactionType } from './types';
+import type { editTransactionSchema, transactionDetailSchema } from './types';
 import { type Types } from 'mongoose';
 
 class transactionService {

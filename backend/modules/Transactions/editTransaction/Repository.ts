@@ -1,7 +1,7 @@
 import transactionModel from '../../../models/Transaction';
 import categoryModel from '../../../models/Category';
 import { type Types } from 'mongoose';
-import { type transactionDetailSchema } from '../../types/Transactions';
+import type { transactionDetailSchema } from './types';
 
 class transactionRepository {
         async findCategoryNameById(userId: Types.ObjectId, categoryId: Types.ObjectId) {
@@ -29,7 +29,7 @@ class transactionRepository {
                                                    frequency    : string;
                                                    date         : Date;
                                                    total_amount : number;
-                                                   details      : transactionDetailSchema[];}): Promise<any> {
+                                                   details      : transactionDetailSchema[];}): Promise<unknown> {
                 return transactionModel.findOneAndUpdate({ _id: transactionId, userId },
                                                          data,
                                                          { new: true, runValidators: true });

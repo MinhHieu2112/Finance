@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Transaction, TransactionType } from '../../types/Transactions';
+import type { ChartsProps } from './types';
+import { TransactionType } from './types';
 import {
   PieChart,
   Pie,
@@ -12,10 +13,6 @@ import {
   LineChart,
   Line,
 } from 'recharts';
-
-interface ChartsProps {
-  transactions: Transaction[];
-}
 
 const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6366F1'];
 
@@ -142,6 +139,8 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     return result;
   }, [transactions]);
 
+  const formatTooltipMoney = (value: number | undefined) => `${Math.round(value ?? 0).toLocaleString('en-US')} VND`;
+
   if (transactions.length === 0) return null;
 
   return (
@@ -156,7 +155,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
                   <Cell key={entry.name} fill={entry.color} />
                 ))}
               </Pie>
-              <ReTooltip formatter={(value: number) => `${Math.round(value).toLocaleString('en-US')} VND`} />
+              <ReTooltip formatter={formatTooltipMoney} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -200,7 +199,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
               <XAxis dataKey="label" tick={{ fontSize: 12 }} minTickGap={18} />
               <YAxis tick={{ fontSize: 12 }} />
               <ReTooltip
-                formatter={(value: number) => `${Math.round(value).toLocaleString('en-US')} VND`}
+                formatter={formatTooltipMoney}
                 labelFormatter={(_, payload) => {
                   const dateLabel = payload?.[0]?.payload?.date;
                   return dateLabel || '';

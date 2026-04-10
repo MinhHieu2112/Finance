@@ -1,14 +1,13 @@
-import { unlink } from 'node:fs/promises';
 import { type Request, type Response, type NextFunction } from 'express';
-import AppError from '../../../utils/appError';
 import add_trans_by_receiptImgService from './Serviec';
+import type { AIIntentPayload } from './types';
 
 const add_trans_by_receiptImg = async (req: Request, res: Response, next: NextFunction) => {
 	
 
 	try {
 		const authUser   = res.locals.authUser;
-		const { data } = req.body;		
+		const { data } = req.body as { data: AIIntentPayload };		
 
 		const result = await add_trans_by_receiptImgService.handleReceiptImage(authUser.id, data);
 

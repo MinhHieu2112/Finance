@@ -1,5 +1,4 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import AppError from '../../../utils/appError';
 import MCP_toolsServiec from './Serviec';
 
 const mcp_tools = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,5 +1,5 @@
 import transactionModel from '../../../models/Transaction';
-import { type transactionSchema } from '../../types/Transactions';
+import type { transactionSchema } from './types';
 import { type Types } from 'mongoose';
 
 class detectAnomaliesRepository {

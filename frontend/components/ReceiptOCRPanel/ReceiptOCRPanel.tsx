@@ -1,19 +1,8 @@
 import React, { useState } from 'react';
 import { ScanText, X } from 'lucide-react';
 import { Button } from '../Button/Button';
-import { type TransactionPayload } from '../../types/Transactions';
 import { api, getApiErrorMessage } from '../../lib/api';
-
-interface OCRResponse {
-	success: boolean;
-	result: TransactionPayload[];
-}
-
-interface ReceiptOCRPanelProps {
-	isOpen: boolean;
-	onClose: () => void;
-	onDraftPrepared: (draft: TransactionPayload) => void;
-}
+import type { OCRResponse, ReceiptOCRPanelProps, TransactionPayload } from './types';
 
 export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 	isOpen,

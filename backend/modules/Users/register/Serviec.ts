@@ -5,13 +5,19 @@ import authRepository from './Repository';
 import AppError from '../../../utils/appError';
 import defaultCategories from '../../../config/categories.json';
 import { Types } from 'mongoose';
-import { CategorySchema, DefaultCategorySchema } from '../../types/Category';
+import type {
+	AuthResult,
+	AuthTokenPayload,
+	RegisterPayload,
+	UserCategorySchema,
+	UserDefaultCategorySchema,
+} from './types';
 
 class authService {
 	private prepareDefaultCategories(userId: Types.ObjectId) {
-		const deduped = new Map<string, CategorySchema>();
+		const deduped = new Map<string, UserCategorySchema>();
 
-		(defaultCategories as DefaultCategorySchema[]).forEach((category) => {
+		(defaultCategories as UserDefaultCategorySchema[]).forEach((category) => {
 			const name = category.name?.trim();
 			if (!name) {
 				return;
@@ -35,7 +41,7 @@ class authService {
 		return categories;
 	}
 
-	createToken(userData: { id: Types.ObjectId; email: string; username: string }) {
+	createToken(userData: AuthTokenPayload) {
 		const secret = process.env.JWT_SECRET;
 		if (!secret) {
 			throw new AppError('Missing JWT_SECRET in backend environment', 500);
@@ -46,7 +52,7 @@ class authService {
 						  secret)
 	}
 
-	async register(data: { username: string; email: string; password: string }) {
+	async register(data: RegisterPayload): Promise<AuthResult> {
 		const username = data.username?.trim();
 		const email    = data.email?.trim().toLowerCase();
 		const password = data.password;

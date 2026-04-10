@@ -1,34 +1,14 @@
 import React, { useState } from 'react';
 import { Button } from '../Button/Button';
-import { Transaction } from '../../types/Transactions';
 import { Sparkles, X } from 'lucide-react';
 import { api, getApiErrorMessage } from '../../lib/api';
-
-interface QuerySummary {
-	answer: string;
-	total: number;
-	count: number;
-	transactions: Transaction[];
-}
-
-interface OrchestratorResponse {
-	success: boolean;
-	result: Record<string, unknown>;
-}
-
-interface AddQueryResponse {
-	success: boolean;
-	result: {
-		intent: 'add' | 'query';
-		data: Transaction[];
-	};
-}
-
-interface AIAssistantModalProps {
-	isOpen: boolean;
-	onClose: () => void;
-	onTransactionCreated: (transaction: Transaction) => void;
-}
+import type {
+	AddQueryResponse,
+	AIAssistantModalProps,
+	OrchestratorResponse,
+	QuerySummary,
+	Transaction,
+} from './types';
 
 const formatMoney = (value: number) => `${Math.round(value).toLocaleString('en-US')} VND`;
 

@@ -2,9 +2,10 @@ import AppError from '../../../utils/appError';
 import categoryRepository from './Repository';
 // import { toObjectId } from '../../../utils/objectId';
 import { Types } from 'mongoose';
+import type { CategoryPayload } from './types';
 
 class categoryService {
-	async editCategory(id: Types.ObjectId, userId: Types.ObjectId, data: { name: string; description?: string }) {
+	async editCategory(id: Types.ObjectId, userId: Types.ObjectId, data: CategoryPayload) {
 		const name = data.name?.trim();
 		const description = data.description?.trim() ?? '';
 

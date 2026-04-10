@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Transaction, TransactionType, getPrimaryCategoryName } from '../../types/Transactions';
+import type { TransactionListProps } from './types';
+import { TransactionType } from './types';
 import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil, ChevronDown, ChevronUp } from 'lucide-react';
 
-interface TransactionListProps {
-  transactions: Transaction[];
-  categoryOptions: string[];
-  onDelete: (id: string) => void;
-  onEdit: (transaction: Transaction) => void;
-}
+const getPrimaryCategoryName = (transaction: { details: Array<{ categoryName: string }> }) => {
+  return transaction.details[0]?.categoryName || 'Other';
+};
 
 export const TransactionList: React.FC<TransactionListProps> = ({ transactions, categoryOptions, onDelete, onEdit }) => {
   const ITEMS_PER_PAGE = 10;

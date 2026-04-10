@@ -1,18 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../Button/Button';
-import { User } from '../../types/Users';
 import { api, getApiErrorMessage } from '../../lib/api';
-
-interface AuthResponse {
-  success: boolean;
-  user: { id: string; username: string; email: string };
-  token: string;
-  message?: string;
-}
-
-interface AuthScreenProps {
-  onLogin: (user: User) => void;
-}
+import type { AuthResponse, AuthScreenProps } from './types';
 
 export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
   const [isLogin, setIsLogin]   = useState(true);

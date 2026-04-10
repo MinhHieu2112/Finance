@@ -1,11 +1,11 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import AppError from '../../../utils/appError';
 import add_query_nlpService from './Serviec';
+import type { AIIntentPayload } from './types';
 
 const add_query_nlp = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authUser   = res.locals.authUser;
-		const { data } = req.body as { data: string };
+		const { data } = req.body as { data: AIIntentPayload };
 
 		const result = await add_query_nlpService.handlePrompt(authUser.id, data);
 

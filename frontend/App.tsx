@@ -6,7 +6,7 @@ import { AnalysisPage } from './pages/AnalysisPage/AnalysisPage';
 import Sidebar from './components/Sidebar/Sidebar';
 import { Navbar } from './components/Navbar/Navbar';
 import { Footer } from './components/Footer/Footer';
-import { User } from './types/Users';
+import type { User } from './types/Users';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);

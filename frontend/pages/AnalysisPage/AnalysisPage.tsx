@@ -1,7 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AnalysisResult } from '../../types/Analysis';
-import { ListTransactionResponse, Transaction } from '../../types/Transactions';
-import { User } from '../../types/Users';
+import type {
+  AnalysisPageProps,
+  AnalysisResult,
+  DetectAnomaliesResponse,
+  ForcastingTrendResponse,
+  ListTransactionResponse,
+  MetricDriver,
+  SavingsSnapshot,
+  SavingSuggestionResponse,
+  SuggestionCard,
+  Transaction,
+  TrendDirection,
+} from './types';
 import { ResponsiveContainer,
          LineChart,
          Line,
@@ -12,25 +22,6 @@ import { ResponsiveContainer,
          Legend,} from 'recharts';
 import { api } from '../../lib/api';
 
-interface AnalysisPageProps {
-  user: User;
-}
-
-interface ForcastingTrendResponse {
-  success: boolean;
-  trend: AnalysisResult['trend'];
-}
-
-interface SavingSuggestionResponse {
-  success: boolean;
-  savingsPlan: string[];
-}
-
-interface DetectAnomaliesResponse {
-  success: boolean;
-  anomalies: AnalysisResult['anomalies'];
-}
-
 const trendLabel: Record<'up' | 'down' | 'stable', string> = {up: 'Up',
                                                               down: 'Down',
                                                               stable: 'Stable',};
@@ -38,25 +29,6 @@ const trendLabel: Record<'up' | 'down' | 'stable', string> = {up: 'Up',
 const formatMoney   = (value: number) => `${Math.round(value).toLocaleString('en-US')} VND`;
 const formatPercent = (value: number) => `${Math.abs(value).toFixed(0)}%`;
 const formatSignedPercent = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(0)}%`;
-
-type TrendDirection = 'up' | 'down' | 'stable';
-
-interface MetricDriver {
-  category: string;
-  changePercent: number;
-  deltaAmount: number;
-}
-
-interface SavingsSnapshot {
-  rate: number | null;
-  monthlySurplus: number;
-  suggestedAllocation: number;
-}
-
-interface SuggestionCard {
-  headline: string;
-  action: string;
-}
 
 const getMetricValues = (
   monthlySeries: AnalysisResult['trend']['monthlySeries'],

@@ -1,5 +1,5 @@
 import transactionRepository from './Repository';
-import { type transactionSchema } from '../../types/Transactions';
+import type { transactionSchema } from './types';
 import { Types } from "mongoose"
 
 class transactionService {

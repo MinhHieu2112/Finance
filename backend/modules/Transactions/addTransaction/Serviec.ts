@@ -1,8 +1,7 @@
 import transactionRepository from './Repository';
 import AppError from '../../../utils/appError';
-import { TransactionFrequency, TransactionType, } from '../../types/Transactions';
-import { type transactionDetailSchema, 
-         type transactionSchema } from '../../types/Transactions';
+import { TransactionFrequency, TransactionType } from './types';
+import type { transactionDetailSchema, transactionSchema } from './types';
 
 class transactionService {
     async addTransaction(data: transactionSchema): Promise<transactionSchema> {

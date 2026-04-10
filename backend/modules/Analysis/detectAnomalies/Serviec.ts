@@ -1,7 +1,6 @@
 import AppError from '../../../utils/appError';
 import detectAnomaliesRepository from './Repository';
-import { type transactionSchema } from '../../types/Transactions';
-import { type AnalysisAnomaly } from '../../types/Analysis';
+import type { AnalysisAnomaly, transactionSchema } from './types';
 import { Types } from 'mongoose';
 
 type normalizedExpensePoint = {

@@ -3,9 +3,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import authRepository from './Repository';
 import AppError from '../../../utils/appError';
+import type { AuthResult, AuthTokenPayload, LoginPayload } from './types';
 
 class authService {
-	createToken(userData: any) {
+	createToken(userData: AuthTokenPayload) {
 		const secret = process.env.JWT_SECRET;
 		if (!secret) {
 			throw new AppError('Missing JWT_SECRET in backend environment', 500);
@@ -16,7 +17,7 @@ class authService {
 						  secret)
 	}
 
-	async login(data: { email: string; password: string }) {
+	async login(data: LoginPayload): Promise<AuthResult> {
 		const email    = data.email?.trim().toLowerCase();
 		const password = data.password;
 

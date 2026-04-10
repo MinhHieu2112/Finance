@@ -1,7 +1,6 @@
 import AppError from '../../../utils/appError';
 import forcastingTrendRepository from './Repository';
-import { type transactionSchema } from '../../types/Transactions';
-import { type ForcastingTrendResult, type MonthlyPoint } from '../../types/Analysis';
+import type { ForcastingTrendResult, MonthlyPoint, transactionSchema } from './types';
 import { Types } from 'mongoose';
 
 class forcastingTrendService {

@@ -1,7 +1,7 @@
 import userModel from '../../../models/Users';
 import categoryModel from '../../../models/Category';
 import { type Types } from 'mongoose';
-import { CategorySchema } from '../../types/Category';
+import type { UserCategorySchema } from './types';
 
 class authRepository {
 	async findUserByEmail(email: string) {
@@ -16,7 +16,7 @@ class authRepository {
 		return userModel.create(data);
 	}
 
-	async createDefaultCategories(data: CategorySchema[]) {
+	async createDefaultCategories(data: UserCategorySchema[]) {
 		return categoryModel.insertMany(data);
 	}
 

@@ -1,14 +1,12 @@
 import AppError from '../../../utils/appError';
 import add_query_nlpRepository from './Repository';
-import {FinanceIntentSchema} from '../../../utils/normalized';
-import { GoogleGenAI, Type } from '@google/genai';
-import { type IntentDetectionResult } from '../../types/aiAssistant';
 import { Types } from 'mongoose';
+import type { AIDetailInput, AIIntentPayload, AIIntentResult, AIQueryInput, AITransactionInput } from './types';
 
 class add_query_nlpService {
 
-	private buildQuerryFilter(query: any) {
-		const filter: any = {};
+	private buildQuerryFilter(query: AIQueryInput) {
+		const filter: Record<string, unknown> = {};
 
 		if (query.type) {
 			filter.type = query.type;
@@ -25,9 +23,9 @@ class add_query_nlpService {
 		}
 
 		if (query.time?.length) {
-			const orConditions: any[] = [];
+			const orConditions: Array<{ date: { $gte: Date; $lt: Date } }> = [];
 
-			query.time.forEach((t: any) => {
+			query.time.forEach((t) => {
 			t.months.forEach((month: number) => {
 				const from = new Date(t.year, month - 1, 1);
 				const to   = new Date(t.year, month, 1);
@@ -44,21 +42,49 @@ class add_query_nlpService {
 		return filter;
 	}
 
-	async handlePrompt(userId: Types.ObjectId, data: any): Promise<any> {
+	private resolveTransactions(data: AIIntentPayload): AITransactionInput[] | null {
+		if (Array.isArray(data.transactions)) {
+			return data.transactions;
+		}
+
+		if (typeof data.data === 'object' && data.data !== null) {
+			const nestedTransactions = (data.data as { transactions?: AITransactionInput[] }).transactions;
+			if (Array.isArray(nestedTransactions)) {
+				return nestedTransactions;
+			}
+		}
+
+		return null;
+	}
+
+	private resolveQueryPayload(data: AIIntentPayload): AIQueryInput | null {
+		if (data.query) {
+			return data.query;
+		}
+
+		if (data.intent === 'query' && typeof data.data === 'object' && data.data !== null) {
+			const hasTransactions = Array.isArray((data.data as { transactions?: unknown }).transactions);
+			if (!hasTransactions) {
+				return data.data as AIQueryInput;
+			}
+		}
+
+		return null;
+	}
+
+	async handlePrompt(userId: Types.ObjectId, data: AIIntentPayload): Promise<AIIntentResult> {
 		const intent = data?.intent;
-		const transactions = Array.isArray(data?.transactions)
-			? data.transactions
-			: Array.isArray(data?.data?.transactions)
-				? data.data.transactions
-				: null;
-		const queryPayload = data?.query ?? (intent === 'query' ? data?.data : null);
+		const transactions = this.resolveTransactions(data);
+		const queryPayload = this.resolveQueryPayload(data);
 
 		if (intent === 'add' && transactions) {
 			const results = await Promise.all(
-			transactions.map(async (t: any) => {
+			transactions.map(async (t) => {
 
 				const details = await Promise.all(
-					t.details.map(async (d: any) => {
+					(t.details || []).map(async (d: AIDetailInput) => {
+						const quantity = Number(d.quantity) || 1;
+						const amount = Number(d.amount) || 0;
 
 						const categoryId = await add_query_nlpRepository.findCategoryByName(userId,
 																							d.categoryName);
@@ -69,20 +95,22 @@ class add_query_nlpService {
 
 						return {categoryId,
 								categoryName: d.categoryName,
-								quantity: d.quantity || 1,
-								amount: d.amount,
+								quantity,
+								amount,
 								name: d.name || '',}
 					})
 				);
 
 				const totalAmount = details.reduce((sum, d) => sum + (d.amount * d.quantity), 0);
+				const parsedDate = t.date ? new Date(t.date) : new Date();
+				const safeDate = Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
 
 				return add_query_nlpRepository.addTransaction({
 					userId,
-					description: t.description,
-					type: t.type,
-					frequency: t.frequency,
-					date: t.date,
+					description: t.description || '',
+					type: t.type || 'expense',
+					frequency: t.frequency || 'one-time',
+					date: safeDate,
 					total_amount: totalAmount,
 					details,
 				});

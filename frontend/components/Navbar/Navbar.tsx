@@ -1,11 +1,6 @@
 import React from 'react';
 import { LogOut, User as UserIcon } from 'lucide-react';
-import { User } from '../../types/Users';
-
-interface NavbarProps {
-  user: User;
-  onLogout: () => void;
-}
+import type { NavbarProps } from './types';
 
 export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   return (

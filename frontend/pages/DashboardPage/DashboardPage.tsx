@@ -7,21 +7,19 @@ import { CategoryManagerModal } from '../../components/CategoryManagerModal/Cate
 import { AIAssistantModal } from '../../components/AIAssistantModal/AIAssistantModal';
 import { ReceiptOCRPanel } from '../../components/ReceiptOCRPanel/ReceiptOCRPanel';
 import { Button } from '../../components/Button/Button';
-import { Category,
-         CategoryOption,
-         ListCategoryResponse,
-         SaveCategoryResponse,} from '../../types/Categories';
-import { ListTransactionResponse,
-         SaveTransactionResponse,
-         Transaction,
-         type TransactionPayload,} from '../../types/Transactions';
-import { User } from '../../types/Users';
+import type {
+  Category,
+  CategoryOption,
+  DashboardPageProps,
+  ListCategoryResponse,
+  ListTransactionResponse,
+  SaveCategoryResponse,
+  SaveTransactionResponse,
+  Transaction,
+  TransactionPayload,
+} from './types';
 import { Plus, ScanText, Sparkles, Tags } from 'lucide-react';
 import { api, getApiErrorMessage } from '../../lib/api';
-
-interface DashboardPageProps {
-  user: User;
-}
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);

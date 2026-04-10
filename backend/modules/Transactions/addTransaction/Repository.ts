@@ -1,7 +1,7 @@
 import transactionModel from '../../../models/Transaction';
 import categoryModel from '../../../models/Category';
 import { type Types } from 'mongoose';
-import { type transactionSchema } from '../../types/Transactions';
+import type { transactionSchema } from './types';
 
 class transactionRepository {
     async addTransaction(data: transactionSchema) {

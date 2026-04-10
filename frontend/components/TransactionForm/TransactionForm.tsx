@@ -1,31 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { type CategoryOption } from '../../types/Categories';
-import {
-  Transaction,
-  TransactionFrequency,
-  TransactionType,
-  type TransactionPayload,
-} from '../../types/Transactions';
 import { Button } from '../Button/Button';
 import { Plus, Trash2, X } from 'lucide-react';
-
-interface TransactionFormProps {
-  onSave: (transaction: TransactionPayload) => Promise<void> | void;
-  onClose: () => void;
-  categoryOptions: CategoryOption[];
-  onManageCategories?: () => void;
-  mode?: 'create' | 'edit';
-  initialTransaction?: Transaction | null;
-  initialPayload?: TransactionPayload | null;
-}
-
-interface TransactionDetailInput {
-  id: string;
-  categoryId: string;
-  quantity: string;
-  amount: string;
-  name: string;
-}
+import {
+  TransactionFrequency,
+  TransactionType,
+} from './types';
+import type {
+  CategoryOption,
+  Transaction,
+  TransactionFormProps,
+  TransactionDetailInput,
+  TransactionPayload,
+} from './types';
 
 const createRowId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 const getTodayISO = () => new Date().toISOString().split('T')[0];

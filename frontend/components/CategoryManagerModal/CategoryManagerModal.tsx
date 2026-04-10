@@ -1,16 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { Category } from '../../types/Categories';
 import { Button } from '../Button/Button';
 import { Pencil, Trash2, X } from 'lucide-react';
-
-interface CategoryManagerModalProps {
-  isOpen: boolean;
-  categories: Category[];
-  onClose: () => void;
-  onCreate: (payload: { name: string; description: string }) => Promise<void>;
-  onUpdate: (id: string, payload: { name: string; description: string }) => Promise<void>;
-  onDelete: (id: string) => Promise<void>;
-}
+import type { Category, CategoryManagerModalProps } from './types';
 
 export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   isOpen,

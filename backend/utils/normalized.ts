@@ -1,6 +1,4 @@
 import { z } from 'zod';
-import { de } from 'zod/locales';
-// import { ca } from "zod/v4/locales";
 
 export const amountSchema = z.preprocess((val) => {
   if (typeof val === 'number') return val;

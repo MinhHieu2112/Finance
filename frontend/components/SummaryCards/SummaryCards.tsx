@@ -1,10 +1,7 @@
 import React, { useMemo } from 'react';
-import { Transaction, TransactionType } from '../../types/Transactions';
+import type { SummaryCardsProps } from './types';
+import { TransactionType } from './types';
 import { ArrowUpCircle, ArrowDownCircle, Wallet } from 'lucide-react';
-
-interface SummaryCardsProps {
-  transactions: Transaction[];
-}
 
 export const SummaryCards: React.FC<SummaryCardsProps> = ({ transactions }) => {
   const { income, expense, balance } = useMemo(() => {

@@ -1,9 +1,10 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import categoryService from './Serviec';
+import type { CategoryPayload } from './types';
 
 const addCategory = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { name, description } = req.body;
+		const { name, description } = req.body as CategoryPayload;
 		const authUser = res.locals.authUser;
 
 		const category = await categoryService.addCategory({ userId: authUser.id,

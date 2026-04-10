@@ -1,64 +1,42 @@
-import { readFile } from 'node:fs/promises';
-import { GoogleGenAI } from '@google/genai';
 import { type Types } from 'mongoose';
 import AppError from '../../../utils/appError';
 import add_trans_by_receiptImgRepository from './Repository';
-import { TransactionSchema } from '../../../utils/normalized';
-import { IntentTransactionPayload } from '../../types/aiAssistant';
+import type { AIDetailInput, AIIntentPayload, AITransactionInput } from './types';
 
 class add_trans_by_receiptImgService {
-	private buildPrompt(categories: string[]) {
-		const categoryList = categories.length ? categories.join(', ') : 'Other';
-		const today = new Date().toISOString().slice(0, 10);
+	private resolveTransactions(data: AIIntentPayload): AITransactionInput[] | null {
+		if (Array.isArray(data.transactions)) {
+			return data.transactions;
+		}
 
-		return [
-				`You are a financial receipt parser for Vietnamese and English receipts.,
-				Return valid JSON only. No markdown. No explanation.,
-				Current Date: ${today},
-				Output JSON schema:,
-				{,
-				  "description": string,,
-				  "type": "income" | "expense",,
-				  "frequency": "weekly" | "monthly" | "yearly" | "one-time",,
-				  "date": "YYYY-MM-DD",,
-				  "total_amount": number,,
-				  "details": [,
-				    {,
-				      "categoryName": string,,
-				      "quantity": number,,
-				      "amount": number,,
-				      "name": string,
-				    },
-				  ],
-				},
-				Rules:,
-				- type defaults to expense if unclear.,
-				- frequency defaults to one-time if unclear.,
-				- date defaults to Current Date if unclear.,
-				- quantity defaults to 1 if unclear.,
-				- amount and total_amount must be plain numbers in VND (no currency symbols).,
-				- total_amount should equal sum(details.amount).',
-				- categoryName must match the nearest existing category: ${categoryList}`,
-		].join('\n');
+		if (typeof data.data === 'object' && data.data !== null) {
+			const nestedTransactions = (data.data as { transactions?: AITransactionInput[] }).transactions;
+			if (Array.isArray(nestedTransactions)) {
+				return nestedTransactions;
+			}
+		}
+
+		return null;
 	}
 
-	async handleReceiptImage(userId: Types.ObjectId, data: any): Promise<any> {
+	async handleReceiptImage(userId: Types.ObjectId, data: AIIntentPayload): Promise<unknown[]> {
 		if (!userId) {
 			throw new AppError('User id is required', 400);
 		}
 		
 
-		const transactions = Array.isArray(data?.transactions)
-			? data.transactions
-			: Array.isArray(data?.data?.transactions)
-				? data.data.transactions
-				: null;
+		const transactions = this.resolveTransactions(data);
+		if (!transactions) {
+			throw new AppError('Invalid AI payload format', 400);
+		}
 		
 		const results = await Promise.all(
-			transactions.map(async (t: any) => {
+			transactions.map(async (t) => {
 
 				const details = await Promise.all(
-					t.details.map(async (d: any) => {
+					(t.details || []).map(async (d: AIDetailInput) => {
+						const quantity = Number(d.quantity) || 1;
+						const amount = Number(d.amount) || 0;
 
 						const categoryId = await add_trans_by_receiptImgRepository.findCategoryByName(userId,
 																	d.categoryName);
@@ -69,19 +47,21 @@ class add_trans_by_receiptImgService {
 
 						return {categoryId,
 								categoryName: d.categoryName,
-								quantity: d.quantity || 1,
-								amount: d.amount,
+								quantity,
+								amount,
 								name: d.name,}
 					})
 				);
 
 				const totalAmount = details.reduce((sum, d) => sum + (d.amount * d.quantity), 0);
+				const parsedDate = t.date ? new Date(t.date) : new Date();
+				const safeDate = Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
 
 				return {
-					description: t.description,
-					type: t.type,
-					frequency: t.frequency,
-					date: t.date,
+					description: t.description || '',
+					type: t.type || 'expense',
+					frequency: t.frequency || 'one-time',
+					date: safeDate,
 					total_amount: totalAmount,
 					details,
 				};

@@ -1,10 +1,11 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import categoryService from './Serviec';
 import { Types } from 'mongoose';
+import type { CategoryPayload } from './types';
 
 const editCategory = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { name, description } = req.body;
+		const { name, description } = req.body as CategoryPayload;
 		const authUser = res.locals.authUser;
 
 		const categoryId = new Types.ObjectId(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);

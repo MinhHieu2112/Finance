@@ -174,7 +174,7 @@ class add_query_nlpService {
 		].join('\n');
 	}
 
-	async handlePrompt(userId: Types.ObjectId, prompt: string | null, file: string | undefined): Promise<any> {
+	async handlePrompt(userId: Types.ObjectId, prompt: string | null, file: string | undefined): Promise<unknown> {
 		if (!userId) {
 			throw new AppError('User id is required', 400);
 		}		

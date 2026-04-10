@@ -1,10 +1,10 @@
 import categoryRepository from './Repository';
 import AppError from '../../../utils/appError';
-import { Types } from 'mongoose';
+import type { CategoryWithUserPayload } from './types';
 // import { toObjectId } from '../../../utils/objectId';
 
 class categoryService {
-	async addCategory(data: { userId: Types.ObjectId; name: string; description?: string }) {
+	async addCategory(data: CategoryWithUserPayload) {
 		const userId = data.userId;
 		const name = data.name?.trim();
 		const description = data.description?.trim() ?? '';

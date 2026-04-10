@@ -1,19 +1,9 @@
 import categoryModel from '../../../models/Category';
 import transactionModel from '../../../models/Transaction';
-import { type transactionSchema } from '../../types/Transactions';
+import type { transactionSchema } from './types';
 import { type Types } from 'mongoose';
 
 class add_query_nlpRepository {
-	async listCategoryNames(userId: Types.ObjectId) {
-		const categories = await categoryModel.find({ userId })
-			.select('name -_id')
-			.lean<Array<{ name: string }>>();
-
-		return categories
-			.map((category) => category.name?.trim())
-			.filter((name): name is string => Boolean(name));
-	}
-
 	async addTransaction(data: transactionSchema): Promise<transactionSchema> {
 		const transaction = await transactionModel.create(data);
 		return transaction;
