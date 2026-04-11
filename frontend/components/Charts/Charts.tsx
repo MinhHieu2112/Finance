@@ -72,6 +72,8 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     }));
   }, [transactions]);
 
+  const topCategoryLegend = useMemo(() => categoryData.slice(0, 3), [categoryData]);
+
   const timelineData = useMemo(() => {
     if (transactions.length === 0) {
       return [];
@@ -147,43 +149,30 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Expense Breakdown</h3>
-        <div className="h-56">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie data={categoryData} cx="50%" cy="50%" innerRadius={54} outerRadius={82} paddingAngle={4} dataKey="value">
-                {categoryData.map((entry) => (
-                  <Cell key={entry.name} fill={entry.color} />
-                ))}
-              </Pie>
-              <ReTooltip formatter={formatTooltipMoney} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+        <div className="h-56 flex items-center gap-4">
+          <div className="flex-1 min-w-0 h-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={categoryData} cx="50%" cy="50%" innerRadius={54} outerRadius={82} paddingAngle={4} dataKey="value">
+                  {categoryData.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Pie>
+                <ReTooltip formatter={formatTooltipMoney} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
 
-        <div className="mt-4 overflow-x-auto">
-          <div className="min-w-[440px] text-sm">
-            <div className="grid grid-cols-[minmax(0,1fr)_90px_140px] text-xs font-semibold uppercase text-gray-500 pb-2">
-              <span>Category</span>
-              <span className="text-right">Share</span>
-              <span className="text-right">Amount</span>
-            </div>
-
-            {categoryData.slice(0, 3).map((item) => (
-              <div
-                key={item.name}
-                className="grid grid-cols-[minmax(0,1fr)_90px_140px] items-center py-2 border-t border-gray-100"
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                  <span className="truncate text-gray-700">{item.name}</span>
-                </div>
-                <span className="text-right text-gray-700">{item.percentage.toFixed(1)}%</span>
-                <span className="text-right font-medium text-gray-800">{Math.round(item.value).toLocaleString('en-US')} VND</span>
+          <div className="w-40 shrink-0 space-y-2">
+            {topCategoryLegend.map((item) => (
+              <div key={item.name} className="flex items-center gap-2 min-w-0">
+                <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                <span className="truncate text-sm text-gray-700">{item.name}</span>
               </div>
             ))}
 
-            {!categoryData.length && (
-              <p className="text-xs text-gray-500 border-t border-gray-100 pt-3">No expense data available.</p>
+            {!topCategoryLegend.length && (
+              <p className="text-xs text-gray-500">No expense data available.</p>
             )}
           </div>
         </div>

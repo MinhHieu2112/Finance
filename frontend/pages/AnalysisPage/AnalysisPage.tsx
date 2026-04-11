@@ -15,6 +15,9 @@ import type {
 import { ResponsiveContainer,
          LineChart,
          Line,
+         BarChart,
+         Bar,
+         LabelList,
          CartesianGrid,
          XAxis,
          YAxis,
@@ -421,6 +424,34 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
   const suggestionCards = useMemo(() => buildSuggestionCards(effectiveAnalysis, savingsSnapshot),
                                   [effectiveAnalysis, savingsSnapshot],);
 
+  const expenseCategoryDistribution = useMemo(() => {
+    const categoryTotals = new Map<string, number>();
+
+    transactions
+      .filter((item) => item.type === 'expense')
+      .forEach((item) => {
+        item.details.forEach((detail) => {
+          const current = categoryTotals.get(detail.categoryName) || 0;
+          categoryTotals.set(detail.categoryName, current + detail.amount);
+        });
+      });
+
+    const totalExpense = Array.from(categoryTotals.values()).reduce((sum, amount) => sum + amount, 0);
+
+    return Array.from(categoryTotals.entries())
+      .map(([category, amount]) => ({
+        category,
+        amount,
+        percentage: totalExpense > 0 ? (amount / totalExpense) * 100 : 0,
+      }))
+      .sort((a, b) => b.amount - a.amount);
+  }, [transactions]);
+
+  const categoryBarChartHeight = useMemo(
+    () => Math.max(260, expenseCategoryDistribution.length * 40),
+    [expenseCategoryDistribution.length],
+  );
+
   const toggleTrendSeries = (series: 'income' | 'expense') => {
     setVisibleSeries((previous) => ({
       ...previous,
@@ -450,8 +481,8 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
 
   if (hasTransactions === false) {
     return (
-      <section className="p-6 md:p-8">
-        <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
+      <section className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis</h2>
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
             <p className="text-sm text-gray-700 font-medium">No data available for analysis yet.</p>
@@ -463,8 +494,8 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
   }
 
   return (
-    <section className="p-6 md:p-8">
-      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
+    <section className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
@@ -509,23 +540,66 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
       </div>
 
       <div className="mb-5">
-        <h3 className="text-sm font-semibold text-gray-800 mb-2">Monthly Trend (Last 12 Months)</h3>
-        <div className="h-72 rounded-lg border border-gray-200 bg-white p-2">
-          {recentMonthlySeries.length ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={recentMonthlySeries}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value: number | undefined) => formatMoney(value ?? 0)} />
-                <Legend onClick={handleLegendClick} formatter={renderLegendText} />
-                <Line type="monotone" dataKey="income" name="Income" stroke="#10B981" strokeWidth={2.5} hide={!visibleSeries.income} />
-                <Line type="monotone" dataKey="expense" name="Expense" stroke="#EF4444" strokeWidth={2.5} hide={!visibleSeries.expense} />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <p className="text-xs text-gray-500 p-3">Not enough monthly data yet.</p>
-          )}
+        <h3 className="text-sm font-semibold text-gray-800 mb-2">Category Share & Monthly Trend (Last 12 Months)</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div className="rounded-lg border border-gray-200 bg-white p-2">
+            {expenseCategoryDistribution.length ? (
+              <div className="max-h-72 overflow-y-auto pr-1">
+                <div style={{ height: categoryBarChartHeight }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      layout="vertical"
+                      data={expenseCategoryDistribution}
+                      margin={{ top: 8, right: 46, left: 4, bottom: 8 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                      <XAxis type="number" hide />
+                      <YAxis
+                        type="category"
+                        dataKey="category"
+                        width={110}
+                        tick={{ fontSize: 12 }}
+                      />
+                      <Tooltip
+                        formatter={(value, _name, payload) => {
+                          const amount = (payload?.payload as { amount?: number } | undefined)?.amount || 0;
+                          return [`${Number(value ?? 0).toFixed(1)}% (${formatMoney(amount)})`, 'Share'];
+                        }}
+                      />
+                      <Bar dataKey="percentage" fill="#F59E0B" radius={[0, 6, 6, 0]}>
+                        <LabelList
+                          dataKey="percentage"
+                          position="right"
+                          formatter={(value) => `${Number(value ?? 0).toFixed(1)}%`}
+                          style={{ fill: '#374151', fontSize: 12 }}
+                        />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-gray-500 p-3">No category spending data yet.</p>
+            )}
+          </div>
+
+          <div className="h-72 rounded-lg border border-gray-200 bg-white p-2">
+            {recentMonthlySeries.length ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={recentMonthlySeries}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip formatter={(value) => formatMoney(Number(value ?? 0))} />
+                  <Legend onClick={handleLegendClick} formatter={renderLegendText} />
+                  <Line type="monotone" dataKey="income" name="Income" stroke="#10B981" strokeWidth={2.5} hide={!visibleSeries.income} />
+                  <Line type="monotone" dataKey="expense" name="Expense" stroke="#EF4444" strokeWidth={2.5} hide={!visibleSeries.expense} />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="text-xs text-gray-500 p-3">Not enough monthly data yet.</p>
+            )}
+          </div>
         </div>
       </div>
 
