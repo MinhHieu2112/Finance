@@ -1,6 +1,6 @@
 import transactionModel from '../../../models/Transaction';
 import type { transactionSchema } from './types';
-import mongoose, { type Types } from 'mongoose';
+import { type Types } from 'mongoose';
 
 class transactionRepository {
 	async listTransactions(id: Types.ObjectId): Promise<transactionSchema[]> {

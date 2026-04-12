@@ -1,11 +1,18 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '../Button/Button';
 import { Pencil, Trash2, X } from 'lucide-react';
-import type { Category, CategoryManagerModalProps } from './types';
+import type { Category, CategoryManagerModalProps, CategoryType } from './types';
+
+const CATEGORY_TYPE_LABEL: Record<CategoryType, string> = {
+  income: 'Income',
+  expense: 'Expense',
+};
 
 export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   isOpen,
   categories,
+  activeType,
+  onTypeChange,
   onClose,
   onCreate,
   onUpdate,
@@ -18,10 +25,52 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   const [editingDescription, setEditingDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [catalogFilterId, setCatalogFilterId] = useState('all');
+  const [createCatalogId, setCreateCatalogId] = useState('');
+
+  const catalogOptions = useMemo(() => {
+    const map = new Map<string, { catalogId: string; catalogName: string }>();
+
+    categories
+      .filter((category) => category.type === activeType)
+      .forEach((category) => {
+        const catalogId = category.catalogId;
+        if (!catalogId) {
+          return;
+        }
+
+        if (!map.has(catalogId)) {
+          map.set(catalogId, {
+            catalogId,
+            catalogName: category.catalogName || 'Uncategorized Catalog',
+          });
+        }
+      });
+
+    return Array.from(map.values()).sort((a, b) => a.catalogName.localeCompare(b.catalogName, 'en'));
+  }, [categories, activeType]);
+
+  useEffect(() => {
+    if (catalogFilterId !== 'all' && !catalogOptions.some((option) => option.catalogId === catalogFilterId)) {
+      setCatalogFilterId('all');
+    }
+
+    if (!catalogOptions.length) {
+      setCreateCatalogId('');
+      return;
+    }
+
+    if (!catalogOptions.some((option) => option.catalogId === createCatalogId)) {
+      setCreateCatalogId(catalogOptions[0].catalogId);
+    }
+  }, [catalogOptions, catalogFilterId, createCatalogId]);
 
   const sortedCategories = useMemo(() => {
-    return [...categories].sort((a, b) => a.name.localeCompare(b.name, 'en'));
-  }, [categories]);
+    return [...categories]
+      .filter((category) => category.type === activeType)
+      .filter((category) => (catalogFilterId === 'all' ? true : category.catalogId === catalogFilterId))
+      .sort((a, b) => a.name.localeCompare(b.name, 'en'));
+  }, [categories, activeType, catalogFilterId]);
 
   if (!isOpen) {
     return null;
@@ -51,7 +100,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
     try {
       setError(null);
       setIsSubmitting(true);
-      await onCreate({ name, description });
+      await onCreate({ name, description, type: activeType, catalogId: createCatalogId || undefined });
       resetCreateForm();
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Unable to create category. Please try again.');
@@ -105,23 +154,70 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
 
         <h2 className="text-xl font-bold mb-5 text-gray-800">Manage Categories</h2>
 
+        <div className="mb-4 inline-flex rounded-lg border border-gray-200 p-1 bg-gray-50">
+          <button
+            type="button"
+            className={`px-3 py-1.5 text-sm rounded-md ${activeType === 'expense' ? 'bg-white shadow text-gray-800' : 'text-gray-500'}`}
+            onClick={() => onTypeChange('expense')}
+          >
+            Expense
+          </button>
+          <button
+            type="button"
+            className={`px-3 py-1.5 text-sm rounded-md ${activeType === 'income' ? 'bg-white shadow text-gray-800' : 'text-gray-500'}`}
+            onClick={() => onTypeChange('income')}
+          >
+            Income
+          </button>
+        </div>
+
+        <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase mb-1">View Catalog</p>
+            <select
+              value={catalogFilterId}
+              onChange={(event) => setCatalogFilterId(event.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
+            >
+              <option value="all">All catalogs</option>
+              {catalogOptions.map((option) => (
+                <option key={option.catalogId} value={option.catalogId}>
+                  {option.catalogName}
+                </option>
+              ))}
+            </select>
+          </div> */}
+        </div>
+
         <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+          <select
+            value={createCatalogId}
+            onChange={(event) => setCreateCatalogId(event.target.value)}
+            className="md:col-span-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
+          >
+            {!catalogOptions.length && <option value="">No catalogs available</option>}
+            {catalogOptions.map((option) => (
+              <option key={option.catalogId} value={option.catalogId}>
+                {option.catalogName}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Category name"
-            className="md:col-span-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+            className="md:col-span-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
           />
-          <input
+          {/* <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description (optional)"
-            className="md:col-span-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-          />
+            className="md:col-span-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+          /> */}
           <div className="md:col-span-3">
-            <Button type="submit" isLoading={isSubmitting}>Add Category</Button>
+            <Button type="submit" isLoading={isSubmitting}>Add {CATEGORY_TYPE_LABEL[activeType]} Category</Button>
           </div>
         </form>
 
@@ -131,8 +227,9 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
           <table className="w-full text-sm text-left text-gray-700">
             <thead className="bg-gray-50 text-xs uppercase text-gray-500">
               <tr>
+                <th className="px-4 py-3">Catalog</th>
                 <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Description</th>
+                {/* <th className="px-4 py-3">Description</th> */}
                 <th className="px-4 py-3 text-center">Actions</th>
               </tr>
             </thead>
@@ -142,6 +239,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
 
                 return (
                   <tr key={category._id}>
+                    <td className="px-4 py-3 align-top text-gray-600">{category.catalogName || '-'}</td>
                     <td className="px-4 py-3 align-top">
                       {isEditing ? (
                         <input
@@ -154,7 +252,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                         <span className="font-medium text-gray-800">{category.name}</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 align-top">
+                    {/* <td className="px-4 py-3 align-top">
                       {isEditing ? (
                         <input
                           type="text"
@@ -165,7 +263,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                       ) : (
                         <span className="text-gray-600">{category.description || '-'}</span>
                       )}
-                    </td>
+                    </td> */}
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-2">
                         {isEditing ? (
@@ -200,8 +298,8 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
               })}
               {sortedCategories.length === 0 && (
                 <tr>
-                  <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
-                    No categories yet. Create your first category.
+                  <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
+                    No {CATEGORY_TYPE_LABEL[activeType].toLowerCase()} categories yet. Create your first one.
                   </td>
                 </tr>
               )}

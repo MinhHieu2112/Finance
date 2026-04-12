@@ -57,6 +57,6 @@ const transactionSchema = new Schema({userId      : {type    : Schema.Types.Obje
                                       collection : 'transactions'}
 );
 
-// transactionSchema.index({ userId: 1, date: -1 });
+transactionSchema.index({ userId: 1, date: -1 });
 
 export default mongoose.model('Transaction', transactionSchema);

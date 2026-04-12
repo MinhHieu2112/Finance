@@ -1,18 +1,19 @@
 export type AITransactionType = 'income' | 'expense';
 export type AITransactionFrequency = 'weekly' | 'monthly' | 'yearly' | 'one-time';
+import { Types } from 'mongoose';
 
 export interface AIDetailInput {
   categoryName: string;
-  quantity?: number;
-  amount?: number;
-  name?: string;
+  quantity: number;
+  amount: number;
+  name: string;
 }
 
 export interface AITransactionInput {
-  description?: string;
-  type?: AITransactionType;
-  frequency?: AITransactionFrequency;
-  date?: string | Date;
+  description: string;
+  type: AITransactionType;
+  frequency: AITransactionFrequency;
+  date: Date;
   details: AIDetailInput[];
 }
 
@@ -22,18 +23,14 @@ export interface AIQueryTimeInput {
 }
 
 export interface AIQueryInput {
-  type?: AITransactionType;
-  category_keywords?: string[];
-  time?: AIQueryTimeInput[];
+  type: AITransactionType;
+  category_keywords: string[];
+  time: AIQueryTimeInput[];
 }
 
 export interface AIIntentPayload {
-  intent?: 'add' | 'query';
-  transactions?: AITransactionInput[];
-  query?: AIQueryInput;
-  data?: {
-    transactions?: AITransactionInput[];
-  } | AIQueryInput;
+  intent: 'add' | 'query';
+  data: AITransactionInput[] | AIQueryInput;
 }
 
 export interface AIIntentResult {

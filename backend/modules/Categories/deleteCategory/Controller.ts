@@ -1,13 +1,12 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import categoryService from './Serviec';
-import { Types } from 'mongoose';
 
 const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const categoryId = new Types.ObjectId(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
-		const authUser = res.locals.authUser;
+		const authUser 	 = res.locals.authUser;
+		const categoryId = req.params.id;
 
-		await categoryService.deleteCategory(categoryId, authUser.id);
+		await categoryService.deleteCategory(categoryId as string, authUser.id);
 		res.status(204).send();
 	} catch (error) {
 		next(error);

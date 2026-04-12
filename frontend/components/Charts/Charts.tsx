@@ -141,7 +141,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     return result;
   }, [transactions]);
 
-  const formatTooltipMoney = (value: number | undefined) => `${Math.round(value ?? 0).toLocaleString('en-US')} VND`;
+  const formatTooltipMoney = (value: unknown) => `${Math.round(Number(value ?? 0)).toLocaleString('en-US')} VND`;
 
   if (transactions.length === 0) return null;
 

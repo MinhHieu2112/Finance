@@ -6,15 +6,16 @@ const generateMockData = async () => {
   const plainPassword = '1234';
   const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
+  // ================= USERS =================
   const users = [
     {
-      _id: new mongoose.Types.ObjectId().toString(),
+      _id: new mongoose.Types.ObjectId(),
       username: 'tri',
       email: 'tri@gmail.com',
       password: hashedPassword
     },
     {
-      _id: new mongoose.Types.ObjectId().toString(),
+      _id: new mongoose.Types.ObjectId(),
       username: 'hieu',
       email: 'hieu@gmail.com',
       password: hashedPassword
@@ -24,35 +25,60 @@ const generateMockData = async () => {
   const getUser = () =>
     users[Math.floor(Math.random() * users.length)];
 
-  const categoryNames = [
-    'Salary','Interest','Rent','Food & Dining','Transportation',
-    'Utilities','Entertainment','Shopping','Health','Investment','Other'
+  // ================= CATALOGS =================
+  const catalogs = [
+    // expense
+    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Living Expenses' },
+    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Unexpected Expenses' },
+    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Fixed Expenses' },
+    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Investment & Savings' },
+
+    // income
+    { _id: new mongoose.Types.ObjectId(), type: 'income', name: 'Income' }
   ];
 
+  const getCatalog = (name: string) =>
+    catalogs.find(c => c.name === name)!;
+
+  // ================= CATEGORY TEMPLATE =================
+  const categorySeed = [
+    // Expense
+    { catalog: 'Living Expenses', type: 'expense', names: ['groceries', 'supermarket', 'food', 'transportation'] },
+    { catalog: 'Unexpected Expenses', type: 'expense', names: ['shopping', 'entertainment', 'beauty', 'healthcare', 'charity'] },
+    { catalog: 'Fixed Expenses', type: 'expense', names: ['bills', 'housing', 'family'] },
+    { catalog: 'Investment & Savings', type: 'expense', names: ['investment', 'education'] },
+
+    // Income
+    { catalog: 'Income', type: 'income', names: ['debt_collection', 'business', 'profit', 'bonus', 'allowance', 'salary'] }
+  ];
+
+  // ================= CATEGORIES =================
   const categories: any[] = [];
 
   users.forEach(user => {
-    categoryNames.forEach(name => {
-      categories.push({
-        _id: new mongoose.Types.ObjectId().toString(),
-        userId: user._id,
-        name,
-        description: ''
+    categorySeed.forEach(seed => {
+      const catalog = getCatalog(seed.catalog);
+
+      seed.names.forEach(name => {
+        categories.push({
+          _id: new mongoose.Types.ObjectId(),
+          userId: user._id,
+          catalogId: catalog._id,
+          name,
+          type: seed.type
+        });
       });
     });
   });
 
-  const getCategory = (userId: string, name: string) =>
-    categories.find(c => c.userId === userId && c.name === name)!;
-
-  const getRandomExpenseCategory = (userId: string) => {
-    const filtered = categories.filter(c =>
-      c.userId === userId &&
-      !['Salary', 'Interest', 'Rent'].includes(c.name)
+  const getRandomCategory = (userId: any, type: string) => {
+    const filtered = categories.filter(
+      c => c.userId.equals(userId) && c.type === type
     );
     return filtered[Math.floor(Math.random() * filtered.length)];
   };
 
+  // ================= TRANSACTIONS =================
   const transactions: any[] = [];
   const frequencies = ['weekly', 'monthly', 'yearly', 'one-time'];
 
@@ -62,19 +88,22 @@ const generateMockData = async () => {
   while (date <= end) {
     const user = getUser();
     const userId = user._id;
-    const dateStr = date.toISOString();
 
+    const dateObj = new Date(date);
+
+    // ===== Monthly Salary =====
     if (date.getDate() === 1) {
-      const salary = getCategory(userId, 'Salary');
-      const rent = getCategory(userId, 'Rent');
+      const salary = categories.find(
+        c => c.userId.equals(userId) && c.name === 'salary'
+      );
 
       transactions.push({
-        _id: new mongoose.Types.ObjectId().toString(),
+        _id: new mongoose.Types.ObjectId(),
         userId,
         description: `Salary ${date.getMonth() + 1}/${date.getFullYear()}`,
         type: 'income',
         frequency: 'monthly',
-        date: dateStr,
+        date: dateObj,
         total_amount: 5000000,
         details: [{
           categoryId: salary._id,
@@ -84,56 +113,19 @@ const generateMockData = async () => {
           name: ''
         }]
       });
-
-      transactions.push({
-        _id: new mongoose.Types.ObjectId().toString(),
-        userId,
-        description: `Rent ${date.getMonth() + 1}/${date.getFullYear()}`,
-        type: 'expense',
-        frequency: 'monthly',
-        date: dateStr,
-        total_amount: 2000000,
-        details: [{
-          categoryId: rent._id,
-          categoryName: rent.name,
-          quantity: 1,
-          amount: 2000000,
-          name: ''
-        }]
-      });
     }
 
-    // if (date.getDate() === 15) {
-    //   const interest = getCategory(userId, 'Interest');
-
-    //   transactions.push({
-    //     _id: new mongoose.Types.ObjectId().toString(),
-    //     userId,
-    //     description: `Interest ${date.getMonth() + 1}/${date.getFullYear()}`,
-    //     type: 'income',
-    //     frequency: 'monthly',
-    //     date: dateStr,
-    //     total_amount: 2000000,
-    //     details: [{
-    //       categoryId: interest._id,
-    //       categoryName: interest.name,
-    //       quantity: 1,
-    //       amount: 2000000,
-    //       name: ''
-    //     }]
-    //   });
-    // }
-
-    const cat = getRandomExpenseCategory(userId);
+    // ===== Random Expense =====
+    const cat = getRandomCategory(userId, 'expense');
     const amount = Math.floor(Math.random() * 90000) + 10000;
 
     transactions.push({
-      _id: new mongoose.Types.ObjectId().toString(),
+      _id: new mongoose.Types.ObjectId(),
       userId,
       description: `Expense ${cat.name}`,
       type: 'expense',
       frequency: frequencies[Math.floor(Math.random() * frequencies.length)],
-      date: dateStr,
+      date: dateObj,
       total_amount: amount,
       details: [{
         categoryId: cat._id,
@@ -147,12 +139,16 @@ const generateMockData = async () => {
     date.setDate(date.getDate() + 1);
   }
 
+  // ================= EXPORT =================
   fs.writeFileSync('config/users.json', JSON.stringify(users, null, 2));
+  fs.writeFileSync('config/catalogs.json', JSON.stringify(catalogs, null, 2));
   fs.writeFileSync('config/categories.json', JSON.stringify(categories, null, 2));
   fs.writeFileSync('config/transactions.json', JSON.stringify(transactions, null, 2));
 
   console.log('✅ Done');
   console.log(`Users: ${users.length}`);
+  console.log(`Catalogs: ${catalogs.length}`);
+  console.log(`Categories: ${categories.length}`);
   console.log(`Transactions: ${transactions.length}`);
 };
 

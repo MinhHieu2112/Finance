@@ -2,6 +2,7 @@ import transactionModel from '../../../models/Transaction';
 import categoryModel from '../../../models/Category';
 import { type Types } from 'mongoose';
 import type { transactionSchema } from './types';
+import type { TransactionType } from './types';
 
 class transactionRepository {
     async addTransaction(data: transactionSchema) {
@@ -9,10 +10,10 @@ class transactionRepository {
         return transaction;
     }
 
-    async findCategoryNameById(userId: Types.ObjectId, categoryId: Types.ObjectId) {
-        return categoryModel.findOne({ _id: categoryId, userId })
-            .select('name')
-            .lean<{ name: string }>();
+    async findCategoryNameById(userId: Types.ObjectId, categoryId: Types.ObjectId, type: TransactionType) {
+        return categoryModel.findOne({ _id: categoryId, userId, type })
+                            .select('name')
+                            .lean<{ name: string }>();
     }
 }
 

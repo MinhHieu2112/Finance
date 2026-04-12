@@ -1,6 +1,7 @@
 import type {
   Category,
   CategoryOption,
+  CategoryType,
   ListCategoryResponse,
   SaveCategoryResponse,
 } from '../../types/Categories';
@@ -15,6 +16,7 @@ import type { User } from '../../types/Users';
 export type {
   Category,
   CategoryOption,
+  CategoryType,
   ListCategoryResponse,
   SaveCategoryResponse,
   ListTransactionResponse,

@@ -1,15 +1,15 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import categoryService from './Serviec';
-import type { CategoryPayload } from './types';
 
 const addCategory = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { name, description } = req.body as CategoryPayload;
+		const { name, type, catalogId } = req.body;
 		const authUser = res.locals.authUser;
 
-		const category = await categoryService.addCategory({ userId: authUser.id,
-														name,
-														description, });
+		const category = await categoryService.addCategory({userId: authUser.id,
+															name,
+															type,
+															catalogId});
 
 		res.status(201).json({ success: true, category });
 	} catch (error) {

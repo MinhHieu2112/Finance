@@ -4,8 +4,8 @@ import { Types } from 'mongoose';
 
 const deleteTransaction = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const transactionId = new Types.ObjectId(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
         const authUser 		= res.locals.authUser;
+		const transactionId = new Types.ObjectId(req.params.id as string);
 
 		await transactionService.deleteTransaction(transactionId, authUser.id);
 

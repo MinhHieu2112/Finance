@@ -1,30 +1,44 @@
 import categoryRepository from './Repository';
 import AppError from '../../../utils/appError';
-import type { CategoryWithUserPayload } from './types';
-// import { toObjectId } from '../../../utils/objectId';
+import type { CategoryPayload, CategoryType, CategoryWithUserPayload } from './types';
+
+const isValidCategoryType = (value: unknown): value is CategoryType => value === 'income' || value === 'expense';
 
 class categoryService {
-	async addCategory(data: CategoryWithUserPayload) {
-		const userId = data.userId;
-		const name = data.name?.trim();
-		const description = data.description?.trim() ?? '';
+	async addCategory(data: CategoryPayload & { userId: CategoryWithUserPayload['userId'] }) {
+		const userId 	= data.userId;
+		const name 		= data.name.trim();
+		const type 		= data.type;
+		const catalogId = data.catalogId
 
-		if (!userId) {
-			throw new AppError('User id is required', 400);
+		
+		if (!userId || !name || !type || !catalogId) {
+			throw new AppError('User id, name, type, and catalog id are required', 400);
 		}
 
-		if (!name) {
-			throw new AppError('Category name is required', 400);
+		const existingUser = await categoryRepository.findUserById(userId);
+		if (!existingUser) {
+			throw new AppError('User not found', 404);
 		}
 
-		const existingCategory = await categoryRepository.findByName(userId, name);
+		if (!isValidCategoryType(type)) {
+			throw new AppError('Category type must be income or expense', 400);
+		}
+
+		const existingCategory = await categoryRepository.findCategoryByName(userId, type, name);
 		if (existingCategory) {
 			throw new AppError('Category already exists', 409);
 		}
 
+		const existingCatalog = await categoryRepository.findCatalogByIdAndType(data.catalogId, type)
+		if (!existingCatalog) {
+			throw new AppError(`Catalog for ${type} not found or invalid.`, 400);
+		}
+
 		return categoryRepository.addCategory({ userId: userId,
-												   name,
-												   description, });
+												name,
+												type,
+												catalogId, });
 	}
 }
 

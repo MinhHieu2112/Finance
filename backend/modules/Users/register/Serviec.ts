@@ -14,24 +14,45 @@ import type {
 } from './types';
 
 class authService {
-	private prepareDefaultCategories(userId: Types.ObjectId) {
+	private async prepareDefaultCategories(userId: Types.ObjectId) {
 		const deduped = new Map<string, UserCategorySchema>();
+		const catalogIdCache = new Map<'income' | 'expense', Types.ObjectId>();
 
-		(defaultCategories as UserDefaultCategorySchema[]).forEach((category) => {
+		for (const category of defaultCategories as UserDefaultCategorySchema[]) {
 			const name = category.name?.trim();
+			const type = category.type;
 			if (!name) {
-				return;
+				continue;
 			}
 
-			const key = name.toLowerCase();
+			if (type !== 'income' && type !== 'expense') {
+				continue;
+			}
+
+			const key = `${type}:${name.toLowerCase()}`;
 			if (!deduped.has(key)) {
+				let catalogId = catalogIdCache.get(type);
+				if (!catalogId) {
+					const preferredName = type === 'income' ? 'Income' : 'Living Expenses';
+
+					catalogId = await authRepository.findCatalogIdByTypeAndName(type, preferredName)
+						?? await authRepository.findFirstCatalogIdByType(type)
+						?? undefined;
+					if (!catalogId) {
+						throw new AppError(`Catalog for ${type} not found. Please import catalogs first.`, 500);
+					}
+					catalogIdCache.set(type, catalogId);
+				}
+
 				deduped.set(key, {
 					userId,
+					catalogId,
 					name,
 					description: category.description?.trim() ?? '',
+					type,
 				});
 			}
-		});
+		}
 
 		const categories = Array.from(deduped.values());
 		if (categories.length === 0) {
@@ -85,7 +106,7 @@ class authService {
 													 password: hashedPassword,});
 
 		try {
-			const categoriesForUser = this.prepareDefaultCategories(user._id);
+			const categoriesForUser = await this.prepareDefaultCategories(user._id);
 
 			await authRepository.createDefaultCategories(categoriesForUser);
 		} catch (_error) {

@@ -1,70 +1,56 @@
 import { type Types } from 'mongoose';
 import AppError from '../../../utils/appError';
 import add_trans_by_receiptImgRepository from './Repository';
-import type { AIDetailInput, AIIntentPayload, AITransactionInput } from './types';
+import { FinancetSchema } from "../../../utils/normalized"
+import type { AIDetailInput, 
+			  AIIntentPayload, 
+			  AITransactionInput } from './types';
 
 class add_trans_by_receiptImgService {
-	private resolveTransactions(data: AIIntentPayload): AITransactionInput[] | null {
-		if (Array.isArray(data.transactions)) {
-			return data.transactions;
+	async handleReceiptImage(userId: Types.ObjectId, 
+							 data  : AIIntentPayload): Promise<unknown[]> {
+		if (!userId || !data) {
+			throw new AppError('User id and data are required', 400);
 		}
 
-		if (typeof data.data === 'object' && data.data !== null) {
-			const nestedTransactions = (data.data as { transactions?: AITransactionInput[] }).transactions;
-			if (Array.isArray(nestedTransactions)) {
-				return nestedTransactions;
-			}
+		const data_valid = FinancetSchema.safeParse(data.data);
+		if (!data_valid.success) {
+			const errorMessage = data_valid.error.issues
+				.map(issue => `${issue.path.join('.')}: ${issue.message}`)
+				.join(', ');
+			throw new AppError(`Invalid transaction data format: ${errorMessage}`, 400);
 		}
 
-		return null;
-	}
-
-	async handleReceiptImage(userId: Types.ObjectId, data: AIIntentPayload): Promise<unknown[]> {
-		if (!userId) {
-			throw new AppError('User id is required', 400);
-		}
-		
-
-		const transactions = this.resolveTransactions(data);
-		if (!transactions) {
-			throw new AppError('Invalid AI payload format', 400);
-		}
+		const transactions = data_valid.data.transactions as AITransactionInput[];
 		
 		const results = await Promise.all(
 			transactions.map(async (t) => {
-
 				const details = await Promise.all(
 					(t.details || []).map(async (d: AIDetailInput) => {
-						const quantity = Number(d.quantity) || 1;
-						const amount = Number(d.amount) || 0;
+						const category = await add_trans_by_receiptImgRepository.findCategoryByName(userId,
+																									t.type,
+																									d.categoryName);
 
-						const categoryId = await add_trans_by_receiptImgRepository.findCategoryByName(userId,
-																	d.categoryName);
-
-						if (!categoryId) {
+						if (!category) {
 							throw new AppError(`Category not found: ${d.categoryName}`, 404);
 						}
 
-						return {categoryId,
-								categoryName: d.categoryName,
-								quantity,
-								amount,
-								name: d.name,}
+						return {categoryId	: category._id,
+								categoryName: category.name,
+								quantity	: d.quantity,
+								amount		: d.amount,
+								name		: d.name,}
 					})
 				);
 
 				const totalAmount = details.reduce((sum, d) => sum + (d.amount * d.quantity), 0);
-				const parsedDate = t.date ? new Date(t.date) : new Date();
-				const safeDate = Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
 
-				return {
-					description: t.description || '',
-					type: t.type || 'expense',
-					frequency: t.frequency || 'one-time',
-					date: safeDate,
-					total_amount: totalAmount,
-					details,
-				};
+				return {description	: t.description,
+						type		: t.type,
+						frequency	: t.frequency,
+						date		: t.date,
+						total_amount: totalAmount,
+						details		: details,};
 			})
 		);
 		return results;

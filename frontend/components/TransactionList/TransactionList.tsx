@@ -3,10 +3,6 @@ import type { TransactionListProps } from './types';
 import { TransactionType } from './types';
 import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil, ChevronDown, ChevronUp } from 'lucide-react';
 
-const getPrimaryCategoryName = (transaction: { details: Array<{ categoryName: string }> }) => {
-  return transaction.details[0]?.categoryName || 'Other';
-};
-
 export const TransactionList: React.FC<TransactionListProps> = ({ transactions, categoryOptions, onDelete, onEdit }) => {
   const ITEMS_PER_PAGE = 10;
 
@@ -21,47 +17,80 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
   };
 
   const [searchTerm, setSearchTerm]         = useState('');
+  const [typeFilter, setTypeFilter]         = useState<TransactionType | ''>('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [startDate, setStartDate]           = useState('');
   const [endDate, setEndDate]               = useState('');
   const [currentPage, setCurrentPage]       = useState(1);
   const [expandedIds, setExpandedIds]       = useState<string[]>([]);
 
-  const allCategoryOptions = useMemo(() => {
-    const categoriesFromTransactions = transactions.flatMap((transaction) =>
-      transaction.details.map((detail) => detail.categoryName),
+  const groupedCategoryOptions = useMemo(() => {
+    if (!typeFilter) {
+      return [] as Array<{ catalogName: string; options: typeof categoryOptions }>;
+    }
+
+    const groups = new Map<string, typeof categoryOptions>();
+    categoryOptions
+      .filter((category) => category.type === typeFilter)
+      .forEach((category) => {
+        const groupName = category.catalogName || 'Uncategorized Catalog';
+        const current = groups.get(groupName) || [];
+        current.push(category);
+        groups.set(groupName, current);
+      });
+
+    return Array.from(groups.entries())
+      .map(([catalogName, options]) => ({
+        catalogName,
+        options: options.sort((a, b) => a.name.localeCompare(b.name, 'en')),
+      }))
+      .sort((a, b) => a.catalogName.localeCompare(b.catalogName, 'en'));
+  }, [categoryOptions, typeFilter]);
+
+  useEffect(() => {
+    if (!categoryFilter) {
+      return;
+    }
+
+    const categoryStillExists = groupedCategoryOptions.some((group) =>
+      group.options.some((category) => category.name === categoryFilter),
     );
-    return Array.from(new Set([...categoryOptions, ...categoriesFromTransactions])).filter(Boolean);
-  }, [transactions, categoryOptions]);
+
+    if (!categoryStillExists) {
+      setCategoryFilter('');
+    }
+  }, [groupedCategoryOptions, categoryFilter]);
 
   const filteredTransactions = useMemo(() => {
     return transactions
       .filter((t) => {
         const matchesSearch    = t.description.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesType      = typeFilter ? t.type === typeFilter : true;
         const matchesCategory  = categoryFilter
           ? t.details.some((detail) => detail.categoryName === categoryFilter)
           : true;
         const matchesStartDate = startDate ? new Date(t.date) >= new Date(startDate) : true;
         const matchesEndDate   = endDate ? new Date(t.date) <= new Date(endDate) : true;
 
-        return matchesSearch && matchesCategory && matchesStartDate && matchesEndDate;
+        return matchesSearch && matchesType && matchesCategory && matchesStartDate && matchesEndDate;
       })
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [transactions, searchTerm, categoryFilter, startDate, endDate]);
+  }, [transactions, searchTerm, typeFilter, categoryFilter, startDate, endDate]);
 
   const clearFilters = () => {
     setSearchTerm('');
+    setTypeFilter('');
     setCategoryFilter('');
     setStartDate('');
     setEndDate('');
     setCurrentPage(1);
   };
 
-  const hasActiveFilters = searchTerm || categoryFilter || startDate || endDate;
+  const hasActiveFilters = searchTerm || typeFilter || categoryFilter || startDate || endDate;
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, categoryFilter, startDate, endDate, transactions]);
+  }, [searchTerm, typeFilter, categoryFilter, startDate, endDate, transactions]);
 
   useEffect(() => {
     setExpandedIds((prev) => prev.filter((id) => transactions.some((transaction) => transaction._id === id)));
@@ -109,15 +138,33 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
         </div>
 
         <select
-          value     = {categoryFilter}
-          onChange  = {(e) => setCategoryFilter(e.target.value)}
+          value     = {typeFilter}
+          onChange  = {(e) => {
+            setTypeFilter(e.target.value as TransactionType | '');
+            setCategoryFilter('');
+          }}
           className = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer hover:border-gray-300 transition-colors"
         >
-          <option value="">All categories</option>
-          {allCategoryOptions.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
+          <option value="">All types</option>
+          <option value={TransactionType.EXPENSE}>Expense</option>
+          <option value={TransactionType.INCOME}>Income</option>
+        </select>
+
+        <select
+          value     = {categoryFilter}
+          onChange  = {(e) => setCategoryFilter(e.target.value)}
+          disabled  = {!typeFilter || groupedCategoryOptions.length === 0}
+          className = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer hover:border-gray-300 transition-colors"
+        >
+          <option value="">{typeFilter ? 'All categories' : 'Select type first'}</option>
+          {groupedCategoryOptions.map((group) => (
+            <optgroup key={group.catalogName} label={group.catalogName}>
+              {group.options.map((category) => (
+                <option key={category._id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
 
@@ -156,9 +203,9 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
           <thead className="bg-white border-b border-gray-100 text-xs uppercase font-medium text-gray-500">
             <tr>
               <th className="px-6 py-4">Date</th>
+              <th className="px-6 py-4">Type</th>
               <th className="px-6 py-4">Description</th>
-              <th className="px-6 py-4">Categories</th>
-              <th className="px-6 py-4 text-right">Amount</th>
+              <th className="px-6 py-4 text-right">Total Amount</th>
               <th className="px-6 py-4 text-center">Actions</th>
             </tr>
           </thead>
@@ -175,11 +222,18 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                     <td className="px-6 py-4 whitespace-nowrap text-gray-500" title={t.date}>
                       {formatDisplayDate(t.date)}
                     </td>
-                    <td className="px-6 py-4 font-medium text-gray-800">
-                      <div className="flex items-center gap-3">
+                    <td className="px-6 py-4">
+                      <div className="inline-flex items-center gap-2">
                         <span className={`p-2 rounded-full flex-shrink-0 ${t.type === TransactionType.INCOME ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
                           {t.type === TransactionType.INCOME ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
                         </span>
+                        <span className={`text-xs font-semibold uppercase tracking-wide ${t.type === TransactionType.INCOME ? 'text-emerald-700' : 'text-red-700'}`}>
+                          {t.type}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 font-medium text-gray-800">
+                      <div className="flex items-center gap-3">
                         <span className="truncate max-w-[200px]" title={t.description}>
                           {t.description}
                         </span>
@@ -187,11 +241,6 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                           {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                         </span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap">
-                        {Array.from(new Set(t.details.map((detail) => detail.categoryName))).slice(0, 2).join(', ') || getPrimaryCategoryName(t)}
-                      </span>
                     </td>
                     <td className={`px-6 py-4 text-right font-bold whitespace-nowrap ${t.type === TransactionType.INCOME ? 'text-emerald-600' : 'text-gray-800'}`}>
                       {t.type === TransactionType.INCOME ? '+' : '-'}
@@ -246,9 +295,10 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                               Transaction Details
                             </p>
                             <div className="hidden sm:grid sm:grid-cols-12 gap-2 px-3 py-1 text-[11px] uppercase tracking-wide font-semibold text-gray-400">
-                              <span className="sm:col-span-6">Name</span>
+                              <span className="sm:col-span-4">Name</span>
+                              <span className="sm:col-span-4">Categories</span>
                               <span className="sm:col-span-2">Quantity</span>
-                              <span className="sm:col-span-4 text-right">Amount</span>
+                              <span className="sm:col-span-2 text-right">Amount</span>
                             </div>
                             <div className="space-y-2">
                               {t.details.map((detail, index) => (
@@ -256,13 +306,18 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                                   key={`${t._id}-${index}`}
                                   className="grid grid-cols-1 sm:grid-cols-12 gap-2 px-3 py-2 border border-gray-100 rounded-lg bg-gray-50"
                                 >
-                                  <div className="sm:col-span-6">
+                                  <div className="sm:col-span-4">
                                     <p className="text-sm font-medium text-gray-700">{detail.name || '-'}</p>
+                                  </div>
+                                  <div className="sm:col-span-4">
+                                    <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap">
+                                      {detail.categoryName || 'Other'}
+                                    </span>
                                   </div>
                                   <div className="sm:col-span-2">
                                     <p className="text-sm font-medium text-gray-700">{detail.quantity ?? 1}</p>
                                   </div>
-                                  <div className="sm:col-span-4 sm:text-right">
+                                  <div className="sm:col-span-2 sm:text-right">
                                     <span className={`text-sm font-semibold ${t.type === TransactionType.INCOME ? 'text-emerald-600' : 'text-gray-800'}`}>
                                       {Math.round(detail.amount).toLocaleString('en-US')} VND
                                     </span>

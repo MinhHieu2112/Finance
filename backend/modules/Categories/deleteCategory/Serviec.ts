@@ -1,19 +1,20 @@
 import AppError from '../../../utils/appError';
 import categoryRepository from './Repository';
-// import { toObjectId } from '../../../utils/objectId';
 import { Types } from 'mongoose';
 
 class categoryService {
-	async deleteCategory(id: Types.ObjectId, userId: Types.ObjectId) {
-		if (!id) {
-			throw new AppError('Category id is required', 400);
+	async deleteCategory(categoryId: string, userId: Types.ObjectId) {
+		if (!categoryId || !userId) {
+			throw new AppError('Category id and user id are required', 400);
 		}
 
-		if (!userId) {
-			throw new AppError('User id is required', 400);
+		if (!Types.ObjectId.isValid(categoryId)) {
+			throw new AppError('Invalid category id', 400);
 		}
 
-		const deletedCategory = await categoryRepository.deleteCategoryById(id, userId);
+		const objectId = new Types.ObjectId(categoryId);
+
+		const deletedCategory = await categoryRepository.deleteCategoryById(objectId, userId);
 
 		if (!deletedCategory) {
 			throw new AppError('Category not found', 404);

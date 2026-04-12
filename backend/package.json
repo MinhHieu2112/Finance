@@ -7,7 +7,7 @@
     "start": "tsx watch server.ts",
     "dev": "nodemon --watch . --ext ts,json --exec \"tsx server.ts\"",
     "resetdb": "tsx config/import-data.ts --delete && tsx config/import-data.ts --import",
-    "mockdata": "tsx config/mock-data.js"
+    "mockdata": "tsx config/mock-data.ts"
   },
   "dependencies": {
     "@google/genai": "^1.38.0",

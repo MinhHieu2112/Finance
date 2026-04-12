@@ -9,7 +9,7 @@ export interface TransactionFormProps {
   onSave: (transaction: TransactionPayload) => Promise<void> | void;
   onClose: () => void;
   categoryOptions: CategoryOption[];
-  onManageCategories?: () => void;
+  onManageCategories?: (type: 'income' | 'expense') => void;
   mode?: 'create' | 'edit';
   initialTransaction?: Transaction | null;
   initialPayload?: TransactionPayload | null;

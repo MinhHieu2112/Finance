@@ -1,16 +1,24 @@
 import categoryModel from '../../../models/Category';
 import { type Types } from 'mongoose';
-import type { CategoryPayload } from './types';
+import type { CategoryType, CategoryUpdatePayload } from '../Categories';
 
 class categoryRepository {
-	async findByName(userId: Types.ObjectId, name: string) {
-		return categoryModel.findOne({ userId, name });
+	async findCategoryByIdAndUser(categoryId: Types.ObjectId, userId: Types.ObjectId) {
+		return categoryModel.findOne({ _id: categoryId, userId })
+							.select('_id type')
+							.lean<{ _id: Types.ObjectId; type: CategoryType } | null>();
 	}
 
-	async editCategoryById(categoryId: Types.ObjectId, userId: Types.ObjectId, data: CategoryPayload) {
-		return categoryModel.findOneAndUpdate({ _id: categoryId, userId },
-											  data,
-											  { new: true, runValidators: true });
+	async findCategoryByName(userId: Types.ObjectId, type: CategoryType, name: string) {
+		return categoryModel.findOne({ userId, type, name });
+	}
+
+	async editCategoryById(categoryId: Types.ObjectId, userId: Types.ObjectId, data: CategoryUpdatePayload) {
+		return categoryModel.findOneAndUpdate({ _id: categoryId, 
+											   	userId },
+											    data,
+											  { new: true, 
+												runValidators: true });
 	}
 }
 

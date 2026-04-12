@@ -9,7 +9,23 @@ class categoryService {
 			throw new AppError('User id is required', 400);
 		}
 
-		return categoryRepository.listCategories(userId);
+		const categories = await categoryRepository.listCategories(userId);
+
+		return categories.map((category) => {
+			const catalogData = category.catalogId;
+			const catalogName = typeof catalogData === 'object' && catalogData && 'name' in catalogData
+				? catalogData.name
+				: undefined;
+			const catalogId = typeof catalogData === 'object' && catalogData && '_id' in catalogData
+				? catalogData._id
+				: category.catalogId;
+
+			return {
+				...category,
+				catalogId,
+				catalogName,
+			};
+		});
 	}
 }
 

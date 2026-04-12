@@ -191,9 +191,6 @@ class add_query_nlpService {
 		let response;
 
 		if (prompt) {
-			if (!prompt) {
-				throw new AppError('Prompt cannot be empty', 400);
-			}
 			response = await ai.models.generateContent({
 				model: 'gemini-3.1-flash-lite-preview',
 				contents: this.buildPrompt(prompt.trim(), categories),
@@ -214,9 +211,6 @@ class add_query_nlpService {
 			});
 		}
 		else if (file) {
-			if (!file) {
-				throw new AppError('Receipt image file is required', 400);
-			}
 			const imageData = (await readFile(file)).toString('base64');
 			if (!imageData) {
 				throw new AppError('Receipt image is empty', 400);

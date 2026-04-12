@@ -1,7 +1,12 @@
 import AppError from '../../../utils/appError';
 import add_query_nlpRepository from './Repository';
 import { Types } from 'mongoose';
-import type { AIDetailInput, AIIntentPayload, AIIntentResult, AIQueryInput, AITransactionInput } from './types';
+import { FinancetSchema, QuerySchema } from "../../../utils/normalized"
+import type { AIIntentPayload, 
+			  AIIntentResult, 
+			  AIQueryInput, 
+			  AITransactionInput, 
+			  AIDetailInput } from './types';
 
 class add_query_nlpService {
 
@@ -42,88 +47,71 @@ class add_query_nlpService {
 		return filter;
 	}
 
-	private resolveTransactions(data: AIIntentPayload): AITransactionInput[] | null {
-		if (Array.isArray(data.transactions)) {
-			return data.transactions;
-		}
-
-		if (typeof data.data === 'object' && data.data !== null) {
-			const nestedTransactions = (data.data as { transactions?: AITransactionInput[] }).transactions;
-			if (Array.isArray(nestedTransactions)) {
-				return nestedTransactions;
-			}
-		}
-
-		return null;
-	}
-
-	private resolveQueryPayload(data: AIIntentPayload): AIQueryInput | null {
-		if (data.query) {
-			return data.query;
-		}
-
-		if (data.intent === 'query' && typeof data.data === 'object' && data.data !== null) {
-			const hasTransactions = Array.isArray((data.data as { transactions?: unknown }).transactions);
-			if (!hasTransactions) {
-				return data.data as AIQueryInput;
-			}
-		}
-
-		return null;
-	}
-
 	async handlePrompt(userId: Types.ObjectId, data: AIIntentPayload): Promise<AIIntentResult> {
-		const intent = data?.intent;
-		const transactions = this.resolveTransactions(data);
-		const queryPayload = this.resolveQueryPayload(data);
+		if(!userId || !data) {
+			throw new AppError('User ID and data are required', 400);
+		}
+		const intent = data.intent;
+		
+		if (intent === 'add') {
+			const data_valid = FinancetSchema.safeParse(data.data);
 
-		if (intent === 'add' && transactions) {
+			if (!data_valid.success) {
+				const errorMessage = data_valid.error.issues
+					.map(issue => `${issue.path.join('.')}: ${issue.message}`)
+					.join(', ');
+				throw new AppError(`Invalid transaction data format: ${errorMessage}`, 400);
+			}
+
+			const transactions = data_valid.data.transactions as AITransactionInput[];
+
 			const results = await Promise.all(
-			transactions.map(async (t) => {
+				transactions.map(async (t) => {
+					const details = await Promise.all(
+						t.details.map(async (d: AIDetailInput) => {
+							const category = await add_query_nlpRepository.findCategoryByName(userId,
+																								t.type,
+																								d.categoryName);
+							if (!category) {
+								throw new AppError(`Category not found: ${d.categoryName}`, 404);
+							}
 
-				const details = await Promise.all(
-					(t.details || []).map(async (d: AIDetailInput) => {
-						const quantity = Number(d.quantity) || 1;
-						const amount = Number(d.amount) || 0;
+							return {categoryId	: category._id,
+									categoryName: category.name,
+									quantity	: d.quantity,
+									amount		: d.amount,
+									name		: d.name}
+						})
+					);
 
-						const categoryId = await add_query_nlpRepository.findCategoryByName(userId,
-																							d.categoryName);
+					const totalAmount = details.reduce((sum, d) => sum + (d.amount * d.quantity), 0);
 
-						if (!categoryId) {
-							throw new AppError(`Category not found: ${d.categoryName}`, 404);
-						}
+					return add_query_nlpRepository.addTransaction({userId		: userId,
+																description	: t.description,
+																type			: t.type,
+																frequency	: t.frequency,
+																date			: t.date, 
+																total_amount : totalAmount,
+																details		: details});
+				})
+			);
 
-						return {categoryId,
-								categoryName: d.categoryName,
-								quantity,
-								amount,
-								name: d.name || '',}
-					})
-				);
+			return {
+				intent: 'add',
+				data: results,
+			};
 
-				const totalAmount = details.reduce((sum, d) => sum + (d.amount * d.quantity), 0);
-				const parsedDate = t.date ? new Date(t.date) : new Date();
-				const safeDate = Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+		} else if (intent === 'query') {
+			const data_valid = QuerySchema.safeParse(data.data);
 
-				return add_query_nlpRepository.addTransaction({
-					userId,
-					description: t.description || '',
-					type: t.type || 'expense',
-					frequency: t.frequency || 'one-time',
-					date: safeDate,
-					total_amount: totalAmount,
-					details,
-				});
-			})
-		);
-
-		return {
-			intent: 'add',
-			data: results,
-		};
-		} else if (intent === 'query' && queryPayload) {
+			if (!data_valid.success) {
+				const errorMessage = data_valid.error.issues
+					.map(issue => `${issue.path.join('.')}: ${issue.message}`)
+					.join(', ');
+				throw new AppError(`Invalid query data format: ${errorMessage}`, 400);
+			}
 			
-			const query  = this.buildQuerryFilter(queryPayload);
+			const query  = this.buildQuerryFilter(data.data as AIQueryInput);
 			query.userId = userId;
 			const result = await add_query_nlpRepository.queryTransaction(query);
 

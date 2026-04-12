@@ -11,10 +11,10 @@ class authService {
 		if (!secret) {
 			throw new AppError('Missing JWT_SECRET in backend environment', 500);
 		}
-		return jwt.sign({ id	  : userData.id,
-						  email   : userData.email,
-						  username: userData.username,}, 
-						  secret)
+		return jwt.sign({id	  : userData.id,
+						 email   : userData.email,
+						 username: userData.username,}, 
+						 secret)
 	}
 
 	async login(data: LoginPayload): Promise<AuthResult> {
@@ -39,15 +39,12 @@ class authService {
 			throw new AppError('Invalid password', 401);
 		}
 
-		const userData = {
-			id: user._id,
-			username: user.username,
-			email: user.email,
-		};
-		return {
-			user: userData,
-			token: this.createToken(userData),
-		};
+		const userData = {id	  : user._id,
+						  username: user.username,
+						  email   : user.email};
+
+		return {user : userData,
+				token: this.createToken(userData)};
 	}
 }
 

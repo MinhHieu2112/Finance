@@ -10,6 +10,7 @@ import { Button } from '../../components/Button/Button';
 import type {
   Category,
   CategoryOption,
+  CategoryType,
   DashboardPageProps,
   ListCategoryResponse,
   ListTransactionResponse,
@@ -26,19 +27,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isFormOpen, setIsFormOpen]     = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [categoryModalType, setCategoryModalType] = useState<CategoryType>('expense');
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [isReceiptOCROpen, setIsReceiptOCROpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [receiptDraftPayload, setReceiptDraftPayload] = useState<TransactionPayload | null>(null);
 
-  const categoryNames = useMemo(() => {
-    const names = categories.map((category) => category.name.trim()).filter(Boolean);
-    return Array.from(new Set(names));
-  }, [categories]);
-
   const categoryFormOptions = useMemo<CategoryOption[]>(() => {
     return categories
-      .map((category) => ({ _id: category._id, name: category.name.trim() }))
+      .map((category) => ({
+        _id: category._id,
+        catalogId: category.catalogId,
+        catalogName: category.catalogName,
+        name: category.name.trim(),
+        type: category.type,
+      }))
       .filter((category) => Boolean(category.name));
   }, [categories]);
 
@@ -89,7 +92,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     await addTransaction(tx);
   };
 
-  const createCategory = async (payload: { name: string; description: string }) => {
+  const createCategory = async (payload: { name: string; description: string; type: CategoryType; catalogId?: string }) => {
     try {
       const response = await api.post<SaveCategoryResponse>('/categories/add', payload);
       const data = response.data;
@@ -136,7 +139,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setReceiptDraftPayload(null);
   };
 
-  const openCategoryManager = () => {
+  const openCategoryManager = (type: CategoryType = 'expense') => {
+    setCategoryModalType(type);
     setIsCategoryModalOpen(true);
   };
 
@@ -144,8 +148,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setIsCategoryModalOpen(false);
   };
 
-  const openCategoryManagerFromForm = () => {
+  const openCategoryManagerFromForm = (type: CategoryType) => {
     closeForm();
+    setCategoryModalType(type);
     setIsCategoryModalOpen(true);
   };
 
@@ -216,7 +221,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
             </Button>
             <Button
               variant   = "secondary"
-              onClick   = {openCategoryManager}
+              onClick   = {() => openCategoryManager('expense')}
               className = "flex-1 sm:flex-none"
             >
               <Tags size={18} />
@@ -237,7 +242,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         <Charts          transactions = {transactions} />
         <TransactionList
           transactions={transactions}
-          categoryOptions={categoryNames}
+          categoryOptions={categoryFormOptions}
           onDelete={deleteTransaction}
           onEdit={openEditForm}
         />
@@ -258,6 +263,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       <CategoryManagerModal
         isOpen={isCategoryModalOpen}
         categories={categories}
+        activeType={categoryModalType}
+        onTypeChange={setCategoryModalType}
         onClose={closeCategoryManager}
         onCreate={createCategory}
         onUpdate={updateCategory}

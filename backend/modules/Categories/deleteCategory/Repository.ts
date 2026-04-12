@@ -4,7 +4,8 @@ import type { CategoryWithUserPayload } from './types';
 
 class categoryRepository {
 	async deleteCategoryById(categoryId: Types.ObjectId, userId: Types.ObjectId): Promise<CategoryWithUserPayload | null> {
-		return categoryModel.findOneAndDelete({ _id: categoryId, userId }).lean<CategoryWithUserPayload | null>();
+		return categoryModel.findOneAndDelete({ _id: categoryId, userId })
+							.lean<CategoryWithUserPayload | null>();
 	}
 }
 

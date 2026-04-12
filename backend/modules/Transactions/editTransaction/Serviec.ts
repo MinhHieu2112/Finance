@@ -2,7 +2,7 @@ import transactionRepository from './Repository';
 import AppError from '../../../utils/appError';
 import { TransactionFrequency, TransactionType } from './types';
 import type { editTransactionSchema, transactionDetailSchema } from './types';
-import { type Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 class transactionService {
 	async editTransaction(id	: Types.ObjectId,
@@ -14,9 +14,7 @@ class transactionService {
         const frequency   = data.frequency?.trim() as TransactionFrequency;
         const details     = data.details as transactionDetailSchema[];
 
-        if (!id ||
-			!userId ||
-            !description ||
+        if (!description ||
             !type ||
             !frequency ||
             !data.date ||
@@ -56,7 +54,7 @@ class transactionService {
                 throw new AppError(`Transaction detail has invalid quantity`, 400);
             }
 
-            const existingCategory = await transactionRepository.findCategoryNameById(userId, categoryId);
+			const existingCategory = await transactionRepository.findCategoryNameById(userId, categoryId, type);
             if (!existingCategory) {
                 throw new AppError('Category not found for this user', 400);
             }
@@ -72,7 +70,7 @@ class transactionService {
         totalAmount = normalizedDetails.reduce((sum, item) => sum + item.amount, 0);
     
         const updatedTransaction = await transactionRepository.editTransactionById(id,
-																				   userId,
+                                                           userId,
                                                                         		  {description : description,
                                                                         		   type        : type,
                                                                         		   frequency   : frequency,

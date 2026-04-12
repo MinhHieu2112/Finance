@@ -1,10 +1,14 @@
 import categoryModel from '../../../models/Category';
 import { type Types } from 'mongoose';
-import type { CategoryWithUserPayload } from './types';
+import type { CategoryListItem } from './types';
 
 class categoryRepository {
-	async listCategories(userId: Types.ObjectId): Promise<CategoryWithUserPayload[]> {
-		return categoryModel.find({ userId }).sort({ createdAt: -1 }).lean<CategoryWithUserPayload[]>();
+	async listCategories(userId: Types.ObjectId): Promise<CategoryListItem[]> {
+		return categoryModel
+			.find({ userId })
+			.populate({ path: 'catalogId', select: 'name', options: { lean: true } })
+			.sort({ createdAt: -1 })
+			.lean<CategoryListItem[]>();
 	}
 }
 

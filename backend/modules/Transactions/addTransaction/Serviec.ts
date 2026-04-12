@@ -51,17 +51,15 @@ class transactionService {
                 throw new AppError(`Transaction detail has invalid quantity`, 400);
             }
 
-            const existingCategory = await transactionRepository.findCategoryNameById(data.userId, categoryId);
+            const existingCategory = await transactionRepository.findCategoryNameById(data.userId, categoryId, type);
             if (!existingCategory) {
                 throw new AppError('Category not found for this user', 400);
             }
-            normalizedDetails.push({
-                    categoryId,
-                    categoryName: existingCategory.name,
-                    name,
-                    amount,
-                    quantity
-                });
+            normalizedDetails.push({categoryId,
+                                    categoryName: existingCategory.name,
+                                    name,
+                                    amount,
+                                    quantity});
         }
 
         totalAmount = normalizedDetails.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
@@ -73,9 +71,7 @@ class transactionService {
                                                                         date        : data.date,
                                                                         total_amount: totalAmount,
                                                                         details     : normalizedDetails,});
-
         return transaction;
-
     }
 }
 

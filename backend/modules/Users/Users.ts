@@ -30,11 +30,14 @@ export interface RegisterPayload {
 
 export interface UserCategorySchema {
   userId: Types.ObjectId;
+  catalogId: Types.ObjectId;
   name: string;
   description: string;
+  type: 'income' | 'expense';
 }
 
 export interface UserDefaultCategorySchema {
   name: string;
-  description: string;
+  description?: string;
+  type: 'income' | 'expense';
 }

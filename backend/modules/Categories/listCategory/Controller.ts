@@ -3,7 +3,7 @@ import categoryService from './Serviec';
 
 const listCategory = async (_req: Request, res: Response, next: NextFunction) => {
 	try {
-		const authUser = res.locals.authUser;
+		const authUser 	 = res.locals.authUser;
 		const categories = await categoryService.listCategories(authUser.id);
 
 		res.status(200).json({ success: true, categories });

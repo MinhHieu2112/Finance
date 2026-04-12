@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '../Button/Button';
 import { Plus, Trash2, X } from 'lucide-react';
 import {
@@ -39,13 +39,17 @@ const createEmptyDetail = (defaultCategoryId = ''): TransactionDetailInput => ({
 
 const buildInitialDetails = (
   categoryOptions: CategoryOption[],
+  type: TransactionType,
   transaction?: Transaction | null,
   payload?: TransactionPayload | null,
 ): TransactionDetailInput[] => {
+  const filteredCategoryOptions = categoryOptions.filter((category) => category.type === type);
+  const defaultCategoryId = filteredCategoryOptions[0]?._id || '';
+
   if (transaction?.details?.length) {
     return transaction.details.map((detail) => ({
       id: createRowId(),
-      categoryId: detail.categoryId || categoryOptions[0]?._id || '',
+      categoryId: detail.categoryId || defaultCategoryId,
       quantity: String(detail.quantity ?? 1),
       amount: String(detail.amount ?? 0),
       name: detail.name || '',
@@ -55,14 +59,14 @@ const buildInitialDetails = (
   if (payload?.details?.length) {
     return payload.details.map((detail) => ({
       id: createRowId(),
-      categoryId: detail.categoryId || categoryOptions[0]?._id || '',
+      categoryId: detail.categoryId || defaultCategoryId,
       quantity: String(detail.quantity ?? 1),
       amount: String(detail.amount ?? 0),
       name: detail.name || '',
     }));
   }
 
-  return [createEmptyDetail(categoryOptions[0]?._id || '')];
+  return [createEmptyDetail(defaultCategoryId)];
 };
 
 const getInitialDescription = (
@@ -101,33 +105,53 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   );
   const [date, setDate] = useState(getInitialDate(initialTransaction, initialPayload));
   const [details, setDetails] = useState<TransactionDetailInput[]>(
-    buildInitialDetails(categoryOptions, initialTransaction, initialPayload),
+    buildInitialDetails(categoryOptions, getInitialType(initialTransaction, initialPayload), initialTransaction, initialPayload),
   );
 
+  const filteredCategoryOptions = useMemo(
+    () => categoryOptions.filter((category) => category.type === type),
+    [categoryOptions, type],
+  );
+
+  const groupedCategoryOptions = useMemo(() => {
+    const groups = new Map<string, CategoryOption[]>();
+
+    filteredCategoryOptions.forEach((category) => {
+      const groupName = category.catalogName || 'Uncategorized Catalog';
+      const current = groups.get(groupName) || [];
+      current.push(category);
+      groups.set(groupName, current);
+    });
+
+    return Array.from(groups.entries())
+      .map(([catalogName, options]) => ({
+        catalogName,
+        options: options.sort((a, b) => a.name.localeCompare(b.name, 'en')),
+      }))
+      .sort((a, b) => a.catalogName.localeCompare(b.catalogName, 'en'));
+  }, [filteredCategoryOptions]);
+
   useEffect(() => {
+    const initialType = getInitialType(initialTransaction, initialPayload);
     setDescription(getInitialDescription(initialTransaction, initialPayload));
-    setType(getInitialType(initialTransaction, initialPayload));
+    setType(initialType);
     setFrequency(getInitialFrequency(initialTransaction, initialPayload));
     setDate(getInitialDate(initialTransaction, initialPayload));
-    setDetails(buildInitialDetails(categoryOptions, initialTransaction, initialPayload));
+    setDetails(buildInitialDetails(categoryOptions, initialType, initialTransaction, initialPayload));
   }, [initialTransaction, initialPayload, mode, categoryOptions]);
 
   useEffect(() => {
-    if (!categoryOptions.length) {
-      return;
-    }
-
     setDetails((prevDetails) => prevDetails.map((detail) => {
-      if (detail.categoryId && categoryOptions.some((category) => category._id === detail.categoryId)) {
+      if (detail.categoryId && filteredCategoryOptions.some((category) => category._id === detail.categoryId)) {
         return detail;
       }
 
       return {
         ...detail,
-        categoryId: categoryOptions[0]._id,
+        categoryId: filteredCategoryOptions[0]?._id || '',
       };
     }));
-  }, [categoryOptions]);
+  }, [filteredCategoryOptions]);
 
   const updateDetail = (detailId: string, patch: Partial<TransactionDetailInput>) => {
     setDetails((prevDetails) => prevDetails.map((detail) => (
@@ -138,7 +162,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   const addDetailAfter = (index: number) => {
     setDetails((prevDetails) => {
       const nextDetails = [...prevDetails];
-      nextDetails.splice(index + 1, 0, createEmptyDetail(categoryOptions[0]?._id || ''));
+      nextDetails.splice(index + 1, 0, createEmptyDetail(filteredCategoryOptions[0]?._id || ''));
       return nextDetails;
     });
   };
@@ -211,6 +235,15 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                   <option value={TransactionType.EXPENSE}>Expense</option>
                   <option value={TransactionType.INCOME}>Income</option>
                 </select>
+                {/* {onManageCategories && (
+                  <button
+                    type="button"
+                    onClick={() => onManageCategories(type)}
+                    className="mt-2 text-xs text-indigo-600 hover:text-indigo-700 font-semibold"
+                  >
+                    Manage {type} categories
+                  </button>
+                )} */}
               </div>
 
               <div className="xl:col-span-3">
@@ -268,16 +301,25 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                       <select
                         value={detail.categoryId}
                         onChange={(e) => updateDetail(detail.id, { categoryId: e.target.value })}
-                        disabled={categoryOptions.length === 0}
+                        disabled={filteredCategoryOptions.length === 0}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
                       >
-                        {categoryOptions.length === 0 && <option value="">No categories available</option>}
-                        {categoryOptions.map((category) => (
-                          <option key={category._id} value={category._id}>
-                            {category.name}
-                          </option>
+                        {filteredCategoryOptions.length === 0 && <option value="">No categories available</option>}
+                        {groupedCategoryOptions.map((group) => (
+                          <optgroup key={group.catalogName} label={group.catalogName}>
+                            {group.options.map((category) => (
+                              <option key={category._id} value={category._id}>
+                                {category.name}
+                              </option>
+                            ))}
+                          </optgroup>
                         ))}
                       </select>
+                      {/* {detail.categoryId && (
+                        <p className="mt-1 text-[11px] text-gray-500">
+                          Catalog: {filteredCategoryOptions.find((category) => category._id === detail.categoryId)?.catalogName || '-'}
+                        </p>
+                      )} */}
                     </div>
 
                     <div className="xl:col-span-2">

@@ -6,10 +6,10 @@ const editTransaction = async (req: Request, res: Response, next: NextFunction) 
 	try {
 		const { description, type, frequency, date, total_amount, details } = req.body;
 		
-		const transactionId = new Types.ObjectId(Array.isArray(req.params.id) ? req.params.id[0] : req.params.id);
         const authUser 		= res.locals.authUser;
+		const transactionId = new Types.ObjectId(req.params.id as string);
 
-		const transaction = await transactionService.editTransaction(transactionId, 
+		const transaction = await transactionService.editTransaction(transactionId,
                                                                     authUser.id,
                                                                     {description,
                                                                      type,
