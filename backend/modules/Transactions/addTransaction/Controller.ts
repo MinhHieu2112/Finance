@@ -13,7 +13,9 @@ const addTransaction = async (req: Request, res: Response, next: NextFunction) =
                                                                      date,
                                                                      total_amount,
                                                                      details});
-        res.status(201).json({success: true, transaction});
+        res.status(201).json({success: true,
+                              message: 'Transaction added successfully',
+                              transaction});
     } catch (error) {
         next(error);
     }

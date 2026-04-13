@@ -7,7 +7,8 @@ const deleteCategory = async (req: Request, res: Response, next: NextFunction) =
 		const categoryId = req.params.id;
 
 		await categoryService.deleteCategory(categoryId as string, authUser.id);
-		res.status(204).send();
+		res.status(200).json({ success: true,
+							   message: 'Category deleted successfully' });
 	} catch (error) {
 		next(error);
 	}

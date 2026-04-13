@@ -6,7 +6,9 @@ const getDetectAnomalies = async (_req: Request, res: Response, next: NextFuncti
 		const authUser  = res.locals.authUser;
 		const anomalies = await detectAnomaliesService.getDetectAnomalies(authUser.id);
 
-		res.status(200).json({ success: true, anomalies });
+		res.status(200).json({ success: true,
+							   message: 'Anomalies loaded successfully',
+							   anomalies });
 	} catch (error) {
 		next(error);
 	}

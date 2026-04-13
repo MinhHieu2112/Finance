@@ -11,7 +11,9 @@ const editCategory = async (req: Request, res: Response, next: NextFunction) => 
 															  authUser.id,
 															  { name });
 
-		res.status(200).json({ success: true, category });
+		res.status(200).json({ success: true,
+							   message: 'Category updated successfully',
+							   category });
 	} catch (error) {
 		next(error);
 	}

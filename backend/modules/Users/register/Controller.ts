@@ -10,6 +10,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 													 password,});
 
 		res.status(201).json({success: true,
+							  message: 'Register successful',
 							  ...authData,});
 	} catch (error) {
 		next(error);

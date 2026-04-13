@@ -30,6 +30,15 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+const getStringValue = (value: unknown): string | undefined => {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const normalized = value.trim();
+  return normalized ? normalized : undefined;
+};
+
 export const withAuth = (token: string) => ({
   headers: {
     Authorization: `Bearer ${token}`,
@@ -38,10 +47,8 @@ export const withAuth = (token: string) => ({
 
 export const getApiErrorMessage = (error: unknown, fallback = 'Request failed. Please try again.') => {
   if (axios.isAxiosError(error)) {
-    const message = (error.response?.data as { message?: string; error?: string } | undefined)?.message
-      || (error.response?.data as { message?: string; error?: string } | undefined)?.error;
-
-    return message || fallback;
+    const payload = error.response?.data as { message?: unknown; error?: unknown } | undefined;
+    return getStringValue(payload?.message) || getStringValue(payload?.error) || getStringValue(error.message) || fallback;
   }
 
   if (error instanceof Error && error.message) {
@@ -49,4 +56,13 @@ export const getApiErrorMessage = (error: unknown, fallback = 'Request failed. P
   }
 
   return fallback;
+};
+
+export const getApiSuccessMessage = (data: unknown, fallback = 'Success') => {
+  if (!data || typeof data !== 'object') {
+    return fallback;
+  }
+
+  const message = getStringValue((data as Record<string, unknown>).message);
+  return message || fallback;
 };

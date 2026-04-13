@@ -10,7 +10,9 @@ const getSavingSuggestion = async (_req: Request, res: Response, next: NextFunct
 		const anomalies   = await detectAnomaliesService.getDetectAnomalies(authUser.id);
 		const savingsPlan = savingSuggestionService.buildSavingSuggestion(trend, anomalies);
 
-		res.status(200).json({ success: true, savingsPlan });
+		res.status(200).json({ success: true,
+							   message: 'Saving suggestions loaded successfully',
+							   savingsPlan });
 	} catch (error) {
 		next(error);
 	}

@@ -9,6 +9,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 												  password,});
 
 		res.status(200).json({success: true,
+							  message: 'Login successful',
 							  ...authData,});
 	} catch (error) {
 		next(error);

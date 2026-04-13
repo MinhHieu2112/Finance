@@ -10,6 +10,7 @@ const add_trans_by_receiptImg = async (req: Request, res: Response, next: NextFu
 
 		res.status(200).json({
 			success: true,
+			message: 'Receipt data extracted successfully',
 			result: result,
 		});
 	} catch (error) {

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { Button } from '../Button/Button';
 import { Sparkles, X } from 'lucide-react';
-import { api, getApiErrorMessage } from '../../lib/api';
+import { api, getApiErrorMessage, getApiSuccessMessage } from '../../lib/api';
 import type {
 	AddQueryResponse,
 	AIAssistantModalProps,
@@ -59,6 +60,8 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 
 				if (!created.length) {
 					setError('AI did not create any transaction from this prompt.');
+				} else {
+					toast.success(getApiSuccessMessage(addQueryData, `Created ${created.length} transaction(s)`));
 				}
 
 				return;

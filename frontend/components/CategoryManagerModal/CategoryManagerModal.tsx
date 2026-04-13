@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '../Button/Button';
 import { Pencil, Trash2, X } from 'lucide-react';
+import { ToastModal } from '../ToastModal/ToastModal';
 import type { Category, CategoryManagerModalProps, CategoryType } from './types';
 
 const CATEGORY_TYPE_LABEL: Record<CategoryType, string> = {
@@ -25,6 +26,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   const [editingDescription, setEditingDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<{ type: 'update' | 'delete'; categoryId: string } | null>(null);
   const [catalogFilterId, setCatalogFilterId] = useState('all');
   const [createCatalogId, setCreateCatalogId] = useState('');
 
@@ -109,41 +111,45 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
     }
   };
 
-  const handleSaveEdit = async () => {
+  const handleSaveEdit = () => {
     if (!editingCategoryId) {
       return;
     }
 
-    try {
-      setError(null);
-      setIsSubmitting(true);
-      await onUpdate(editingCategoryId, { name: editingName, description: editingDescription });
-      cancelEdit();
-    } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Unable to update category. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    setPendingAction({ type: 'update', categoryId: editingCategoryId });
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this category?')) {
+  const requestDelete = (id: string) => {
+    setPendingAction({ type: 'delete', categoryId: id });
+  };
+
+  const handleConfirmAction = async () => {
+    if (!pendingAction) {
       return;
     }
 
     try {
       setError(null);
       setIsSubmitting(true);
-      await onDelete(id);
-      if (editingCategoryId === id) {
+
+      if (pendingAction.type === 'update') {
+        await onUpdate(pendingAction.categoryId, { name: editingName, description: editingDescription });
         cancelEdit();
+      } else {
+        await onDelete(pendingAction.categoryId);
+        if (editingCategoryId === pendingAction.categoryId) {
+          cancelEdit();
+        }
       }
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Unable to delete category. Please try again.');
+      setError(submitError instanceof Error ? submitError.message : 'Unable to complete category action. Please try again.');
     } finally {
       setIsSubmitting(false);
+      setPendingAction(null);
     }
   };
+
+  const isUpdateAction = pendingAction?.type === 'update';
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -221,8 +227,6 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
           </div>
         </form>
 
-        {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
-
         <div className="border border-gray-200 rounded-xl overflow-hidden">
           <table className="w-full text-sm text-left text-gray-700">
             <thead className="bg-gray-50 text-xs uppercase text-gray-500">
@@ -283,7 +287,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                             </button>
                             <button
                               type="button"
-                              onClick={() => handleDelete(category._id)}
+                              onClick={() => requestDelete(category._id)}
                               className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
                               title="Delete category"
                             >
@@ -306,6 +310,26 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             </tbody>
           </table>
         </div>
+
+        <ToastModal
+          isOpen={Boolean(pendingAction)}
+          type="confirm"
+          title={isUpdateAction ? 'Confirm category edit' : 'Confirm category deletion'}
+          message={isUpdateAction ? 'Do you want to save these category changes?' : 'This category will be deleted permanently.'}
+          confirmText={isUpdateAction ? 'Save changes' : 'Delete'}
+          cancelText="Cancel"
+          isLoading={isSubmitting}
+          onClose={() => setPendingAction(null)}
+          onConfirm={handleConfirmAction}
+        />
+
+        <ToastModal
+          isOpen={Boolean(error)}
+          type="error"
+          title="Category action failed"
+          message={error || ''}
+          onClose={() => setError(null)}
+        />
       </div>
     </div>
   );

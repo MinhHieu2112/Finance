@@ -5,7 +5,9 @@ const listTransaction = async (_req: Request, res: Response, next: NextFunction)
 	try {
 		const authUser 	   = res.locals.authUser;
 		const transactions = await transactionService.listTransactions(authUser.id);
-		res.status(200).json({success: true, transactions});
+		res.status(200).json({success: true,
+							  message: 'Transactions loaded successfully',
+							  transactions});
 	} catch (error) {
 		next(error);
 	}

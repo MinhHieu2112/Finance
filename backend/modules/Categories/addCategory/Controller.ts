@@ -11,7 +11,9 @@ const addCategory = async (req: Request, res: Response, next: NextFunction) => {
 															type,
 															catalogId});
 
-		res.status(201).json({ success: true, category });
+		res.status(201).json({ success: true,
+							   message: 'Category added successfully',
+							   category });
 	} catch (error) {
 		next(error);
 	}

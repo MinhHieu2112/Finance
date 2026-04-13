@@ -7,6 +7,7 @@ import userRoutes from './routes/userRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import nlpRoutes from './routes/nlpRoutes';
 import AppError from './utils/appError';
+import globalErrorHandler from './controllers/errorController';
 
 const app = express();
 
@@ -35,5 +36,11 @@ app.use('/api/nlp', nlpRoutes);
 app.get('/', (req, res) => {
   res.send('API working');
 });
+
+app.all('*', (req, _res, next) => {
+  next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
+});
+
+app.use(globalErrorHandler);
 
 export default app;

@@ -6,7 +6,9 @@ const getForcastingTrend = async (_req: Request, res: Response, next: NextFuncti
 		const authUser = res.locals.authUser;
 		const trend    = await forcastingTrendService.getForcastingTrend(authUser.id);
 
-		res.status(200).json({ success: true, trend });
+		res.status(200).json({ success: true,
+							   message: 'Trend loaded successfully',
+							   trend });
 	} catch (error) {
 		next(error);
 	}

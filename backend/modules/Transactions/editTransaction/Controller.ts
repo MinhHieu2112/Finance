@@ -18,7 +18,9 @@ const editTransaction = async (req: Request, res: Response, next: NextFunction) 
 																 	 total_amount,
 																 	 details,});
 
-		res.status(200).json({success: true, transaction});
+		res.status(200).json({success: true,
+							  message: 'Transaction updated successfully',
+							  transaction});
 	} catch (error) {
 		next(error);
 	}

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '../Button/Button';
 import { Plus, Trash2, X } from 'lucide-react';
+import { ToastModal } from '../ToastModal/ToastModal';
 import {
   TransactionFrequency,
   TransactionType,
@@ -107,6 +108,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   const [details, setDetails] = useState<TransactionDetailInput[]>(
     buildInitialDetails(categoryOptions, getInitialType(initialTransaction, initialPayload), initialTransaction, initialPayload),
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isEditConfirmOpen, setIsEditConfirmOpen] = useState(false);
+  const [pendingEditPayload, setPendingEditPayload] = useState<TransactionPayload | null>(null);
 
   const filteredCategoryOptions = useMemo(
     () => categoryOptions.filter((category) => category.type === type),
@@ -199,16 +204,50 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       };
     });
 
-    await onSave({
+    const payload: TransactionPayload = {
       description,
       type,
       frequency,
       date,
       total_amount: normalizedDetails.reduce((sum, detail) => sum + (detail.amount * detail.quantity), 0),
       details: normalizedDetails,
-    });
+    };
 
-    onClose();
+    if (mode === 'edit') {
+      setPendingEditPayload(payload);
+      setIsEditConfirmOpen(true);
+      return;
+    }
+
+    try {
+      setSubmitError(null);
+      setIsSubmitting(true);
+      await onSave(payload);
+      onClose();
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Unable to save transaction. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleConfirmEdit = async () => {
+    if (!pendingEditPayload) {
+      return;
+    }
+
+    try {
+      setSubmitError(null);
+      setIsSubmitting(true);
+      await onSave(pendingEditPayload);
+      setIsEditConfirmOpen(false);
+      setPendingEditPayload(null);
+      onClose();
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Unable to update transaction. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -388,12 +427,39 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           <div className="pt-2">
             <Button
               type="submit"
+              isLoading={isSubmitting}
               className="w-full py-3"
             >
               {mode === 'edit' ? 'Update Transaction' : 'Save Transaction'}
             </Button>
           </div>
         </form>
+
+        <ToastModal
+          isOpen={isEditConfirmOpen}
+          type="confirm"
+          title="Confirm transaction update"
+          message="Do you want to save changes to this transaction?"
+          confirmText="Save changes"
+          cancelText="Cancel"
+          isLoading={isSubmitting}
+          onClose={() => {
+            if (isSubmitting) {
+              return;
+            }
+            setIsEditConfirmOpen(false);
+            setPendingEditPayload(null);
+          }}
+          onConfirm={handleConfirmEdit}
+        />
+
+        <ToastModal
+          isOpen={Boolean(submitError)}
+          type="error"
+          title="Transaction save failed"
+          message={submitError || ''}
+          onClose={() => setSubmitError(null)}
+        />
       </div>
     </div>
   );

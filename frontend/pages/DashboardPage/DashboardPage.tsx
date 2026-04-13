@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { toast } from 'react-hot-toast';
 import { SummaryCards } from '../../components/SummaryCards/SummaryCards';
 import { TransactionList } from '../../components/TransactionList/TransactionList';
 import { TransactionForm } from '../../components/TransactionForm/TransactionForm';
@@ -6,6 +7,7 @@ import { Charts } from '../../components/Charts/Charts';
 import { CategoryManagerModal } from '../../components/CategoryManagerModal/CategoryManagerModal';
 import { AIAssistantModal } from '../../components/AIAssistantModal/AIAssistantModal';
 import { ReceiptOCRPanel } from '../../components/ReceiptOCRPanel/ReceiptOCRPanel';
+import { ToastModal } from '../../components/ToastModal/ToastModal';
 import { Button } from '../../components/Button/Button';
 import type {
   Category,
@@ -20,7 +22,7 @@ import type {
   TransactionPayload,
 } from './types';
 import { Plus, ScanText, Sparkles, Tags } from 'lucide-react';
-import { api, getApiErrorMessage } from '../../lib/api';
+import { api, getApiErrorMessage, getApiSuccessMessage } from '../../lib/api';
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -32,6 +34,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [isReceiptOCROpen, setIsReceiptOCROpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [receiptDraftPayload, setReceiptDraftPayload] = useState<TransactionPayload | null>(null);
+  const [pendingDeleteTransactionId, setPendingDeleteTransactionId] = useState<string | null>(null);
+  const [deleteTransactionError, setDeleteTransactionError] = useState<string | null>(null);
 
   const categoryFormOptions = useMemo<CategoryOption[]>(() => {
     return categories
@@ -69,6 +73,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const createTransaction = async (newTx: TransactionPayload): Promise<Transaction> => {
     const response = await api.post<SaveTransactionResponse>('/transactions/add', newTx);
     const data = response.data;
+    toast.success(getApiSuccessMessage(data, 'Transaction added successfully'));
     return data.transaction;
   };
 
@@ -81,6 +86,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     const response = await api.put<SaveTransactionResponse>(`/transactions/edit/${id}`, updatedTx);
     const data = response.data;
     setTransactions((prev) => prev.map((t) => (t._id === id ? data.transaction : t)));
+    toast.success(getApiSuccessMessage(data, 'Transaction updated successfully'));
   };
 
   const handleSaveTransaction = async (tx: TransactionPayload) => {
@@ -97,6 +103,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       const response = await api.post<SaveCategoryResponse>('/categories/add', payload);
       const data = response.data;
       setCategories((prev) => [data.category, ...prev.filter((item) => item._id !== data.category._id)]);
+      toast.success(getApiSuccessMessage(data, 'Category added successfully'));
     } catch (error) {
       throw new Error(getApiErrorMessage(error, 'Cannot create category'));
     }
@@ -107,6 +114,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       const response = await api.put<SaveCategoryResponse>(`/categories/edit/${id}`, payload);
       const data = response.data;
       setCategories((prev) => prev.map((item) => (item._id === id ? data.category : item)));
+      toast.success(getApiSuccessMessage(data, 'Category updated successfully'));
     } catch (error) {
       throw new Error(getApiErrorMessage(error, 'Cannot update category'));
     }
@@ -114,8 +122,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
 
   const deleteCategory = async (id: string) => {
     try {
-      await api.delete(`/categories/delete/${id}`);
+      const response = await api.delete('/categories/delete/' + id);
       setCategories((prev) => prev.filter((item) => item._id !== id));
+      toast.success(getApiSuccessMessage(response.data, 'Category deleted successfully'));
     } catch (error) {
       throw new Error(getApiErrorMessage(error, 'Cannot delete category'));
     }
@@ -162,11 +171,26 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setIsAIAssistantOpen(false);
   };
 
-  const deleteTransaction = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this transaction?')) {
-      await api.delete(`/transactions/delete/${id}`);
+  const deleteTransaction = (id: string) => {
+    setPendingDeleteTransactionId(id);
+  };
 
-      setTransactions((prev) => prev.filter((t) => t._id !== id));
+  const confirmDeleteTransaction = async () => {
+    if (!pendingDeleteTransactionId) {
+      return;
+    }
+
+    const targetTransactionId = pendingDeleteTransactionId;
+
+    try {
+      setDeleteTransactionError(null);
+      const response = await api.delete('/transactions/delete/' + targetTransactionId);
+      setTransactions((prev) => prev.filter((t) => t._id !== targetTransactionId));
+      toast.success(getApiSuccessMessage(response.data, 'Transaction deleted successfully'));
+    } catch (error) {
+      setDeleteTransactionError(getApiErrorMessage(error, 'Cannot delete transaction'));
+    } finally {
+      setPendingDeleteTransactionId(null);
     }
   };
 
@@ -281,6 +305,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         isOpen={isReceiptOCROpen}
         onClose={closeReceiptOCR}
         onDraftPrepared={onReceiptDraftPrepared}
+      />
+
+      <ToastModal
+        isOpen={Boolean(pendingDeleteTransactionId)}
+        type="confirm"
+        title="Confirm transaction deletion"
+        message="Are you sure you want to delete this transaction?"
+        confirmText="Delete"
+        cancelText="Cancel"
+        onClose={() => setPendingDeleteTransactionId(null)}
+        onConfirm={confirmDeleteTransaction}
+      />
+
+      <ToastModal
+        isOpen={Boolean(deleteTransactionError)}
+        type="error"
+        title="Delete failed"
+        message={deleteTransactionError || ''}
+        onClose={() => setDeleteTransactionError(null)}
       />
 
     </div>

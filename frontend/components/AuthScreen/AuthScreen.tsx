@@ -31,7 +31,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
       const data = response.data;
 
       if (!data.success) {
-        setError(data.message || 'Authentication failed. Please try again.');
+        const message = data.message || 'Authentication failed. Please try again.';
+        setError(message);
         return;
       }
 

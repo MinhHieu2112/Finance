@@ -9,7 +9,8 @@ const deleteTransaction = async (req: Request, res: Response, next: NextFunction
 
 		await transactionService.deleteTransaction(transactionId, authUser.id);
 
-		res.status(204).send();
+		res.status(200).json({success: true,
+							  message: 'Transaction deleted successfully'});
 	} catch (error) {
 		next(error);
 	}
