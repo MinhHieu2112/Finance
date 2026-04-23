@@ -33,7 +33,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [isReceiptOCROpen, setIsReceiptOCROpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
-  const [receiptDraftPayload, setReceiptDraftPayload] = useState<TransactionPayload | null>(null);
+  const [draftPayload, setDraftPayload] = useState<TransactionPayload | null>(null);
+  const [draftQueue, setDraftQueue] = useState<TransactionPayload[]>([]);
   const [pendingDeleteTransactionId, setPendingDeleteTransactionId] = useState<string | null>(null);
   const [deleteTransactionError, setDeleteTransactionError] = useState<string | null>(null);
 
@@ -132,20 +133,33 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
 
   const openCreateForm = () => {
     setEditingTransaction(null);
-    setReceiptDraftPayload(null);
+    setDraftPayload(null);
+    setDraftQueue([]);
     setIsFormOpen(true);
   };
 
   const openEditForm = (transaction: Transaction) => {
     setEditingTransaction(transaction);
-    setReceiptDraftPayload(null);
+    setDraftPayload(null);
+    setDraftQueue([]);
     setIsFormOpen(true);
   };
 
-  const closeForm = () => {
+  const closeForm = (reason: 'saved' | 'cancelled' = 'cancelled') => {
+    if (reason === 'saved') {
+      const [nextDraft, ...restDrafts] = draftQueue;
+      if (nextDraft) {
+        setEditingTransaction(null);
+        setDraftPayload(nextDraft);
+        setDraftQueue(restDrafts);
+        return;
+      }
+    }
+
     setIsFormOpen(false);
     setEditingTransaction(null);
-    setReceiptDraftPayload(null);
+    setDraftPayload(null);
+    setDraftQueue([]);
   };
 
   const openCategoryManager = (type: CategoryType = 'expense') => {
@@ -163,8 +177,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setIsCategoryModalOpen(true);
   };
 
-  const onAssistantTransactionCreated = (transaction: Transaction) => {
-    setTransactions((prev) => [transaction, ...prev.filter((item) => item._id !== transaction._id)]);
+  const startDraftReview = (drafts: TransactionPayload[]) => {
+    const [firstDraft, ...restDrafts] = drafts;
+
+    setEditingTransaction(null);
+    setDraftPayload(firstDraft);
+    setDraftQueue(restDrafts);
+    setIsFormOpen(true);
+  };
+
+  const onAIDraftsPrepared = (drafts: TransactionPayload[]) => {
+    setIsAIAssistantOpen(false);
+    startDraftReview(drafts);
   };
 
   const closeAIAssistant = () => {
@@ -207,10 +231,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   };
 
   const onReceiptDraftPrepared = (draftTransaction: TransactionPayload) => {
-    setEditingTransaction(null);
-    setReceiptDraftPayload(draftTransaction);
     setIsReceiptOCROpen(false);
-    setIsFormOpen(true);
+    startDraftReview([draftTransaction]);
   };
 
   return (
@@ -280,7 +302,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
           onManageCategories={openCategoryManagerFromForm}
           mode={editingTransaction ? 'edit' : 'create'}
           initialTransaction={editingTransaction}
-          initialPayload={receiptDraftPayload}
+          initialPayload={draftPayload}
         />
       )}
 
@@ -298,7 +320,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       <AIAssistantModal
         isOpen={isAIAssistantOpen}
         onClose={closeAIAssistant}
-        onTransactionCreated={onAssistantTransactionCreated}
+        onDraftsPrepared={onAIDraftsPrepared}
       />
 
       <ReceiptOCRPanel

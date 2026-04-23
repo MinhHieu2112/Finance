@@ -4,9 +4,10 @@ import { FinancetSchema, QuerySchema } from '../../../utils/normalized';
 import { FunctionCallingConfigMode, GoogleGenAI, Type } from '@google/genai';
 import { Types } from 'mongoose';
 import { readFile } from 'node:fs/promises';
+import { en } from 'zod/locales';
 
 class add_query_nlpService {
-	private getTools() {
+	private getTools(categoryList: string[]) {
 		return [
 			{
 				functionDeclarations: [
@@ -34,7 +35,7 @@ class add_query_nlpService {
 													type: Type.OBJECT,
 													properties: {
 														name: { type: Type.STRING },
-														categoryName: { type: Type.STRING },
+														categoryName: { type: Type.STRING, enum: categoryList },
 														amount: { type: Type.NUMBER, minimum: 0 },
 														quantity: { type: Type.NUMBER, minimum: 1 },
 													},
@@ -61,7 +62,7 @@ class add_query_nlpService {
 								},
 								category_keywords: {
 									type: Type.ARRAY,
-									items: { type: Type.STRING }
+									items: { type: Type.STRING, enum: categoryList },
 								},
 								time: {
 									type: Type.ARRAY,
@@ -72,7 +73,7 @@ class add_query_nlpService {
 												type: Type.ARRAY,
 												items: { type: Type.NUMBER, minimum: 1, maximum: 12 },
 											},
-											year: { type: Type.NUMBER, minimum: 1900, maximum: 2100, },
+											year: { type: Type.NUMBER },
 										},
 										required: ["year", "months"] 
 									}
@@ -80,16 +81,54 @@ class add_query_nlpService {
 							},
 							required: ["type", "category_keywords", "time"]
 						}
-					}
+					},
+					{
+						name: "receiptParser",
+						description: "Parse financial receipts and extract transaction information",
+						parameters: {
+							type: Type.OBJECT,
+							properties: {
+								transactions: {
+									type: Type.ARRAY,
+									items: {
+										type: Type.OBJECT,
+										properties: {
+											type: { type: Type.STRING, enum: ["income", "expense"] },
+											description: { type: Type.STRING },
+											frequency: { 
+												type: Type.STRING, 
+												enum: ["weekly", "monthly", "yearly", "one-time"] 
+											},
+											date: { type: Type.STRING },
+											details: {
+												type: Type.ARRAY,
+												items: {
+													type: Type.OBJECT,
+													properties: {
+														name: { type: Type.STRING },
+														categoryName: { type: Type.STRING, enum: categoryList },
+														amount: { type: Type.NUMBER, minimum: 0 },
+														quantity: { type: Type.NUMBER, minimum: 1 },
+													},
+													required: ["categoryName", "amount", "quantity", "name"]
+												}
+											}
+										},
+										required: ["description", "type", "date", "frequency", "details"]
+									}
+								}
+							},
+							required: ["transactions"]
+						}
+					},
 				]
 			}
 		];
 	}
 
-	private buildPrompt(text: string | null, categories: string[]) {
-		const categoryList = categories.length ? categories.join(', ') : 'Other';
+	private buildPrompt(text: string | null, categoryList: string[]) {
 		const today = new Date().toISOString().slice(0, 10);
-		if (text == null) {
+		if (text === null) {
 			return [
 				`You are a financial receipt parser for Vietnamese and English receipts.,
 				Return valid JSON only. No markdown. No explanation.,
@@ -103,20 +142,29 @@ class add_query_nlpService {
 						"date": "YYYY-MM-DD",  Use Current Date if not clear from prompt.
 						"details": Array<{
 							"name": string,
-							"categoryName": string,
+							"categoryName": string, (MUST match nearest existing category: ${categoryList})
 							"quantity": number, .default to 1 if not clear from prompt.
 							"amount": number, .default to total_amount if not clear from prompt or if only one item in details.
 						}>,
 					}>,
 				}
-				Rules:
-				- must extract all transactions from receipt.
-				- categoryName must match the nearest existing category: ${categoryList}
-				- type defaults to expense if unclear.
-				- frequency defaults to one-time if unclear.
-				- date defaults to Current Date if unclear.
-				- quantity defaults to 1 if unclear.
-				- amount and must be plain numbers in VND (no currency symbols)`
+				Transaction and keys: description, type, frequency, date, details.
+				Detail item keys: categoryName, quantity, amount, name.
+				receipt may contain one or many transactions. if multiple, transactions must be an array with separate items.
+				Time rules:
+				- Use months as integer array 1..12.
+				- Use year as 4-digit array.
+				Transaction coverage rules:
+				- Support basic, multi-transaction, with (date, frequency, income+expense) mix, slang.
+				- If the input contains a list, table, or multiple lines 
+					→ you MUST extract ALL items.
+				- If transactions have same date, merge into one transaction with multiple details. Or else keep them separate with their own date.
+				- When receipt has amounts with decimal points you must understand that these are thousands separators, not decimal points.
+					→ Convert them to integers.
+				- Understand shorthand: k=1,000; tr=1,000,000; cu=1,000,000.
+				- Keep transactions as array even with one item.			
+				Field defaults:
+				- All fields MUST be filled. If not clear, use reasonable defaults as described above.`
 			].join('\n');
 		}
 		return [
@@ -133,7 +181,7 @@ class add_query_nlpService {
 					"date": "YYYY-MM-DD",  Use Current Date if not clear from prompt.
 					"details": Array<{
 						"name": string,
-						"categoryName": string,
+						"categoryName": string, (MUST match nearest existing category: ${categoryList})
 						"quantity": number, .default to 1 if not clear from prompt.
 						"amount": number, .default to total_amount if not clear from prompt or if only one item in details.
 					}>,
@@ -143,14 +191,13 @@ class add_query_nlpService {
 			{
 				"query": {
 				"type": "income" | "expense",
-				"category_keywords": string[],
+				"category_keywords": string[], (MUST match nearest existing category: ${categoryList})
 				"time": Array<{
 						"year": number,
 						"months": number[],
 					}>,
 				},
 			}
-			categoryName and category_keywords MUST match nearest existing category when possible: ${categoryList}
 			Transaction and keys: description, type, frequency, date, details.
 			Detail item keys: categoryName, quantity, amount, name.
 			Query keys: type, category_keywords, time.
@@ -174,73 +221,67 @@ class add_query_nlpService {
 		].join('\n');
 	}
 
-	async handlePrompt(userId: Types.ObjectId, prompt: string | null, file: string | undefined): Promise<unknown> {
+	private buildRequest(prompt		 : string | null, 
+						 file		 : Buffer | undefined, 
+						 categoryList: string[]) 
+	{
+		const tools = this.getTools(categoryList);
+		const isFile = !!file;
+
+		return {
+			model: isFile ? 'gemma-4-31b-it' : 'gemini-3.1-flash-lite-preview',
+			contents: isFile
+				? [{
+					role: 'user',
+					parts: [
+						{ text: this.buildPrompt(null, categoryList) },
+						{ inlineData: { mimeType: 'image/jpeg', data: file!.toString('base64') } }
+					]
+				}]
+				: this.buildPrompt(prompt!.trim(), categoryList),
+			config: {
+				tools: tools as any,
+				toolConfig: {
+					functionCallingConfig: {
+						mode: FunctionCallingConfigMode.ANY,
+						allowedFunctionNames: isFile
+							? ['receiptParser']
+							: ['addTransaction', 'queryTransaction']
+					}
+				},
+				...(!isFile && {
+					systemInstruction: `
+					- If the statement is NOT related to financial transaction,
+					call queryTransaction with empty parameters.`
+				})
+			}
+		};
+	}	
+
+	async handlePrompt(userId: Types.ObjectId, prompt: string | null, file: Buffer | undefined): Promise<unknown> {
 		if (!userId) {
 			throw new AppError('User id is required', 400);
 		}		
 		
-		const tools  = this.getTools();
-		const apiKey = process.env.GEMINI_API_KEY?.trim();
+		const categoryList = await add_query_nlpRepository.listCategoryNames(userId);
+		const apiKey 	   = process.env.GEMINI_API_KEY?.trim();
 
 		if (!apiKey) {
 			throw new AppError('AI service is not configured', 503);
 		}
-
-		const categories = await add_query_nlpRepository.listCategoryNames(userId);
-		const ai = new GoogleGenAI({ apiKey: apiKey });
-		let response;
-
-		if (prompt) {
-			response = await ai.models.generateContent({
-				model: 'gemini-3.1-flash-lite-preview',
-				contents: this.buildPrompt(prompt.trim(), categories),
-				config: {
-					// temperature: 0,
-					// responseMimeType: 'application/json',
-					tools: tools as any,
-					toolConfig: {
-						functionCallingConfig: {
-							mode: FunctionCallingConfigMode.ANY,
-							allowedFunctionNames: ["addTransaction", "queryTransaction"]
-						},
-					},
-					systemInstruction: `
-					- If the statement is NOT related to the main financial transaction (e.g., question, time request, chat), you are not allowed to execute the transaction.
-						-> Please call the queryTransaction function with empty (null or null) parameters.`
-				}
-			});
+		
+		if (!prompt && !file) {
+			throw new AppError('Prompt or file is required', 400);
 		}
-		else if (file) {
-			const imageData = (await readFile(file)).toString('base64');
-			if (!imageData) {
-				throw new AppError('Receipt image is empty', 400);
-			}
-			response = await ai.models.generateContent({
-				model: 'gemma-4-31b-it',
-				contents: [{role : 'user',
-							parts: [{ text		: this.buildPrompt(null, categories) },
-									{ inlineData: {mimeType : "image/jpeg",
-												   data		: imageData,}}]
-				}],
-				config: {
-					// temperature: 0,
-					// responseMimeType: 'application/json',
-					tools: tools as any,
-					toolConfig: {
-						functionCallingConfig: {
-							mode: FunctionCallingConfigMode.ANY,
-							allowedFunctionNames: ["addTransaction", "queryTransaction"]
-						},
-					},
-					systemInstruction: `
-					- If the statement is NOT related to the main financial transaction (e.g., question, time request, chat), you are not allowed to execute the transaction.
-						-> Please call the queryTransaction function with empty (null or null) parameters.`
-				}
-			});
-		}
+		
+		const ai 	   = new GoogleGenAI({ apiKey: apiKey });
+		const request  = this.buildRequest(prompt, file, categoryList);
+		const response = await ai.models.generateContent(request);
+
 		if (!response) {
 			throw new AppError('No response from AI', 502);
 		}
+		
 		const functionCalls = response.functionCalls;
 
 		if (!functionCalls || functionCalls.length === 0) {
@@ -249,32 +290,42 @@ class add_query_nlpService {
 
 		const call = functionCalls[0];
 
-		if (call.name === "addTransaction") {
+		console.log("Input Tokens (Prompt):", response.usageMetadata?.promptTokenCount);
+		console.log("Output Tokens (Function Call):", response.usageMetadata?.candidatesTokenCount);
+		console.log("Total Tokens:", response.usageMetadata?.totalTokenCount);
+		const usage = {
+			inputTokens: response.usageMetadata?.promptTokenCount,
+			outputTokens: response.usageMetadata?.candidatesTokenCount,
+			totalTokens: response.usageMetadata?.totalTokenCount,
+		};
+		
+		if (call.name === "addTransaction" || call.name === "receiptParser") {
 			const normalized = FinancetSchema.safeParse(call.args);
 			if (!normalized.success) {
 				const errorMessage = normalized.error.issues
-					.map(issue => `${issue.path.join('.')}: ${issue.message}`)
-					.join(', ');
+				.map(issue => `${issue.path.join('.')}: ${issue.message}`)
+				.join(', ');
 				throw new AppError(`Invalid data format: ${errorMessage}`, 400);
-			}
-			// console.log('Normalized addTransaction data:', JSON.stringify(normalized.data));
-			if (prompt) {
-				return { intent: "add", data: normalized.data };
-			}
-			return normalized.data;
+			}			
+			return { intent: "add", 
+					 data: normalized.data, 
+					 usage
+					};
+			
 		}
 		else {
 			const normalized = QuerySchema.safeParse(call.args);
 			if (!normalized.success) {
 				const errorMessage = normalized.error.issues
-					.map(issue => `${issue.path.join('.')}: ${issue.message}`)
-					.join(', ');
+				.map(issue => `${issue.path.join('.')}: ${issue.message}`)
+				.join(', ');
 				throw new AppError(`Invalid data format: ${errorMessage}`, 400);
 			}
-			console.log('Normalized queryTransaction data:', JSON.stringify(normalized.data));
-			return { intent: "query", data: normalized.data };
-		}
-	
+			return { intent: "query", 
+					 data: normalized.data, 
+					 usage
+					};
+		}	
 
 	}
 }

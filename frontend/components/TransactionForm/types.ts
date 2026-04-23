@@ -7,7 +7,7 @@ export type { CategoryOption, Transaction, TransactionPayload };
 
 export interface TransactionFormProps {
   onSave: (transaction: TransactionPayload) => Promise<void> | void;
-  onClose: () => void;
+  onClose: (reason?: 'saved' | 'cancelled') => void;
   categoryOptions: CategoryOption[];
   onManageCategories?: (type: 'income' | 'expense') => void;
   mode?: 'create' | 'edit';

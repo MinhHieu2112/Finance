@@ -6,7 +6,7 @@ import { add_trans_by_receiptImg } from '../modules/aiAssistant/add_trans_by_rec
 import { mcp_tools } from '../modules/aiAssistant/MCP_tools/Controller';
 
 const nlpRouter = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
 
 nlpRouter.use(auth);
 
@@ -16,7 +16,7 @@ nlpRouter
 
 nlpRouter
 	.route('/add-by-receipt-image')
-	.post(upload.single('receipt'), add_trans_by_receiptImg);
+	.post(add_trans_by_receiptImg);
 
 nlpRouter
 	.route('/mcp-tools')

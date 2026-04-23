@@ -7,11 +7,7 @@ class add_query_nlpRepository {
 											  .select('name -_id')
 											  .lean<Array<{ name: string }>>();
 
-		const normalized = categories
-			.map((category) => category.name?.trim())
-			.filter((name): name is string => Boolean(name));
-
-		return Array.from(new Set(normalized));
+		return categories.map(c => c.name);
 	}
 }
 export default new add_query_nlpRepository();

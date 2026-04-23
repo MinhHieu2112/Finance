@@ -34,7 +34,7 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 			}
 
 			const mcpResponse = await api.post('/nlp/mcp-tools', formData);
-			const orchestrationData = mcpResponse.data as { result: unknown };
+			const orchestrationData = mcpResponse.data
 			// const receiptPayload = orchestrationData?.result?.data || orchestrationData?.result || orchestrationData;
 
 			const receiptData = await api.post<OCRResponse>(

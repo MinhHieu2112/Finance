@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { toast } from 'react-hot-toast';
 import { Button } from '../Button/Button';
 import { Sparkles, X } from 'lucide-react';
-import { api, getApiErrorMessage, getApiSuccessMessage } from '../../lib/api';
+import { api, getApiErrorMessage } from '../../lib/api';
 import type {
 	AddQueryResponse,
 	AIAssistantModalProps,
+	DraftPreparationResponse,
 	OrchestratorResponse,
 	QuerySummary,
-	Transaction,
 } from './types';
 
 const formatMoney = (value: number) => `${Math.round(value).toLocaleString('en-US')} VND`;
@@ -16,13 +15,12 @@ const formatMoney = (value: number) => `${Math.round(value).toLocaleString('en-U
 export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 	isOpen,
 	onClose,
-	onTransactionCreated,
+	onDraftsPrepared,
 }) => {
 	const [prompt, setPrompt] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [detectedIntent, setDetectedIntent] = useState<'add' | 'query' | null>(null);
-	const [createdTransactions, setCreatedTransactions] = useState<Transaction[]>([]);
 	const [queryResult, setQueryResult] = useState<QuerySummary | null>(null);
 
 	if (!isOpen) {
@@ -34,14 +32,13 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			setError(null);
 			setIsSubmitting(true);
 			setQueryResult(null);
-			setCreatedTransactions([]);
 			setDetectedIntent(null);
 
 			const formData = new FormData();
 			formData.append('prompt', prompt);
 
-			const orchestratorResponse = await api.post<OrchestratorResponse>('/nlp/mcp-tools', formData);
-			const orchestrationData = orchestratorResponse.data;
+			const mcpResponse = await api.post<OrchestratorResponse>('/nlp/mcp-tools', formData);
+			const orchestrationData = mcpResponse.data;
 
 			const addQueryResponse = await api.post<AddQueryResponse>('/nlp/add&query',
 				{ data: orchestrationData.result },
@@ -50,20 +47,16 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			const addQueryData = addQueryResponse.data;
 			setDetectedIntent(addQueryData.result.intent);
 
-			if (addQueryData.result.intent === 'add') {
-				const created = addQueryData.result.data || [];
-				setCreatedTransactions(created);
+			if (addQueryData.result.intent === 'add') {				
+				const draftData = addQueryData.result.data || [];
 
-				created.forEach((transaction) => {
-					onTransactionCreated(transaction);
-				});
-
-				if (!created.length) {
-					setError('AI did not create any transaction from this prompt.');
-				} else {
-					toast.success(getApiSuccessMessage(addQueryData, `Created ${created.length} transaction(s)`));
+				if (!draftData.length) {
+					setError('AI did not extract any transaction from this prompt.');
+					return;
 				}
 
+				onDraftsPrepared(draftData);
+				resetAndClose();
 				return;
 			}
 
@@ -88,7 +81,6 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 	const resetAndClose = () => {
 		setError(null);
 		setDetectedIntent(null);
-		setCreatedTransactions([]);
 		setQueryResult(null);
 		onClose();
 	};
@@ -125,22 +117,6 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 						{detectedIntent && (
 							<div className="rounded-lg border border-indigo-100 bg-indigo-50 text-indigo-700 px-3 py-2 text-sm">
 								Detected intent: {detectedIntent}
-							</div>
-						)}
-
-						{createdTransactions.length > 0 && (
-							<div className="rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm space-y-2">
-								<p className="font-semibold text-emerald-800">Transaction created ({createdTransactions.length})</p>
-								<div className="space-y-2 max-h-44 overflow-y-auto">
-									{createdTransactions.map((transaction) => (
-										<div key={transaction._id} className="rounded-lg border border-emerald-200 bg-white px-3 py-2">
-											<p className="font-medium text-gray-800">{transaction.description}</p>
-											<p className="text-xs text-gray-600">
-												{formatMoney(transaction.total_amount)} | {transaction.type} | {transaction.details[0]?.categoryName || 'Other'} | {transaction.date}
-											</p>
-										</div>
-									))}
-								</div>
 							</div>
 						)}
 

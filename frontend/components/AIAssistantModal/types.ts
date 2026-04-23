@@ -1,6 +1,20 @@
-import type { Transaction } from '../../types/Transactions';
+import type { Transaction, TransactionPayload } from '../../types/Transactions';
 
-export type { Transaction };
+export type { Transaction, TransactionPayload };
+
+interface AddIntentPayload {
+  intent: 'add';
+  data: {
+    transactions: unknown[];
+  };
+}
+
+interface QueryIntentPayload {
+  intent: 'query';
+  data: Record<string, unknown>;
+}
+
+type MCPIntentPayload = AddIntentPayload | QueryIntentPayload;
 
 export interface QuerySummary {
   answer: string;
@@ -11,7 +25,7 @@ export interface QuerySummary {
 
 export interface OrchestratorResponse {
   success: boolean;
-  result: Record<string, unknown>;
+  result: MCPIntentPayload;
 }
 
 export interface AddQueryResponse {
@@ -22,8 +36,13 @@ export interface AddQueryResponse {
   };
 }
 
+export interface DraftPreparationResponse {
+  success: boolean;
+  result: TransactionPayload[];
+}
+
 export interface AIAssistantModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onTransactionCreated: (transaction: Transaction) => void;
+  onDraftsPrepared: (drafts: TransactionPayload[]) => void;
 }

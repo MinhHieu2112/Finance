@@ -223,7 +223,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       setSubmitError(null);
       setIsSubmitting(true);
       await onSave(payload);
-      onClose();
+      onClose('saved');
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'Unable to save transaction. Please try again.');
     } finally {
@@ -242,7 +242,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       await onSave(pendingEditPayload);
       setIsEditConfirmOpen(false);
       setPendingEditPayload(null);
-      onClose();
+      onClose('saved');
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'Unable to update transaction. Please try again.');
     } finally {
@@ -253,7 +253,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl w-full max-w-6xl p-6 lg:p-8 relative shadow-2xl animate-fade-in-up max-h-[92vh] overflow-y-auto">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+        <button onClick={() => onClose('cancelled')} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
           <X size={24} />
         </button>
 
