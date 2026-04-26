@@ -1,26 +1,26 @@
 [
   {
-    "_id": "69da7b2989881a9633d074c3",
+    "_id": "69edd2270fbdde6cf2dc7d8a",
     "type": "expense",
     "name": "Living Expenses"
   },
   {
-    "_id": "69da7b2989881a9633d074c4",
+    "_id": "69edd2270fbdde6cf2dc7d8b",
     "type": "expense",
     "name": "Unexpected Expenses"
   },
   {
-    "_id": "69da7b2989881a9633d074c5",
+    "_id": "69edd2270fbdde6cf2dc7d8c",
     "type": "expense",
     "name": "Fixed Expenses"
   },
   {
-    "_id": "69da7b2989881a9633d074c6",
+    "_id": "69edd2270fbdde6cf2dc7d8d",
     "type": "expense",
     "name": "Investment & Savings"
   },
   {
-    "_id": "69da7b2989881a9633d074c7",
+    "_id": "69edd2270fbdde6cf2dc7d8e",
     "type": "income",
     "name": "Income"
   }

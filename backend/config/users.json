@@ -1,14 +1,14 @@
 [
   {
-    "_id": "69da7b2989881a9633d074c1",
+    "_id": "69edd2270fbdde6cf2dc7d88",
     "username": "tri",
     "email": "tri@gmail.com",
-    "password": "$2b$10$X6J3i/XGwiw85NVs6hnNP.a8q5n31W6lSdKKZ7eUsOqzkhUQWvaOm"
+    "password": "$2b$10$MyiyVEQEALXmn4iAWN1wA.zu7591ZpomXbc6Ckaz6DLGHGbvXAtNu"
   },
   {
-    "_id": "69da7b2989881a9633d074c2",
+    "_id": "69edd2270fbdde6cf2dc7d89",
     "username": "hieu",
     "email": "hieu@gmail.com",
-    "password": "$2b$10$X6J3i/XGwiw85NVs6hnNP.a8q5n31W6lSdKKZ7eUsOqzkhUQWvaOm"
+    "password": "$2b$10$MyiyVEQEALXmn4iAWN1wA.zu7591ZpomXbc6Ckaz6DLGHGbvXAtNu"
   }
 ]

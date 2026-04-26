@@ -6,14 +6,18 @@ import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil, ChevronDow
 export const TransactionList: React.FC<TransactionListProps> = ({ transactions, categoryOptions, onDelete, onEdit }) => {
   const ITEMS_PER_PAGE = 10;
 
+//--------------- Hàm định dạng ngày tháng ---------------
   const formatDisplayDate = (rawDate: string) => {
-    const parsedDate = new Date(rawDate);
-    if (Number.isNaN(parsedDate.getTime())) {
-      return rawDate;
-    }
+    const date = new Date(rawDate);
+    if (isNaN(date.getTime())) return rawDate;
 
-    const iso = parsedDate.toISOString();
-    return `${iso.slice(0, 10)} ${iso.slice(11, 16)}`;
+    return new Intl.DateTimeFormat('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(date);
   };
 
   const [searchTerm, setSearchTerm]         = useState('');
@@ -24,28 +28,24 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
   const [currentPage, setCurrentPage]       = useState(1);
   const [expandedIds, setExpandedIds]       = useState<string[]>([]);
 
+//--------------- Hàm nhóm category options theo catalogName và lọc theo typeFilter ----------------
   const groupedCategoryOptions = useMemo(() => {
-    if (!typeFilter) {
-      return [] as Array<{ catalogName: string; options: typeof categoryOptions }>;
-    }
+    if (!typeFilter) return [];
 
-    const groups = new Map<string, typeof categoryOptions>();
-    categoryOptions
-      .filter((category) => category.type === typeFilter)
-      .forEach((category) => {
-        const groupName = category.catalogName || 'Uncategorized Catalog';
-        const current = groups.get(groupName) || [];
-        current.push(category);
-        groups.set(groupName, current);
-      });
+    // Gom nhóm bằng reduce
+    const groups = categoryOptions
+      .filter(cat => cat.type === typeFilter)
+      .reduce((acc, cat) => {
+        const key = cat.catalogName || 'Uncategorized Catalog';
+        (acc[key] = acc[key] || []).push(cat);
+        return acc;
+      }, {} as Record<string, typeof categoryOptions>);
 
-    return Array.from(groups.entries())
-      .map(([catalogName, options]) => ({
-        catalogName,
-        options: options.sort((a, b) => a.name.localeCompare(b.name, 'en')),
-      }))
-      .sort((a, b) => a.catalogName.localeCompare(b.catalogName, 'en'));
-  }, [categoryOptions, typeFilter]);
+    // Chuyển object thành mảng và sắp xếp
+    return Object.entries(groups)
+      .map(([catalogName, options]) => ({ catalogName, options }))
+      .sort((a, b) => a.catalogName.localeCompare(b.catalogName));
+    }, [categoryOptions, typeFilter]);
 
   useEffect(() => {
     if (!categoryFilter) {
@@ -61,6 +61,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
     }
   }, [groupedCategoryOptions, categoryFilter]);
 
+  //--------------- Hàm lọc, tìm kiếm, sắp xếp transactions ----------------
   const filteredTransactions = useMemo(() => {
     return transactions
       .filter((t) => {
@@ -101,29 +102,25 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
   const pageStart = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
   const paginatedTransactions = filteredTransactions.slice(pageStart, pageStart + ITEMS_PER_PAGE);
 
-  const toggleExpandedRow = (transactionId: string) => {
-    setExpandedIds((prev) => {
-      if (prev.includes(transactionId)) {
-        return prev.filter((id) => id !== transactionId);
-      }
 
-      return [...prev, transactionId];
-    });
+  const toggleExpandedRow = (id: string) => {
+    setExpandedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800">Recent Transactions</h3>
-          <p className="text-sm text-gray-500">Found {filteredTransactions.length} results</p>
+          <h3 className="text-lg font-semibold text-gray-800">Giao dịch gần đây</h3>
+          <p className="text-sm text-gray-500">Tìm thấy {filteredTransactions.length} kết quả</p>
         </div>
 
+        {/* Search input */ }
         <div className="relative w-full md:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type        = "text"
-            placeholder = "Search by description..."
+            placeholder = "Tìm kiếm thông tin..."
             value       = {searchTerm}
             onChange    = {(e) => setSearchTerm(e.target.value)}
             className   = "w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
@@ -131,82 +128,96 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
         </div>
       </div>
 
-      <div className="px-6 py-4 bg-gray-50 border-b border-gray-100 flex flex-wrap gap-3 items-center">
-        <div className="flex items-center gap-2 text-gray-500 text-sm font-medium mr-2">
-          <Filter size={16} />
-          <span>Filters:</span>
+        {/* Filter section */ }
+        <div className="px-6 py-4 bg-gray-50/50 border-b border-gray-100">
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Nhãn bộ lọc */}
+            <div className="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-wider">
+              <Filter size={14} />
+              <span>Bộ lọc</span>
+            </div>
+
+            {/* Nhóm Select (Loại & Danh mục) */}
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <select
+                  value={typeFilter}
+                  onChange={(e) => {
+                    setTypeFilter(e.target.value as TransactionType | '');
+                    setCategoryFilter('');
+                  }}
+                  className="appearance-none pl-3 pr-8 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all cursor-pointer hover:bg-gray-50 min-w-[120px]"
+                >
+                  <option value="">Tất cả loại</option>
+                  <option value={TransactionType.EXPENSE}>Chi phí</option>
+                  <option value={TransactionType.INCOME}>Thu nhập</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              </div>
+
+              <div className="relative">
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  disabled={!typeFilter || groupedCategoryOptions.length === 0}
+                  className={`appearance-none pl-3 pr-8 py-2 border rounded-lg text-sm transition-all outline-none min-w-[160px] ${
+                    !typeFilter 
+                      ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed' 
+                      : 'bg-white border-gray-200 text-gray-700 cursor-pointer hover:bg-gray-50 focus:ring-2 focus:ring-primary/20 focus:border-primary'
+                  }`}
+                >
+                  <option value="">{typeFilter ? 'Tất cả danh mục' : 'Chọn loại trước'}</option>
+                  {groupedCategoryOptions.map((group) => (
+                    <optgroup key={group.catalogName} label={group.catalogName}>
+                      {group.options.map((category) => (
+                        <option key={category._id} value={category.name}>{category.name}</option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+                <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Nhóm Ngày tháng */}
+            <div className="flex items-center gap-1 bg-white p-1 border border-gray-200 rounded-lg shadow-sm">
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="px-2 py-1 text-sm text-gray-600 bg-transparent focus:outline-none border-none"
+              />
+              <span className="text-gray-300">→</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="px-2 py-1 text-sm text-gray-600 bg-transparent focus:outline-none border-none"
+              />
+            </div>
+
+            {/* Nút Xóa bộ lọc */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors ml-auto"
+              >
+                <Trash2 size={14} />
+                <span>Xóa lọc</span>
+              </button>
+            )}
+          </div>
         </div>
-
-        <select
-          value     = {typeFilter}
-          onChange  = {(e) => {
-            setTypeFilter(e.target.value as TransactionType | '');
-            setCategoryFilter('');
-          }}
-          className = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer hover:border-gray-300 transition-colors"
-        >
-          <option value="">All types</option>
-          <option value={TransactionType.EXPENSE}>Expense</option>
-          <option value={TransactionType.INCOME}>Income</option>
-        </select>
-
-        <select
-          value     = {categoryFilter}
-          onChange  = {(e) => setCategoryFilter(e.target.value)}
-          disabled  = {!typeFilter || groupedCategoryOptions.length === 0}
-          className = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer hover:border-gray-300 transition-colors"
-        >
-          <option value="">{typeFilter ? 'All categories' : 'Select type first'}</option>
-          {groupedCategoryOptions.map((group) => (
-            <optgroup key={group.catalogName} label={group.catalogName}>
-              {group.options.map((category) => (
-                <option key={category._id} value={category.name}>
-                  {category.name}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
-
-        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-          <input
-            type="date"
-            value       = {startDate}
-            onChange    = {(e) => setStartDate(e.target.value)}
-            className   = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-300 transition-colors"
-            placeholder = "From date"
-            title       = "From date"
-          />
-          <span className="text-gray-400 hidden sm:inline">-</span>
-          <input
-            type        = "date"
-            value       = {endDate}
-            onChange    = {(e) => setEndDate(e.target.value)}
-            className   = "px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-300 transition-colors"
-            placeholder = "To date"
-            title       = "To date"
-          />
-        </div>
-
-        {hasActiveFilters && (
-          <button
-            onClick={clearFilters}
-            className="ml-auto text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1 px-3 py-1 rounded hover:bg-red-50 transition-colors"
-          >
-            <X size={16} /> Clear filters
-          </button>
-        )}
-      </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm text-gray-600">
           <thead className="bg-white border-b border-gray-100 text-xs uppercase font-medium text-gray-500">
             <tr>
-              <th className="px-6 py-4">Date</th>
-              <th className="px-6 py-4">Type</th>
-              <th className="px-6 py-4">Description</th>
-              <th className="px-6 py-4 text-right">Total Amount</th>
-              <th className="px-6 py-4 text-center">Actions</th>
+              <th className="px-6 py-4">Thời gian</th>
+              <th className="px-6 py-4">Phân loại</th>
+              <th className="px-6 py-4">Chi tiết</th>
+              <th className="px-6 py-4 text-right">Tổng giá trị</th>
+              <th className="px-6 py-4 text-center">Hành động</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -254,7 +265,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                             onEdit(t);
                           }}
                           className="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-full"
-                          title="Edit transaction"
+                          title="Chỉnh sửa"
                         >
                           <Pencil size={16} />
                         </button>
@@ -264,7 +275,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                             onDelete(t._id);
                           }}
                           className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
-                          title="Delete transaction"
+                          title="Xóa"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -277,28 +288,28 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                         <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                             <div>
-                              <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400">Type</p>
+                              <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400">Phân loại</p>
                               <p className="text-sm font-medium text-gray-700 capitalize">{t.type}</p>
                             </div>
                             <div>
-                              <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400">Frequency</p>
+                              <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400">Tần suất</p>
                               <p className="text-sm font-medium text-gray-700">{t.frequency}</p>
                             </div>
                             <div>
-                              <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400">Last updated</p>
+                              <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400">Cập nhật lần cuối</p>
                               <p className="text-sm font-medium text-gray-700">{formatDisplayDate(t.updatedAt || t.createdAt || t.date)}</p>
                             </div>
                           </div>
 
                           <div>
                             <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400 mb-2">
-                              Transaction Details
+                              Chi tiết giao dịch
                             </p>
                             <div className="hidden sm:grid sm:grid-cols-12 gap-2 px-3 py-1 text-[11px] uppercase tracking-wide font-semibold text-gray-400">
-                              <span className="sm:col-span-4">Name</span>
-                              <span className="sm:col-span-4">Categories</span>
-                              <span className="sm:col-span-2">Quantity</span>
-                              <span className="sm:col-span-2 text-right">Amount</span>
+                              <span className="sm:col-span-4">Tên</span>
+                              <span className="sm:col-span-4">Danh mục</span>
+                              <span className="sm:col-span-2">Số lượng</span>
+                              <span className="sm:col-span-2 text-right">Tổng</span>
                             </div>
                             <div className="space-y-2">
                               {t.details.map((detail, index) => (
@@ -336,7 +347,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
             {filteredTransactions.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
-                  {hasActiveFilters ? 'No transactions match your current filters.' : 'No transactions yet. Click "Add Transaction" to get started.'}
+                  {hasActiveFilters ? 'Không có giao dịch nào phù hợp với bộ lọc hiện tại của bạn!' : 'Chưa có giao dịch nào. Nhấp vào "Thêm giao dịch" để bắt đầu.'}
                 </td>
               </tr>
             )}
