@@ -46,7 +46,7 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 			onDraftPrepared(data.result[0] as TransactionPayload);
 			resetAndClose();
 		} catch (submitError) {
-			setError(getApiErrorMessage(submitError, 'Cannot process this receipt image right now.'));
+			setError(getApiErrorMessage(submitError, 'Không thể xử lý hóa đơn này ngay bãy giờ.'));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -64,8 +64,8 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 							<ScanText size={18} />
 						</div>
 						<div>
-							<h2 className="text-lg font-bold text-gray-900">Receipt OCR</h2>
-							<p className="text-sm text-gray-500">Upload receipt image to pre-fill a transaction form for review.</p>
+						<h2 className="text-lg font-bold text-gray-900">Quét Hóa Đơn</h2>
+						<p className="text-sm text-gray-500">Tải lên hóa đơn để tự đông điền dị biểu mẫu giao dịch cho phép duyệt.</p>
 						</div>
 					</div>
 					<button type="button" onClick={resetAndClose} className="text-gray-400 hover:text-gray-600" aria-label="Close">
@@ -83,9 +83,8 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 
 					<Button onClick={handleReceiptOCR} isLoading={isSubmitting}>
 						<ScanText size={16} />
-						Extract And Review Transaction
+						Trích xuất và Xem lại Giao dịch
 					</Button>
-
 					{error && (
 						<div className="rounded-lg border border-red-100 bg-red-50 text-red-700 px-3 py-2 text-sm">
 							{error}
@@ -94,7 +93,7 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 				</div>
 
 				<div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-					<Button variant="secondary" onClick={resetAndClose}>Close</Button>
+					<Button variant="secondary" onClick={resetAndClose}>Đóng</Button>
 				</div>
 			</div>
 		</div>

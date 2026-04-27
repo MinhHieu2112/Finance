@@ -28,13 +28,13 @@ const generateMockData = async () => {
   // ================= CATALOGS =================
   const catalogs = [
     // expense
-    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Living Expenses' },
-    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Unexpected Expenses' },
-    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Fixed Expenses' },
-    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Investment & Savings' },
+    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Chi phí sinh hoạt' },
+    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Chi phí bất ngờ' },
+    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Chi phí cố định' },
+    { _id: new mongoose.Types.ObjectId(), type: 'expense', name: 'Đầu tư & Tiết kiệm' },
 
     // income
-    { _id: new mongoose.Types.ObjectId(), type: 'income', name: 'Income' }
+    { _id: new mongoose.Types.ObjectId(), type: 'income', name: 'Doanh thu' }
   ];
 
   const getCatalog = (name: string) =>
@@ -43,13 +43,13 @@ const generateMockData = async () => {
   // ================= CATEGORY TEMPLATE =================
   const categorySeed = [
     // Expense
-    { catalog: 'Living Expenses', type: 'expense', names: ['groceries', 'supermarket', 'food', 'transportation'] },
-    { catalog: 'Unexpected Expenses', type: 'expense', names: ['shopping', 'entertainment', 'beauty', 'healthcare', 'charity'] },
-    { catalog: 'Fixed Expenses', type: 'expense', names: ['bills', 'housing', 'family'] },
-    { catalog: 'Investment & Savings', type: 'expense', names: ['investment', 'education'] },
+    { catalog: 'Chi phí sinh hoạt', type: 'expense', names: ['thực phẩm', 'siêu thị', 'ăn uống', 'giao thông'] },
+    { catalog: 'Chi phí bất ngờ', type: 'expense', names: ['mua sắm', 'giải trí', 'làm đẹp', 'y tế', 'từ thiện'] },
+    { catalog: 'Chi phí cố định', type: 'expense', names: ['hóa đơn', 'nhà ở', 'gia đình'] },
+    { catalog: 'Đầu tư & Tiết kiệm', type: 'expense', names: ['đầu tư', 'giáo dục'] },
 
     // Income
-    { catalog: 'Income', type: 'income', names: ['debt_collection', 'business', 'profit', 'bonus', 'allowance', 'salary'] }
+    { catalog: 'Doanh thu', type: 'income', names: ['thu hồi nợ', 'kinh doanh', 'lợi nhuận', 'thưởng', 'trợ cấp', 'lương'] }
   ];
 
   // ================= CATEGORIES =================
@@ -94,13 +94,13 @@ const generateMockData = async () => {
     // ===== Monthly Salary =====
     if (date.getDate() === 1) {
       const salary = categories.find(
-        c => c.userId.equals(userId) && c.name === 'salary'
+        c => c.userId.equals(userId) && c.name === 'lương'
       );
 
       transactions.push({
         _id: new mongoose.Types.ObjectId(),
         userId,
-        description: `Salary ${date.getMonth() + 1}/${date.getFullYear()}`,
+        description: `Lương tháng ${date.getMonth() + 1}/${date.getFullYear()}`,
         type: 'income',
         frequency: 'monthly',
         date: dateObj,
@@ -122,7 +122,7 @@ const generateMockData = async () => {
     transactions.push({
       _id: new mongoose.Types.ObjectId(),
       userId,
-      description: `Expense ${cat.name}`,
+      description: `Chi phí ${cat.name}`,
       type: 'expense',
       frequency: frequencies[Math.floor(Math.random() * frequencies.length)],
       date: dateObj,

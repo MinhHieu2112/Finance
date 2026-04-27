@@ -51,8 +51,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 				const draftData = addQueryData.result.data || [];
 
 				if (!draftData.length) {
-					setError('AI did not extract any transaction from this prompt.');
-					return;
+								setError('AI không trích xuất được bất kỳ giao dịch nào từ lần này.');
 				}
 
 				onDraftsPrepared(draftData);
@@ -64,15 +63,15 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			const total = matched.reduce((sum, transaction) => sum + (Number(transaction.total_amount) || 0), 0);
 			setQueryResult({
 				answer: matched.length
-					? `Found ${matched.length} transaction(s), total ${formatMoney(total)}.`
-					: 'No matching transaction found for this query.',
+					? `Tìm thấy ${matched.length} giao dịch, tổng cộng ${formatMoney(total)}.`
+					: 'Không tìm thấy giao dịch nào!.',
 				total,
 				count: matched.length,
 				transactions: matched,
 			});
 
 		} catch (submitError) {
-			setError(getApiErrorMessage(submitError, 'Cannot process this prompt right now.'));
+			setError(getApiErrorMessage(submitError, 'Hết lượt hỏi ! Vui lòng nâng cấp lên Pro trên AI Assistant.'));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -94,8 +93,8 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 							<Sparkles size={18} />
 						</div>
 						<div>
-							<h2 className="text-lg font-bold text-gray-900">AI Assistant</h2>
-							<p className="text-sm text-gray-500">One prompt for add transaction or financial query</p>
+						<h2 className="text-lg font-bold text-gray-900">Trợ lý AI</h2>
+						<p className="text-sm text-gray-500">Một lờ nhập cho thao tác thêm giao dịch hoặc truy vấn tài chính</p>
 						</div>
 					</div>
 					<button type="button" onClick={resetAndClose} className="text-gray-400 hover:text-gray-600" aria-label="Close">
@@ -109,10 +108,10 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 							value={prompt}
 							onChange={(event) => setPrompt(event.target.value)}
 							rows={4}
-							placeholder="Hom nay chi 50k an sang | Toi da chi bao nhieu cho cafe trong thang 12"
+							placeholder="Hôm nay chi 50k ăn sáng | Tôi đã chi bao nhiều cho cafe trong tháng 12"
 							className="w-full rounded-xl border border-gray-200 p-3 focus:outline-none focus:ring-2 focus:ring-indigo-300"
 						/>
-						<Button onClick={handleUnifiedPrompt} isLoading={isSubmitting}>Send Prompt</Button>
+<Button onClick={handleUnifiedPrompt} isLoading={isSubmitting}>Gửi yêu cầu</Button>
 
 						{detectedIntent && (
 							<div className="rounded-lg border border-indigo-100 bg-indigo-50 text-indigo-700 px-3 py-2 text-sm">
@@ -122,17 +121,17 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 
 						{queryResult && (
 							<div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm">
-								<div>
-									<p className="font-semibold text-gray-800">Answer</p>
-									<p className="text-gray-700 mt-1">{queryResult.answer}</p>
-								</div>
-								<div className="grid grid-cols-2 gap-2 text-xs">
-									<div className="rounded-lg border border-gray-200 bg-white p-2">Total: {formatMoney(queryResult.total)}</div>
-									<div className="rounded-lg border border-gray-200 bg-white p-2">Matches: {queryResult.count}</div>
-								</div>
-								{queryResult.transactions.length > 0 && (
-									<div className="space-y-2">
-										<p className="font-semibold text-gray-700">Matched transactions</p>
+							<div className="text-sm">
+								<p className="font-semibold text-gray-800">Câu trả lời</p>
+								<p className="text-gray-700 mt-1">{queryResult.answer}</p>
+							</div>
+							<div className="grid grid-cols-2 gap-2 text-xs">
+								<div className="rounded-lg border border-gray-200 bg-white p-2">Tổng: {formatMoney(queryResult.total)}</div>
+								<div className="rounded-lg border border-gray-200 bg-white p-2">Số giao dịch: {queryResult.count}</div>
+							</div>
+							{queryResult.transactions.length > 0 && (
+								<div className="space-y-2">
+									<p className="font-semibold text-gray-700">Giao dịch phù hợp</p>
 										<div className="space-y-2 max-h-44 overflow-y-auto">
 											{queryResult.transactions.map((transaction) => (
 												<div key={transaction._id} className="rounded-lg border border-gray-200 bg-white px-3 py-2">

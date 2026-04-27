@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { LoginPage } from './pages/LoginPage/LoginPage';
 import { DashboardPage } from './pages/DashboardPage/DashboardPage';
 import { AnalysisPage } from './pages/AnalysisPage/AnalysisPage';
+import { ProfilePage } from './pages/ProfilePage/ProfilePage';
 import Sidebar from './components/Sidebar/Sidebar';
 import { Navbar } from './components/Navbar/Navbar';
 import { Footer } from './components/Footer/Footer';
@@ -42,7 +43,7 @@ const App: React.FC = () => {
       {!user ? (
         <LoginPage onLogin={handleLogin} />
       ) : (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 dark:bg-slate-900 transition-colors">
           <div className="flex min-h-screen">
             <Sidebar />
             <div className="flex-1 min-w-0 flex flex-col">
@@ -52,6 +53,7 @@ const App: React.FC = () => {
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/dashboard" element={<DashboardPage user={user} />} />
                   <Route path="/analysis" element={<AnalysisPage user={user} />} />
+                  <Route path="/profile" element={<ProfilePage user={user} />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
               </main>

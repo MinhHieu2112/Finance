@@ -226,7 +226,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       await onSave(payload);
       onClose('saved');
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'Unable to save transaction. Please try again.');
+      setSubmitError(error instanceof Error ? error.message : 'Không thể lưu giao dịch. Vui lòng thử lại.');
     } finally {
       setIsSubmitting(false);
     }
@@ -245,7 +245,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       setPendingEditPayload(null);
       onClose('saved');
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'Unable to update transaction. Please try again.');
+      setSubmitError(error instanceof Error ? error.message : 'Không thể cập nhật giao dịch. Vui lòng thử lại.');
     } finally {
       setIsSubmitting(false);
     }

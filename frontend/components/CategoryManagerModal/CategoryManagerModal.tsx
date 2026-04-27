@@ -5,8 +5,8 @@ import { ToastModal } from '../ToastModal/ToastModal';
 import type { Category, CategoryManagerModalProps, CategoryType } from './types';
 
 const CATEGORY_TYPE_LABEL: Record<CategoryType, string> = {
-  income: 'Income',
-  expense: 'Expense',
+  income: 'Thu nhập',
+  expense: 'Chi phí',
 };
 
 export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
@@ -105,7 +105,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
       await onCreate({ name, description, type: activeType, catalogId: createCatalogId || undefined });
       resetCreateForm();
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Unable to create category. Please try again.');
+      setError(submitError instanceof Error ? submitError.message : 'Không thể tạo danh mục. Vui lòng thử lại.');
     } finally {
       setIsSubmitting(false);
     }
@@ -142,7 +142,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
         }
       }
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Unable to complete category action. Please try again.');
+      setError(submitError instanceof Error ? submitError.message : 'Không thể hoàn tất hành động. Vui lòng thử lại.');
     } finally {
       setIsSubmitting(false);
       setPendingAction(null);
@@ -158,7 +158,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
           <X size={22} />
         </button>
 
-        <h2 className="text-xl font-bold mb-5 text-gray-800">Manage Categories</h2>
+        <h2 className="text-xl font-bold mb-5 text-gray-800">Quản lý Danh mục</h2>
 
         <div className="mb-4 inline-flex rounded-lg border border-gray-200 p-1 bg-gray-50">
           <button
@@ -166,14 +166,14 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             className={`px-3 py-1.5 text-sm rounded-md ${activeType === 'expense' ? 'bg-white shadow text-gray-800' : 'text-gray-500'}`}
             onClick={() => onTypeChange('expense')}
           >
-            Expense
+            Chi phí
           </button>
           <button
             type="button"
             className={`px-3 py-1.5 text-sm rounded-md ${activeType === 'income' ? 'bg-white shadow text-gray-800' : 'text-gray-500'}`}
             onClick={() => onTypeChange('income')}
           >
-            Income
+            Thu nhập
           </button>
         </div>
 
@@ -201,7 +201,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             onChange={(event) => setCreateCatalogId(event.target.value)}
             className="md:col-span-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white"
           >
-            {!catalogOptions.length && <option value="">No catalogs available</option>}
+            {!catalogOptions.length && <option value="">Không có danh mục nào</option>}
             {catalogOptions.map((option) => (
               <option key={option.catalogId} value={option.catalogId}>
                 {option.catalogName}
@@ -212,7 +212,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Category name"
+            placeholder="Tên danh mục"
             className="md:col-span-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
           />
           {/* <input
@@ -223,7 +223,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             className="md:col-span-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
           /> */}
           <div className="md:col-span-3">
-            <Button type="submit" isLoading={isSubmitting}>Add {CATEGORY_TYPE_LABEL[activeType]} Category</Button>
+            <Button type="submit" isLoading={isSubmitting}>Thêm Danh mục {CATEGORY_TYPE_LABEL[activeType]}</Button>
           </div>
         </form>
 
@@ -231,10 +231,10 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
           <table className="w-full text-sm text-left text-gray-700">
             <thead className="bg-gray-50 text-xs uppercase text-gray-500">
               <tr>
-                <th className="px-4 py-3">Catalog</th>
-                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Danh mục chính</th>
+                <th className="px-4 py-3">Tên</th>
                 {/* <th className="px-4 py-3">Description</th> */}
-                <th className="px-4 py-3 text-center">Actions</th>
+                <th className="px-4 py-3 text-center">Hành động</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -272,8 +272,8 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                       <div className="flex items-center justify-center gap-2">
                         {isEditing ? (
                           <>
-                            <Button type="button" variant="secondary" onClick={cancelEdit} disabled={isSubmitting}>Cancel</Button>
-                            <Button type="button" onClick={handleSaveEdit} isLoading={isSubmitting}>Save</Button>
+                            <Button type="button" variant="secondary" onClick={cancelEdit} disabled={isSubmitting}>Hủy</Button>
+                            <Button type="button" onClick={handleSaveEdit} isLoading={isSubmitting}>Lưu</Button>
                           </>
                         ) : (
                           <>
@@ -281,7 +281,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                               type="button"
                               onClick={() => startEdit(category)}
                               className="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-full"
-                              title="Edit category"
+                              title="Chỉnh sửa danh mục"
                             >
                               <Pencil size={16} />
                             </button>
@@ -289,7 +289,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                               type="button"
                               onClick={() => requestDelete(category._id)}
                               className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-full"
-                              title="Delete category"
+                              title="Xóa danh mục"
                             >
                               <Trash2 size={16} />
                             </button>

@@ -4,6 +4,7 @@ import auth from '../middleware/Auth';
 import { add_query_nlp } from '../modules/aiAssistant/add_query_nlp/Controller';
 import { add_trans_by_receiptImg } from '../modules/aiAssistant/add_trans_by_receiptImg/Controller';
 import { mcp_tools } from '../modules/aiAssistant/MCP_tools/Controller';
+import { getInsights } from '../modules/aiAssistant/insights/Controller';
 
 const nlpRouter = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -21,5 +22,9 @@ nlpRouter
 nlpRouter
 	.route('/mcp-tools')
 	.post(upload.single('receipt'), mcp_tools);
+
+nlpRouter
+	.route('/insights')
+	.get(getInsights);
 
 export default nlpRouter;

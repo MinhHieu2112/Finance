@@ -6,6 +6,7 @@ import analysisRoutes from './routes/analysisRoutes';
 import userRoutes from './routes/userRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import nlpRoutes from './routes/nlpRoutes';
+import notificationRoutes from './routes/notificationRoutes';
 import AppError from './utils/appError';
 import globalErrorHandler from './controllers/errorController';
 
@@ -33,6 +34,7 @@ app.use('/api/analysis', analysisRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/nlp', nlpRoutes);
+app.use('/api/notifications', notificationRoutes);
 app.get('/', (req, res) => {
   res.send('API working');
 });

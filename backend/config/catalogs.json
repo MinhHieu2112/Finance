@@ -1,27 +1,27 @@
 [
   {
-    "_id": "69edd2270fbdde6cf2dc7d8a",
+    "_id": "69ef09255a23b6856c9d5cd3",
     "type": "expense",
-    "name": "Living Expenses"
+    "name": "Chi phí sinh hoạt"
   },
   {
-    "_id": "69edd2270fbdde6cf2dc7d8b",
+    "_id": "69ef09255a23b6856c9d5cd4",
     "type": "expense",
-    "name": "Unexpected Expenses"
+    "name": "Chi phí bất ngờ"
   },
   {
-    "_id": "69edd2270fbdde6cf2dc7d8c",
+    "_id": "69ef09255a23b6856c9d5cd5",
     "type": "expense",
-    "name": "Fixed Expenses"
+    "name": "Chi phí cố định"
   },
   {
-    "_id": "69edd2270fbdde6cf2dc7d8d",
+    "_id": "69ef09255a23b6856c9d5cd6",
     "type": "expense",
-    "name": "Investment & Savings"
+    "name": "Đầu tư & Tiết kiệm"
   },
   {
-    "_id": "69edd2270fbdde6cf2dc7d8e",
+    "_id": "69ef09255a23b6856c9d5cd7",
     "type": "income",
-    "name": "Income"
+    "name": "Doanh thu"
   }
 ]

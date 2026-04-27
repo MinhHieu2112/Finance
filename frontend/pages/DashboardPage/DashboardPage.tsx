@@ -3,7 +3,6 @@ import { toast } from 'react-hot-toast';
 import { SummaryCards } from '../../components/SummaryCards/SummaryCards';
 import { TransactionList } from '../../components/TransactionList/TransactionList';
 import { TransactionForm } from '../../components/TransactionForm/TransactionForm';
-import { Charts } from '../../components/Charts/Charts';
 import { CategoryManagerModal } from '../../components/CategoryManagerModal/CategoryManagerModal';
 import { AIAssistantModal } from '../../components/AIAssistantModal/AIAssistantModal';
 import { ReceiptOCRPanel } from '../../components/ReceiptOCRPanel/ReceiptOCRPanel';
@@ -74,7 +73,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const createTransaction = async (newTx: TransactionPayload): Promise<Transaction> => {
     const response = await api.post<SaveTransactionResponse>('/transactions/add', newTx);
     const data = response.data;
-    toast.success(getApiSuccessMessage(data, 'Transaction added successfully'));
+    toast.success(getApiSuccessMessage(data, 'Giao dịch đã được thêm thành công'));
     return data.transaction;
   };
 
@@ -87,7 +86,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     const response = await api.put<SaveTransactionResponse>(`/transactions/edit/${id}`, updatedTx);
     const data = response.data;
     setTransactions((prev) => prev.map((t) => (t._id === id ? data.transaction : t)));
-    toast.success(getApiSuccessMessage(data, 'Transaction updated successfully'));
+    toast.success(getApiSuccessMessage(data, 'Giao dịch đã được cập nhật thành công'));
   };
 
   const handleSaveTransaction = async (tx: TransactionPayload) => {
@@ -104,9 +103,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       const response = await api.post<SaveCategoryResponse>('/categories/add', payload);
       const data = response.data;
       setCategories((prev) => [data.category, ...prev.filter((item) => item._id !== data.category._id)]);
-      toast.success(getApiSuccessMessage(data, 'Category added successfully'));
+      toast.success(getApiSuccessMessage(data, 'Danh mục đã được thêm thành công'));
     } catch (error) {
-      throw new Error(getApiErrorMessage(error, 'Cannot create category'));
+      throw new Error(getApiErrorMessage(error, 'Không thể tạo danh mục'));
     }
   };
 
@@ -115,9 +114,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       const response = await api.put<SaveCategoryResponse>(`/categories/edit/${id}`, payload);
       const data = response.data;
       setCategories((prev) => prev.map((item) => (item._id === id ? data.category : item)));
-      toast.success(getApiSuccessMessage(data, 'Category updated successfully'));
+      toast.success(getApiSuccessMessage(data, 'Danh mục đã được cập nhật thành công'));
     } catch (error) {
-      throw new Error(getApiErrorMessage(error, 'Cannot update category'));
+      throw new Error(getApiErrorMessage(error, 'Không thể cập nhật danh mục'));
     }
   };
 
@@ -125,9 +124,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     try {
       const response = await api.delete('/categories/delete/' + id);
       setCategories((prev) => prev.filter((item) => item._id !== id));
-      toast.success(getApiSuccessMessage(response.data, 'Category deleted successfully'));
+      toast.success(getApiSuccessMessage(response.data, 'Danh mục đã được xóa thành công'));
     } catch (error) {
-      throw new Error(getApiErrorMessage(error, 'Cannot delete category'));
+      throw new Error(getApiErrorMessage(error, 'Không thể xóa danh mục'));
     }
   };
 
@@ -210,9 +209,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       setDeleteTransactionError(null);
       const response = await api.delete('/transactions/delete/' + targetTransactionId);
       setTransactions((prev) => prev.filter((t) => t._id !== targetTransactionId));
-      toast.success(getApiSuccessMessage(response.data, 'Transaction deleted successfully'));
+      toast.success(getApiSuccessMessage(response.data, 'Giao dịch đã xóa thành công'));
     } catch (error) {
-      setDeleteTransactionError(getApiErrorMessage(error, 'Cannot delete transaction'));
+      setDeleteTransactionError(getApiErrorMessage(error, 'Không thể xóa giao dịch'));
     } finally {
       setPendingDeleteTransactionId(null);
     }
@@ -242,10 +241,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900"> 
-              Overview
+              Tổng quan
             </h1>
             <p className="text-gray-500 text-sm">
-              A quick snapshot of your financial health
+              Bức tranh nhanh về sức khoẻ tài chính của bạn
             </p>
           </div>
           <div className="flex gap-3 w-full sm:w-auto">
@@ -255,7 +254,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
               className = "flex-1 sm:flex-none"
             >
               <ScanText size={18} />
-              Receipt OCR
+              Quét hóa đơn
             </Button>
             <Button 
               variant   = "secondary" 
@@ -263,7 +262,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
               className = "flex-1 sm:flex-none"
             >
               <Sparkles size={18} className="text-purple-500" />
-              BOT Assistant
+              Trợ lý AI
             </Button>
             <Button
               variant   = "secondary"
@@ -271,21 +270,20 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
               className = "flex-1 sm:flex-none"
             >
               <Tags size={18} />
-              Categories
+              Danh mục
             </Button>
             <Button 
               onClick   = {openCreateForm}
               className = "flex-1 sm:flex-none"
             >
               <Plus size={18} />
-              Add Transaction
+              Thêm giao dịch
             </Button>
           </div>
         </div>
 
         {/* Widgets */}
         <SummaryCards    transactions = {transactions} />
-        <Charts          transactions = {transactions} />
         <TransactionList
           transactions={transactions}
           categoryOptions={categoryFormOptions}
@@ -332,10 +330,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       <ToastModal
         isOpen={Boolean(pendingDeleteTransactionId)}
         type="confirm"
-        title="Confirm transaction deletion"
-        message="Are you sure you want to delete this transaction?"
-        confirmText="Delete"
-        cancelText="Cancel"
+        title="Xác nhận xóa giao dịch"
+        message="Bạn có chắc chắn muốn xóa giao dịch này không?"
+        confirmText="Xóa"
+        cancelText="Hủy"
         onClose={() => setPendingDeleteTransactionId(null)}
         onConfirm={confirmDeleteTransaction}
       />
@@ -343,7 +341,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       <ToastModal
         isOpen={Boolean(deleteTransactionError)}
         type="error"
-        title="Delete failed"
+        title="Xóa thất bại"
         message={deleteTransactionError || ''}
         onClose={() => setDeleteTransactionError(null)}
       />
