@@ -1,4 +1,4 @@
-import transactionService from './Serviec';
+import transactionService from './Service';
 import { type Request, type Response, type NextFunction } from 'express';
 
 const addTransaction = async (req: Request, res: Response, next: NextFunction) => {

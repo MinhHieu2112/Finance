@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import forcastingTrendService from './Serviec';
+import forcastingTrendService from './Service';
 
 const getForcastingTrend = async (_req: Request, res: Response, next: NextFunction) => {
 	try {

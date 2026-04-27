@@ -71,10 +71,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   }, [user.token]);
 
   const createTransaction = async (newTx: TransactionPayload): Promise<Transaction> => {
-    const response = await api.post<SaveTransactionResponse>('/transactions/add', newTx);
-    const data = response.data;
-    toast.success(getApiSuccessMessage(data, 'Giao dịch đã được thêm thành công'));
-    return data.transaction;
+    try {
+      const response = await api.post<SaveTransactionResponse>('/transactions/add', newTx);
+      const data = response.data;
+      toast.success(getApiSuccessMessage(data, 'Giao dịch đã được thêm thành công'));
+      return data.transaction;
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error, 'Không thể thêm giao dịch'));
+    }
   };
 
   const addTransaction = async (newTx: TransactionPayload) => {
@@ -83,10 +87,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   };
 
   const updateTransaction = async (id: string, updatedTx: TransactionPayload) => {
-    const response = await api.put<SaveTransactionResponse>(`/transactions/edit/${id}`, updatedTx);
-    const data = response.data;
-    setTransactions((prev) => prev.map((t) => (t._id === id ? data.transaction : t)));
-    toast.success(getApiSuccessMessage(data, 'Giao dịch đã được cập nhật thành công'));
+    try {
+      const response = await api.put<SaveTransactionResponse>(`/transactions/edit/${id}`, updatedTx);
+      const data = response.data;
+      setTransactions((prev) => prev.map((t) => (t._id === id ? data.transaction : t)));
+      toast.success(getApiSuccessMessage(data, 'Giao dịch đã được cập nhật thành công'));
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error, 'Không thể cập nhật giao dịch'));
+    }
   };
 
   const handleSaveTransaction = async (tx: TransactionPayload) => {

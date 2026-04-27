@@ -16,19 +16,18 @@ import {
 
 const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6366F1'];
 
-type Period = '7d' | '30d' | '90d' | '180d' | 'all';
+type Period = 'week' | 'month' | 'year' | 'custom';
 
 const PERIODS: { label: string; value: Period }[] = [
-  { label: '7 ngày',   value: '7d'   },
-  { label: '30 ngày',  value: '30d'  },
-  { label: '3 tháng',  value: '90d'  },
-  { label: '6 tháng',  value: '180d' },
-  { label: 'Tất cả',   value: 'all'  },
+  { label: '1 Tuần',  value: 'week'  },
+  { label: '1 Tháng', value: 'month' },
+  { label: '1 Năm',   value: 'year'  },
+  { label: 'Tùy chỉnh', value: 'custom' },
 ];
 
 const getPeriodDays = (period: Period): number | null => {
-  if (period === 'all') return null;
-  return { '7d': 7, '30d': 30, '90d': 90, '180d': 180 }[period];
+  if (period === 'custom') return null;
+  return { 'week': 7, 'month': 30, 'year': 365 }[period];
 };
 
 const formatDateKey = (date: Date) => {
@@ -60,10 +59,27 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
   const tickColor = isDark ? '#94a3b8' : '#6b7280';
   const gridColor = isDark ? '#334155' : '#e5e7eb';
 
-  const [period, setPeriod] = useState<Period>('30d');
+  const [period, setPeriod] = useState<Period>('month');
+  const [customStartDate, setCustomStartDate] = useState<string>('');
+  const [customEndDate, setCustomEndDate] = useState<string>('');
 
   // Filter transactions by selected period
   const filteredTransactions = useMemo(() => {
+    if (period === 'custom') {
+      const start = customStartDate ? new Date(customStartDate) : null;
+      const end = customEndDate ? new Date(customEndDate) : null;
+      if (start) start.setHours(0, 0, 0, 0);
+      if (end) end.setHours(23, 59, 59, 999);
+
+      return transactions.filter((t) => {
+        const d = parseTransactionDate(t.date);
+        if (!d) return false;
+        if (start && d < start) return false;
+        if (end && d > end) return false;
+        return true;
+      });
+    }
+
     const days = getPeriodDays(period);
     if (!days) return transactions;
     const cutoff = new Date();
@@ -73,7 +89,7 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
       const d = parseTransactionDate(t.date);
       return d !== null && d >= cutoff;
     });
-  }, [transactions, period]);
+  }, [transactions, period, customStartDate, customEndDate]);
 
   const categoryData = useMemo(() => {
     const expenses = filteredTransactions.filter((t) => t.type === TransactionType.EXPENSE);
@@ -109,7 +125,10 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     endDate.setHours(0, 0, 0, 0);
 
     const startDate = new Date(endDate);
-    if (days) {
+    if (period === 'custom') {
+      const minTime = Math.min(...parsedTransactions.map((t) => t.parsedDate.getTime()));
+      startDate.setTime(minTime);
+    } else if (days) {
       startDate.setDate(endDate.getDate() - days);
     } else {
       const minTime = Math.min(...parsedTransactions.map((t) => t.parsedDate.getTime()));
@@ -145,25 +164,58 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
   return (
     <div className="mb-6">
       {/* Period Filter */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <h3 className="text-sm font-semibold text-gray-800 dark:text-slate-100">
-          Biểu đồ tài chính
-        </h3>
-        <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-700/50 p-1 rounded-lg">
-          {PERIODS.map(({ label, value }) => (
-            <button
-              key={value}
-              onClick={() => setPeriod(value)}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                period === value
-                  ? 'bg-white dark:bg-slate-700 text-primary dark:text-indigo-400 shadow-sm'
-                  : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+      <div className="flex flex-col gap-3 mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h3 className="text-sm font-semibold text-gray-800 dark:text-slate-100">
+            Biểu đồ tài chính
+          </h3>
+          <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-700/50 p-1 rounded-lg">
+            {PERIODS.map(({ label, value }) => (
+              <button
+                key={value}
+                onClick={() => setPeriod(value)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                  period === value
+                    ? 'bg-white dark:bg-slate-700 text-primary dark:text-indigo-400 shadow-sm'
+                    : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {period === 'custom' && (
+          <div className="flex items-center justify-end gap-2 animate-fade-in">
+            <div className="flex items-center gap-1 bg-white dark:bg-slate-700 p-1 border border-gray-200 dark:border-slate-600 rounded-lg shadow-sm">
+              <input
+                type="date"
+                value={customStartDate}
+                onChange={(e) => setCustomStartDate(e.target.value)}
+                className="px-2 py-1 text-sm text-gray-600 dark:text-slate-300 bg-transparent focus:outline-none border-none"
+              />
+              <span className="text-gray-300 dark:text-slate-500">→</span>
+              <input
+                type="date"
+                value={customEndDate}
+                onChange={(e) => setCustomEndDate(e.target.value)}
+                className="px-2 py-1 text-sm text-gray-600 dark:text-slate-300 bg-transparent focus:outline-none border-none"
+              />
+            </div>
+            {(customStartDate || customEndDate) && (
+              <button
+                onClick={() => {
+                  setCustomStartDate('');
+                  setCustomEndDate('');
+                }}
+                className="text-xs text-red-500 hover:text-red-600 px-2 font-medium"
+              >
+                Xóa
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Charts Grid */}

@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import authService from './Serviec';
+import authService from './Service';
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
 	try {

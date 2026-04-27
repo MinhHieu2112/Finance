@@ -1,5 +1,5 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import insightsService from './Serviec';
+import insightsService from './Service';
 import { Types } from 'mongoose';
 
 const getInsights = async (req: Request, res: Response, next: NextFunction) => {

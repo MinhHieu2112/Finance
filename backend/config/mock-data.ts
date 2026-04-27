@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const generateMockData = async () => {
-  const plainPassword = '1234';
+  const plainPassword = '123456';
   const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
   // ================= USERS =================
@@ -145,7 +145,7 @@ const generateMockData = async () => {
   fs.writeFileSync('config/categories.json', JSON.stringify(categories, null, 2));
   fs.writeFileSync('config/transactions.json', JSON.stringify(transactions, null, 2));
 
-  console.log('✅ Done');
+  console.log('Done!');
   console.log(`Users: ${users.length}`);
   console.log(`Catalogs: ${catalogs.length}`);
   console.log(`Categories: ${categories.length}`);

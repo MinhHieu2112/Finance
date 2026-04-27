@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import categoryService from './Serviec';
+import categoryService from './Service';
 
 const listCategory = async (_req: Request, res: Response, next: NextFunction) => {
 	try {

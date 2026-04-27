@@ -65,6 +65,13 @@ class transactionService {
 
         totalAmount = normalizedDetails.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
     
+        if (type === TransactionType.EXPENSE) {
+            const currentBalance = await transactionRepository.getCurrentBalance(data.userId as unknown as import('mongoose').Types.ObjectId);
+            if (currentBalance - totalAmount < 0) {
+                throw new AppError(`Giao dịch không hợp lệ: Tổng số dư hiện tại (${currentBalance}) không đủ để thanh toán khoản chi (${totalAmount})`, 400);
+            }
+        }
+
         const transaction = await transactionRepository.addTransaction({userId      : data.userId,
                                                                         description : description,
                                                                         type        : type,
