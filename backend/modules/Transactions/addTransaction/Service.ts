@@ -2,7 +2,7 @@ import transactionRepository from './Repository';
 import AppError from '../../../utils/appError';
 import { TransactionFrequency, TransactionType } from './types';
 import type { transactionDetailSchema, transactionSchema } from './types';
-import { detectAnomalyAndNotify } from '../../aiAssistant/analyzer/anomalyDetector';
+import anomalyService from '../../aiAssistant/analyzer/Service';
 
 class transactionService {
     async addTransaction(data: transactionSchema): Promise<transactionSchema> {
@@ -79,10 +79,9 @@ class transactionService {
                                                                         date        : data.date,
                                                                         total_amount: totalAmount,
                                                                         details     : normalizedDetails,});
-                                                                        
-        // Run anomaly detection asynchronously
-        detectAnomalyAndNotify(transaction).catch(err => console.error(err));
-        
+                                                                                // Run anomaly detection asynchronously
+        anomalyService.detectAnomaly(transaction).catch(err => console.error(err));
+
         return transaction;
     }
 }
