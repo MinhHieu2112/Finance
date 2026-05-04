@@ -1,0 +1,95 @@
+@startuml
+title Cau truc backend theo lop va module
+
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+package "Entry layer" {
+  [app.ts]
+  [routes/*.ts]
+  [middleware/Auth.ts]
+  [controllers/errorController.ts]
+}
+
+package "Modules" {
+  package "Users" {
+    [register]
+    [login]
+    [changePassword]
+  }
+  package "Transactions" {
+    [listTransaction]
+    [addTransaction]
+    [editTransaction]
+    [deleteTransaction]
+  }
+  package "Categories" {
+    [listCategory]
+    [addCategory]
+    [editCategory]
+    [deleteCategory]
+  }
+  package "Analysis" {
+    [forcastingTrend]
+    [detectAnomalies]
+    [savingSuggestion]
+  }
+  package "AI Assistant" {
+    [MCP_tools]
+    [add_query_nlp]
+    [add_trans_by_receiptImg]
+    [insights]
+  }
+}
+
+package "Moi module use case" {
+  [Controller.ts] as C
+  [Service.ts] as S
+  [Repository.ts] as R
+  [types.ts] as T
+}
+
+package "Persistence" {
+  [models/*.ts]
+  [config/*.json]
+  database "MongoDB" as DB
+}
+
+[app.ts] --> [routes/*.ts]
+[routes/*.ts] --> [middleware/Auth.ts] : voi route can dang nhap
+[routes/*.ts] --> C
+C --> S : dieu phoi request/response
+S --> T : dung type + payload
+R --> T : dung type tra ve / nhan vao
+S --> R : business rule + goi truy van
+R --> [models/*.ts] : Mongoose model
+[models/*.ts] --> DB
+
+[forcastingTrend] ..> [detectAnomalies] : savingSuggestion goi lai
+[MCP_tools] ..> [add_query_nlp] : frontend goi 2 buoc
+[MCP_tools] ..> [add_trans_by_receiptImg] : OCR 2 buoc
+
+note right of C
+  Controller:
+  - doc req/res
+  - lay authUser
+  - goi service
+  - tra JSON / next(error)
+end note
+
+note right of S
+  Service:
+  - validate nghiep vu
+  - tinh toan
+  - phoi hop nhieu repository/service
+  - quyet dinh thanh cong / loi
+end note
+
+note right of R
+  Repository:
+  - query / create / update / delete
+  - khong chua HTTP
+  - khong chua UI logic
+end note
+
+@enduml

@@ -1,0 +1,110 @@
+@startuml
+title Luong quan ly danh muc
+
+skinparam shadowing false
+
+actor "Nguoi dung" as User
+participant "Frontend\nDashboardPage / CategoryManagerModal" as FE
+participant "Category routes" as Route
+participant "Auth middleware" as Auth
+participant "Controller" as Controller
+participant "Category Service" as Service
+participant "Category Repository" as Repo
+database "MongoDB" as DB
+
+== Tai danh sach danh muc ==
+User -> FE : Mo dashboard / modal danh muc
+FE -> Route : GET /api/categories/list
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> Controller : listCategory()
+Controller -> Service : listCategories(userId)
+Service -> Repo : listCategories(userId)
+Repo -> DB : categories.find({userId}).populate(catalogId)
+DB --> Repo : categories[]
+Repo --> Service
+Service -> Service : bo sung catalogName/catalogId cho response
+Service --> Controller
+Controller --> FE : 200 + categories[]
+
+== Them danh muc ==
+User -> FE : Nhap ten + chon type + catalog
+FE -> Route : POST /api/categories/add
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> Controller : addCategory(req)
+Controller -> Service : addCategory(userId, payload)
+Service -> Service : validate userId/name/type/catalogId
+Service -> Repo : findUserById(userId)
+Repo -> DB : users.findById(...)
+DB --> Repo
+Repo --> Service
+Service -> Repo : findCategoryByName(userId, type, name)
+Repo -> DB : categories.findOne(...)
+DB --> Repo
+Repo --> Service
+Service -> Repo : findCatalogByIdAndType(catalogId, type)
+Repo -> DB : catalogs.findOne(...)
+DB --> Repo
+Repo --> Service
+alt User/catalog khong hop le hoac category trung
+  Service --> Controller : AppError
+  Controller --> FE : Loi
+else Hop le
+  Service -> Repo : addCategory(...)
+  Repo -> DB : categories.insertOne(...)
+  DB --> Repo : category
+  Repo --> Service
+  Service --> Controller : category
+  Controller --> FE : 201 Created
+end
+
+== Sua danh muc ==
+User -> FE : Sua ten danh muc
+FE -> Route : PUT /api/categories/edit/:id
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> Controller : editCategory(req)
+Controller -> Service : editCategory(id, userId, payload)
+Service -> Service : validate categoryId + name
+Service -> Repo : findCategoryByIdAndUser(id, userId)
+Repo -> DB : categories.findOne(...)
+DB --> Repo
+Repo --> Service
+Service -> Repo : findCategoryByName(userId, currentType, name)
+Repo -> DB : categories.findOne(...)
+DB --> Repo
+Repo --> Service
+alt Khong tim thay hoac trung ten
+  Service --> Controller : AppError
+  Controller --> FE : Loi
+else Hop le
+  Service -> Repo : editCategoryById(...)
+  Repo -> DB : categories.findOneAndUpdate(...)
+  DB --> Repo : updatedCategory
+  Repo --> Service
+  Service --> Controller
+  Controller --> FE : 200 OK
+end
+
+== Xoa danh muc ==
+User -> FE : Xac nhan xoa
+FE -> Route : DELETE /api/categories/delete/:id
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> Controller : deleteCategory(req)
+Controller -> Service : deleteCategory(id, userId)
+Service -> Service : validate categoryId
+Service -> Repo : deleteCategoryById(id, userId)
+Repo -> DB : categories.findOneAndDelete(...)
+DB --> Repo : deletedCategory/null
+Repo --> Service
+alt Khong tim thay
+  Service --> Controller : AppError 404
+  Controller --> FE : Loi
+else Xoa thanh cong
+  Service --> Controller : deletedCategory
+  Controller --> FE : 200 OK
+end
+
+@enduml

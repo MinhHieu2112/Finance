@@ -1,0 +1,118 @@
+@startuml
+title Luong quan ly giao dich
+
+skinparam shadowing false
+
+actor "Nguoi dung" as User
+participant "Frontend\nDashboardPage / TransactionForm / TransactionList" as FE
+participant "Transaction routes" as Route
+participant "Auth middleware" as Auth
+participant "Controller" as Controller
+participant "Transaction Service" as Service
+participant "Transaction Repository" as Repo
+participant "Anomaly Service\n(async)" as AsyncAnomaly
+database "MongoDB" as DB
+
+== Tai danh sach giao dich ==
+User -> FE : Mo Dashboard
+FE -> Route : GET /api/transactions/list
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> Controller : listTransaction()
+Controller -> Service : listTransactions(userId)
+Service -> Repo : listTransactions(userId)
+Repo -> DB : transactions.find({userId})\n.sort(date desc)
+DB --> Repo : transactions[]
+Repo --> Service
+Service --> Controller
+Controller --> FE : 200 + transactions[]
+
+== Them giao dich ==
+User -> FE : Nhap form giao dich
+FE -> Route : POST /api/transactions/add
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> Controller : addTransaction(req)
+Controller -> Service : addTransaction(userId, payload)
+Service -> Service : validate description/type/date/frequency/details
+loop Moi detail
+  Service -> Repo : findCategoryNameById(userId, categoryId, type)
+  Repo -> DB : categories.findOne(...)
+  DB --> Repo : category
+  Repo --> Service
+end
+Service -> Service : tinh lai total_amount tu details[]
+alt type = expense
+  Service -> Repo : getCurrentBalance(userId)
+  Repo -> DB : aggregate income - expense
+  DB --> Repo : currentBalance
+  Repo --> Service
+  alt So du khong du
+    Service --> Controller : AppError 400
+    Controller --> FE : Loi nghiep vu
+  else Du so du
+    Service -> Repo : addTransaction(...)
+    Repo -> DB : transactions.insertOne(...)
+    DB --> Repo : transaction
+    Repo --> Service : transaction
+    Service -> AsyncAnomaly : detectAnomaly(transaction)
+    Service --> Controller : transaction
+    Controller --> FE : 201 Created
+  end
+else type = income
+  Service -> Repo : addTransaction(...)
+  Repo -> DB : transactions.insertOne(...)
+  DB --> Repo : transaction
+  Repo --> Service
+  Service -> AsyncAnomaly : detectAnomaly(transaction)
+  Service --> Controller : transaction
+  Controller --> FE : 201 Created
+end
+
+== Sua giao dich ==
+User -> FE : Chinh sua giao dich
+FE -> Route : PUT /api/transactions/edit/:id
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> Controller : editTransaction(req)
+Controller -> Service : editTransaction(id, userId, payload)
+Service -> Service : validate lai du lieu
+loop Moi detail
+  Service -> Repo : findCategoryNameById(...)
+  Repo -> DB : categories.findOne(...)
+  DB --> Repo
+  Repo --> Service
+end
+Service -> Service : tinh lai total_amount
+Service -> Repo : editTransactionById(id, userId, ...)
+Repo -> DB : transactions.findOneAndUpdate(...)
+DB --> Repo : updatedTransaction/null
+Repo --> Service
+alt Khong tim thay giao dich
+  Service --> Controller : AppError 404
+  Controller --> FE : Loi
+else Cap nhat thanh cong
+  Service --> Controller : updatedTransaction
+  Controller --> FE : 200 OK
+end
+
+== Xoa giao dich ==
+User -> FE : Xac nhan xoa
+FE -> Route : DELETE /api/transactions/delete/:id
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> Controller : deleteTransaction(req)
+Controller -> Service : deleteTransaction(id, userId)
+Service -> Repo : deleteTransactionById(id, userId)
+Repo -> DB : transactions.findOneAndDelete(...)
+DB --> Repo : deletedTransaction/null
+Repo --> Service
+alt Khong tim thay giao dich
+  Service --> Controller : AppError 404
+  Controller --> FE : Loi
+else Xoa thanh cong
+  Service --> Controller : deletedTransaction
+  Controller --> FE : 200 OK
+end
+
+@enduml

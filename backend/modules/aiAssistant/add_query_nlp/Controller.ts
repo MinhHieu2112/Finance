@@ -1,5 +1,5 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import add_query_nlpService from './Serviec';
+import add_query_nlpService from './Service';
 
 const add_query_nlp = async (req: Request, res: Response, next: NextFunction) => {
 	try {

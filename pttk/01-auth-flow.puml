@@ -1,0 +1,95 @@
+@startuml
+title Luong xac thuc nguoi dung
+
+skinparam shadowing false
+
+actor "Nguoi dung" as User
+participant "Frontend\nAuthScreen / ProfilePage" as FE
+participant "Users routes" as Route
+participant "Auth middleware" as Auth
+participant "Controller" as Controller
+participant "Service" as Service
+participant "Repository" as Repo
+database "MongoDB" as DB
+
+== Dang ky ==
+User -> FE : Nhap username/email/password
+FE -> Route : POST /api/users/register
+Route -> Controller : register(req)
+Controller -> Service : register(payload)
+Service -> Service : validate field + email + do dai password
+Service -> Repo : findUserByEmail(email)
+Repo -> DB : users.findOne(email)
+DB --> Repo
+Repo --> Service
+Service -> Repo : findUserByUsername(username)
+Repo -> DB : users.findOne(username)
+DB --> Repo
+Repo --> Service
+alt Email/username da ton tai
+  Service --> Controller : AppError 409
+  Controller --> FE : Loi
+else Hop le
+  Service -> Service : bcrypt.hash(password)
+  Service -> Repo : createUser(...)
+  Repo -> DB : users.insertOne(...)
+  DB --> Repo : user
+  Repo --> Service : user
+  Service -> Repo : findCatalogIdByType...\nfindFirstCatalogIdByType...
+  Repo -> DB : catalogs.find(...)
+  DB --> Repo
+  Service -> Repo : createDefaultCategories(...)
+  Repo -> DB : categories.insertMany(...)
+  DB --> Repo
+  Service -> Service : tao JWT
+  Service --> Controller : user + token
+  Controller --> FE : 201 Created
+end
+
+== Dang nhap ==
+User -> FE : Nhap email/password
+FE -> Route : POST /api/users/login
+Route -> Controller : login(req)
+Controller -> Service : login(payload)
+Service -> Service : validate email/password
+Service -> Repo : findUserByEmail(email)
+Repo -> DB : users.findOne(email)
+DB --> Repo : user + hashedPassword
+Repo --> Service
+alt Khong tim thay hoac sai mat khau
+  Service --> Controller : AppError 401
+  Controller --> FE : Loi dang nhap
+else Dung thong tin
+  Service -> Service : bcrypt.compare(...)
+  Service -> Service : tao JWT
+  Service --> Controller : user + token
+  Controller --> FE : 200 OK
+end
+
+== Doi mat khau ==
+User -> FE : Nhap mat khau cu + moi
+FE -> Route : PUT /api/users/change-password
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> Controller : changePassword(req)
+Controller -> Service : changePassword(userId, payload)
+Service -> Service : validate field + do dai mat khau moi
+Service -> Repo : findUserById(userId)
+Repo -> DB : users.findById(userId)
+DB --> Repo
+Repo --> Service
+Service -> Service : bcrypt.compare(oldPassword, currentHash)
+alt Mat khau cu sai
+  Service --> Controller : AppError 401
+  Controller --> FE : Loi
+else Hop le
+  Service -> Service : bcrypt.hash(newPassword)
+  Service -> Repo : updatePassword(userId, newHash)
+  Repo -> DB : users.updateOne(...)
+  DB --> Repo
+  Repo --> Service
+  Service --> Controller : success
+  Controller --> FE : 200 OK
+end
+
+@enduml

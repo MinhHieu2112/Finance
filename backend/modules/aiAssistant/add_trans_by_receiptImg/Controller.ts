@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import add_trans_by_receiptImgService from './Serviec';
+import add_trans_by_receiptImgService from './Service';
 
 const add_trans_by_receiptImg = async (req: Request, res: Response, next: NextFunction) => {
 	try {

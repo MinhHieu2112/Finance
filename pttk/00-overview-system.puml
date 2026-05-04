@@ -1,0 +1,78 @@
+@startuml
+title Tong quan kien truc he thong SmartFinance
+
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+
+actor "Nguoi dung" as User
+
+package "Frontend (React + Vite)" {
+  [AuthScreen / LoginPage] as FEAuth
+  [DashboardPage] as FEDashboard
+  [AnalysisPage] as FEAnalysis
+  [ProfilePage] as FEProfile
+  [AIAssistantModal] as FEAI
+  [ReceiptOCRPanel] as FEOCR
+  [Axios API Client] as FEApi
+}
+
+package "Backend (Express + TypeScript)" {
+  [app.ts + routes] as BERoutes
+  [Auth middleware (JWT)] as BEAuth
+  [Users modules] as BEUsers
+  [Transactions modules] as BETransactions
+  [Categories modules] as BECategories
+  [Analysis modules] as BEAnalysis
+  [AI Assistant modules] as BEAI
+}
+
+database "MongoDB\nusers / categories / catalogs / transactions" as DB
+cloud "Gemini API" as Gemini
+
+User --> FEAuth : Dang ky / Dang nhap
+User --> FEDashboard : Quan ly thu chi
+User --> FEAnalysis : Xem phan tich
+User --> FEProfile : Doi mat khau
+User --> FEAI : Nhap lenh tu nhien
+User --> FEOCR : Tai anh hoa don
+
+FEAuth --> FEApi
+FEDashboard --> FEApi
+FEAnalysis --> FEApi
+FEProfile --> FEApi
+FEAI --> FEApi
+FEOCR --> FEApi
+
+FEApi --> BERoutes : HTTP /api/*
+BERoutes --> BEAuth : Kiem tra Bearer token\n(tru register/login)
+
+BEAuth --> BEUsers
+BEAuth --> BETransactions
+BEAuth --> BECategories
+BEAuth --> BEAnalysis
+BEAuth --> BEAI
+
+BEUsers --> DB
+BETransactions --> DB
+BECategories --> DB
+BEAnalysis --> DB
+BEAI --> DB
+BEAI --> Gemini
+BEAnalysis --> Gemini : GET /api/nlp/insights
+
+note bottom of BETransactions
+  Giao dich duoc luu theo:
+  - thong tin chung
+  - details[] theo tung hang muc
+  - tong tien tinh lai o backend
+end note
+
+note bottom of BEAI
+  AI duoc chia thanh 3 nhom:
+  - MCP tools: phan loai y dinh va OCR
+  - add&query: luu giao dich hoac truy van
+  - insights: sinh nhan xet chi tieu
+end note
+
+@enduml

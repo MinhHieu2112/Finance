@@ -1,5 +1,5 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import MCP_toolsServiec from './Serviec';
+import MCP_toolsServiec from './Service';
 
 const mcp_tools = async (req: Request, res: Response, next: NextFunction) => {
 	try {

@@ -1,0 +1,80 @@
+@startuml
+title Luong phan tich tai chinh
+
+skinparam shadowing false
+
+actor "Nguoi dung" as User
+participant "Frontend\nAnalysisPage" as FE
+participant "Analysis routes" as Route
+participant "Auth middleware" as Auth
+participant "Forecast Controller/Service/Repo" as Forecast
+participant "Anomaly Controller/Service/Repo" as Anomaly
+participant "SavingSuggestion Controller/Service" as Saving
+participant "Insights Controller/Service/Repo" as Insights
+database "MongoDB" as DB
+participant "Gemini API" as Gemini
+
+User -> FE : Mo trang Phan tich
+
+par Trend
+  FE -> Route : GET /api/analysis/forcasting-trend
+  Route -> Auth : verify JWT
+  Auth --> Route : authUser
+  Route -> Forecast : getForcastingTrend(userId)
+  Forecast -> DB : lay toi da 500 transactions gan nhat
+  DB --> Forecast : transactions[]
+  Forecast -> Forecast : gom theo thang\nhoi quy tuyen tinh\nxac dinh trend
+  Forecast --> FE : trend
+else Saving Suggestion
+  FE -> Route : GET /api/analysis/saving-suggestion
+  Route -> Auth : verify JWT
+  Auth --> Route : authUser
+  Route -> Saving : getSavingSuggestion(userId)
+  Saving -> Forecast : getForcastingTrend(userId)
+  Forecast -> DB : lay transactions
+  DB --> Forecast
+  Forecast --> Saving : trend
+  Saving -> Anomaly : getDetectAnomalies(userId)
+  Anomaly -> DB : lay transactions expense
+  DB --> Anomaly
+  Anomaly --> Saving : anomalies[]
+  Saving -> Saving : tinh savingsRate\nchon nhom low/moderate/healthy
+  Saving --> FE : savingsPlan[]
+else Detect Anomalies
+  FE -> Route : GET /api/analysis/detect-anomalies
+  Route -> Auth : verify JWT
+  Auth --> Route : authUser
+  Route -> Anomaly : getDetectAnomalies(userId)
+  Anomaly -> DB : lay toi da 500 transactions
+  DB --> Anomaly : transactions[]
+  Anomaly -> Anomaly : tach tung detail expense\nso sanh mean + stddev
+  Anomaly --> FE : anomalies[]
+else AI Insights
+  FE -> Route : GET /api/nlp/insights
+  Route -> Auth : verify JWT
+  Auth --> Route : authUser
+  Route -> Insights : generateInsights(userId)
+  Insights -> DB : lay giao dich 3 thang gan nhat
+  DB --> Insights : transactions[]
+  alt Khong co du lieu
+    Insights --> FE : thong diep fallback
+  else Co du lieu
+    Insights -> Gemini : prompt tom tat incomes/expenses
+    alt Gemini tra JSON hop le
+      Gemini --> Insights : analysis/prediction/advice
+      Insights --> FE : AI insights
+    else Loi API hoac sai format
+      Insights -> Insights : fallback rule-based
+      Insights --> FE : insights fallback
+    end
+  end
+end
+
+note over FE
+  Sau khi nhan du lieu, AnalysisPage con:
+  - tinh them narrative cho thu/chi
+  - tinh savingsSnapshot
+  - dung Recharts de ve bieu do
+end note
+
+@enduml

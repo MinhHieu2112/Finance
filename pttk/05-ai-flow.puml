@@ -1,0 +1,90 @@
+@startuml
+title Luong AI Assistant, NLP va OCR hoa don
+
+skinparam shadowing false
+
+actor "Nguoi dung" as User
+participant "Frontend\nAIAssistantModal / ReceiptOCRPanel" as FE
+participant "NLP routes" as Route
+participant "Auth middleware" as Auth
+participant "MCP_tools Controller/Service" as MCP
+participant "add_query_nlp Controller/Service" as NLP
+participant "add_trans_by_receiptImg Controller/Service" as OCR
+participant "AI Repositories" as Repo
+database "MongoDB" as DB
+participant "Gemini API" as Gemini
+
+== Tro ly AI cho cau lenh tu nhien ==
+User -> FE : Nhap prompt\nvd: "hom nay chi 50k an sang"\nhoac "thang 12 chi bao nhieu cho cafe"
+FE -> Route : POST /api/nlp/mcp-tools
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> MCP : handlePrompt(userId, prompt, no file)
+MCP -> Repo : listCategoryNames(userId)
+Repo -> DB : categories.find({userId})
+DB --> Repo : categoryNames[]
+Repo --> MCP
+MCP -> Gemini : function calling\n(addTransaction | queryTransaction)
+Gemini --> MCP : intent + structured args
+MCP --> FE : result(intent, data, usage)
+
+FE -> Route : POST /api/nlp/add&query
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> NLP : handlePrompt(userId, data)
+alt intent = add
+  loop Moi transaction va detail
+    NLP -> Repo : findCategoryByName(userId, type, categoryName)
+    Repo -> DB : categories.findOne(...)
+    DB --> Repo : category
+    Repo --> NLP
+  end
+  NLP -> NLP : tinh total_amount
+  NLP -> Repo : addTransaction(...)
+  Repo -> DB : transactions.insertOne(...)
+  DB --> Repo : transaction
+  Repo --> NLP
+  NLP --> FE : result.intent = add\nresult.data = giao dich da luu
+else intent = query
+  NLP -> NLP : build query filter\n(type, category, time)
+  NLP -> Repo : queryTransaction(filter)
+  Repo -> DB : transactions.find(...)
+  DB --> Repo : matchedTransactions[]
+  Repo --> NLP
+  NLP --> FE : result.intent = query\nresult.data = danh sach khop
+end
+
+== OCR hoa don ==
+User -> FE : Tai anh hoa don
+FE -> Route : POST /api/nlp/mcp-tools (multipart)
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> MCP : handlePrompt(userId, null, file)
+MCP -> Repo : listCategoryNames(userId)
+Repo -> DB : categories.find({userId})
+DB --> Repo : categoryNames[]
+Repo --> MCP
+MCP -> Gemini : function calling receiptParser + image
+Gemini --> MCP : intent=add + transactions[]
+MCP --> FE : ban nhap OCR
+
+FE -> Route : POST /api/nlp/add-by-receipt-image
+Route -> Auth : verify JWT
+Auth --> Route : authUser
+Route -> OCR : handleReceiptImage(userId, data)
+loop Moi detail OCR
+  OCR -> Repo : findCategoryByName(userId, type, categoryName)
+  Repo -> DB : categories.findOne(...)
+  DB --> Repo : category
+  Repo --> OCR
+end
+OCR -> OCR : doi categoryName -> categoryId\ntinh total_amount
+OCR --> FE : drafts de mo lai TransactionForm
+
+note over FE
+  Luong OCR KHONG tu dong luu DB.
+  Frontend nhan drafts va mo form de nguoi dung duyet lai,
+  sau do moi goi /api/transactions/add neu dong y.
+end note
+
+@enduml
