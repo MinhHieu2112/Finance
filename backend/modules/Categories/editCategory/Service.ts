@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 import type { CategoryUpdatePayload } from './types';
 
 class categoryService {
+    // Xử lý cập nhật tên danh mục và kiểm tra tính hợp lệ của dữ liệu.
 	async editCategory(categoryId: string, userId: Types.ObjectId, data: CategoryUpdatePayload) {
 		const name = data.name.trim();
 

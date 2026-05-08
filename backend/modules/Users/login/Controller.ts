@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import authService from './Service';
 
+// Xác thực thông tin đăng nhập và trả về token truy cập cho người dùng.
 const login = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { email, password } = req.body;

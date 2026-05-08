@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { ProfilePageProps } from './types';
-import { User, Mail, Shield, Eye, EyeOff, Check } from 'lucide-react';
+import { User, Mail, Shield, Eye, EyeOff, Check, Phone } from 'lucide-react';
 import { api, getApiErrorMessage } from '../../lib/api';
 import toast from 'react-hot-toast';
 
@@ -13,6 +13,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ user }) => {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  // Xử lý thay đổi mật khẩu của người dùng.
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -43,7 +44,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ user }) => {
 
   return (
     <section className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-colors">
         {/* Header Cover */}
         <div className="h-32 bg-gradient-to-r from-primary to-indigo-400 dark:from-indigo-900 dark:to-purple-900"></div>
 
@@ -72,6 +73,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ user }) => {
                   <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
                     <Mail size={18} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
                     <span className="truncate font-medium">{user.email}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700">
+                    <Phone size={18} className="text-gray-400 dark:text-gray-500" />
+                    <span className="font-medium">{user.phone || 'Chưa cập nhật'}</span>
                   </div>
                 </div>
               </div>

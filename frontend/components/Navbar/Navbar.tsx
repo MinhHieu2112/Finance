@@ -11,18 +11,16 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
     // Check local storage for dark mode
     if (localStorage.getItem('theme') === 'dark') {
       setDarkMode(true);
-      document.body.classList.add('dark');
+      document.documentElement.classList.add('dark');
     }
-
-
   }, []);
 
   const toggleDarkMode = () => {
     if (darkMode) {
-      document.body.classList.remove('dark');
+      document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     } else {
-      document.body.classList.add('dark');
+      document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     }
     setDarkMode(!darkMode);
@@ -30,13 +28,10 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
 
 
   return (
-    <header className="bg-white dark:bg-slate-800 shadow-sm dark:shadow-slate-900/50 z-10 sticky top-0 border-b border-transparent dark:border-slate-700/50">
+    <header className="bg-white/80 dark:bg-[#0f111a]/80 backdrop-blur-md shadow-sm dark:shadow-black/20 z-10 sticky top-0 border-b border-gray-100 dark:border-[#1f212e]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <div className="bg-primary rounded-lg p-2">
-            <span className="text-white font-bold text-lg">SF</span>
-          </div>
-          <span className="text-xl font-bold text-gray-800 dark:text-white">SmartFinance</span>
+          {/* Empty div or breadcrumbs could go here */}
         </div>
 
         <div className="flex items-center gap-4">

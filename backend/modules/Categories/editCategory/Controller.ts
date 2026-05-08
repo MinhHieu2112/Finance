@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import categoryService from './Service';
 
+// Tiếp nhận yêu cầu cập nhật thông tin danh mục từ client.
 const editCategory = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { name } = req.body;

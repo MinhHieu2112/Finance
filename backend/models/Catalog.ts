@@ -5,6 +5,7 @@ enum TransactionType {
   EXPENSE = 'expense',
 }
 
+// Schema cho các nhóm danh mục mặc định (Catalogs) dùng chung cho toàn bộ hệ thống.
 const catalogSchema = new Schema({type        : {type    : String,
                                                  required: true,
                                                  enum    : Object.values(TransactionType)},

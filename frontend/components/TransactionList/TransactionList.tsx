@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import type { TransactionListProps } from './types';
 import { TransactionType } from './types';
 import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil, ChevronDown, ChevronUp } from 'lucide-react';
+import { formatCurrency } from '../../lib/currencies';
+import { Currency } from '../../types/Transactions';
 
 export const TransactionList: React.FC<TransactionListProps> = ({ transactions, categoryOptions, onDelete, onEdit }) => {
   const ITEMS_PER_PAGE = 10;
@@ -108,8 +110,8 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700/50 overflow-hidden transition-colors">
-      <div className="p-6 border-b border-gray-100 dark:border-slate-700/50 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+    <div className="bg-white dark:bg-[#1a1c26] rounded-xl shadow-sm border border-gray-100 dark:border-[#2a2d3d] overflow-hidden transition-colors">
+      <div className="p-6 border-b border-gray-100 dark:border-[#2a2d3d] flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-slate-100">Giao dịch gần đây</h3>
           <p className="text-sm text-gray-500 dark:text-slate-400">Tìm thấy {filteredTransactions.length} kết quả</p>
@@ -123,13 +125,13 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
             placeholder = "Tìm kiếm thông tin..."
             value       = {searchTerm}
             onChange    = {(e) => setSearchTerm(e.target.value)}
-            className   = "w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-700 text-gray-700 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
+            className   = "w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-[#2a2d3d] rounded-lg text-sm bg-white dark:bg-[#13151f] text-gray-700 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
           />
         </div>
       </div>
 
         {/* Filter section */ }
-        <div className="px-6 py-4 bg-gray-50/50 dark:bg-slate-700/30 border-b border-gray-100 dark:border-slate-700/50">
+        <div className="px-6 py-4 bg-gray-50/50 dark:bg-[#13151f]/50 border-b border-gray-100 dark:border-[#2a2d3d]">
           <div className="flex flex-wrap items-center gap-4">
             {/* Nhãn bộ lọc */}
             <div className="flex items-center gap-2 text-gray-400 dark:text-slate-500 text-xs font-bold uppercase tracking-wider">
@@ -149,7 +151,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                   className="appearance-none pl-3 pr-8 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-sm text-gray-700 dark:text-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-600 min-w-[120px]"
                 >
                   <option value="">Tất cả loại</option>
-                  <option value={TransactionType.EXPENSE}>Chi phí</option>
+                  <option value={TransactionType.EXPENSE}>Chi tiêu</option>
                   <option value={TransactionType.INCOME}>Thu nhập</option>
                 </select>
                 <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
@@ -211,7 +213,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm text-gray-600 dark:text-slate-300">
-          <thead className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700/50 text-xs uppercase font-medium text-gray-500 dark:text-slate-400">
+          <thead className="bg-white dark:bg-[#1a1c26] border-b border-gray-100 dark:border-[#2a2d3d] text-xs uppercase font-medium text-gray-500 dark:text-slate-500">
             <tr>
               <th className="px-6 py-4">Thời gian</th>
               <th className="px-6 py-4">Phân loại</th>
@@ -220,7 +222,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
               <th className="px-6 py-4 text-center">Hành động</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-slate-700/50">
+          <tbody className="divide-y divide-gray-100 dark:divide-[#2a2d3d]">
             {paginatedTransactions.map((t) => {
               const isExpanded = expandedIds.includes(t._id);
 
@@ -228,7 +230,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                 <React.Fragment key={t._id}>
                   <tr
                     onClick={() => toggleExpandedRow(t._id)}
-                    className="hover:bg-gray-50 dark:hover:bg-slate-700/40 transition-colors cursor-pointer"
+                    className="hover:bg-gray-50 dark:hover:bg-[#232634] transition-colors cursor-pointer"
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-slate-400" title={t.date}>
                       {formatDisplayDate(t.date)}
@@ -254,8 +256,15 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                       </div>
                     </td>
                     <td className={`px-6 py-4 text-right font-bold whitespace-nowrap ${t.type === TransactionType.INCOME ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-800 dark:text-slate-100'}`}>
+                      {/* Hiển thị số tiền giao dịch kèm đơn vị tiền tệ gốc */}
                       {t.type === TransactionType.INCOME ? '+' : '-'}
-                      {Math.round(t.total_amount).toLocaleString('en-US')} VND
+                      {formatCurrency(t.total_amount, t.currency)}
+                      {/* Hiển thị giá trị quy đổi sang VND nếu đơn vị gốc khác VND */}
+                      {t.currency !== Currency.VND && t.base_amount && (
+                        <div className="text-[10px] text-gray-500 font-normal">
+                          ~{formatCurrency(t.base_amount, Currency.VND)}
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-1">
@@ -330,7 +339,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                                   </div>
                                   <div className="sm:col-span-2 sm:text-right">
                                     <span className={`text-sm font-semibold ${t.type === TransactionType.INCOME ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-800 dark:text-slate-200'}`}>
-                                      {Math.round(detail.amount).toLocaleString('en-US')} VND
+                                      {formatCurrency(detail.amount, t.currency)}
                                     </span>
                                   </div>
                                 </div>
@@ -356,8 +365,8 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
       </div>
 
       {filteredTransactions.length > 0 && (
-        <div className="px-6 py-4 border-t border-gray-100 dark:border-slate-700/50 bg-white dark:bg-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <p className="text-sm text-gray-500 dark:text-slate-400">
+        <div className="px-6 py-4 border-t border-gray-100 dark:border-[#2a2d3d] bg-white dark:bg-[#1a1c26] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <p className="text-sm text-gray-500 dark:text-slate-500">
             Showing {pageStart + 1}-{Math.min(pageStart + ITEMS_PER_PAGE, filteredTransactions.length)} of {filteredTransactions.length}
           </p>
 
@@ -366,7 +375,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
               type="button"
               onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               disabled={safeCurrentPage === 1}
-              className="px-3 py-1.5 text-sm border border-gray-200 dark:border-slate-600 rounded-lg text-gray-700 dark:text-slate-300 disabled:text-gray-300 dark:disabled:text-slate-600 disabled:cursor-not-allowed bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
+              className="px-3 py-1.5 text-sm border border-gray-200 dark:border-[#2a2d3d] rounded-lg text-gray-700 dark:text-slate-300 disabled:text-gray-300 dark:disabled:text-slate-600 disabled:cursor-not-allowed bg-white dark:bg-[#13151f] hover:bg-gray-50 dark:hover:bg-[#1a1c26] transition-colors"
             >
               Trước
             </button>
@@ -375,7 +384,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
               type="button"
               onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
               disabled={safeCurrentPage === totalPages}
-              className="px-3 py-1.5 text-sm border border-gray-200 dark:border-slate-600 rounded-lg text-gray-700 dark:text-slate-300 disabled:text-gray-300 dark:disabled:text-slate-600 disabled:cursor-not-allowed bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
+              className="px-3 py-1.5 text-sm border border-gray-200 dark:border-[#2a2d3d] rounded-lg text-gray-700 dark:text-slate-300 disabled:text-gray-300 dark:disabled:text-slate-600 disabled:cursor-not-allowed bg-white dark:bg-[#13151f] hover:bg-gray-50 dark:hover:bg-[#1a1c26] transition-colors"
             >
               Sau
             </button>

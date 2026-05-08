@@ -22,6 +22,7 @@ export const TransactionSchema = z.object({
   description: z.string().trim().default('No description'),
   type: z.enum(['income', 'expense']),
   frequency: z.enum(['weekly', 'monthly', 'yearly', 'one-time']),
+  currency: z.enum(['VND', 'USD', 'EUR', 'JPY', 'GBP']).default('VND'),
   date: z.union([z.string(), z.date()]).transform(val => new Date(val)),
   details: z.array(TransactionDetailSchema)
 });

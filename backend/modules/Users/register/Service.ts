@@ -14,6 +14,7 @@ import type {
 } from './types';
 
 class authService {
+	// Chuẩn bị danh sách danh mục mặc định cho người dùng mới.
 	private async prepareDefaultCategories(userId: Types.ObjectId) {
 		const deduped = new Map<string, UserCategorySchema>();
 		const catalogIdCache = new Map<'income' | 'expense', Types.ObjectId>();
@@ -62,6 +63,7 @@ class authService {
 		return categories;
 	}
 
+	// Tạo mã xác thực JWT cho người dùng.
 	createToken(userData: AuthTokenPayload) {
 		const secret = process.env.JWT_SECRET;
 		if (!secret) {
@@ -73,12 +75,14 @@ class authService {
 						  secret)
 	}
 
+	// Xử lý quy trình đăng ký người dùng mới, bao gồm mã hóa mật khẩu và tạo danh mục mặc định.
 	async register(data: RegisterPayload): Promise<AuthResult> {
 		const username = data.username?.trim();
 		const email    = data.email?.trim().toLowerCase();
 		const password = data.password;
+		const phone    = data.phone?.trim();
 
-		if (!username || !email || !password) {
+		if (!username || !email || !password || !phone) {
 			throw new AppError('Missing required register fields', 400);
 		}
 
@@ -103,6 +107,7 @@ class authService {
 		const hashedPassword = await bcrypt.hash(password, 10);
 		const user = await authRepository.createUser({username,
 													 email,
+													 phone,
 													 password: hashedPassword,});
 
 		try {
@@ -117,7 +122,8 @@ class authService {
 
 		const userData = {id	  : user._id,
 						  username: user.username,
-						  email	  : user.email,};
+						  email	  : user.email,
+						  phone   : user.phone,};
 
 		return {user : userData,
 				token: this.createToken(userData),};

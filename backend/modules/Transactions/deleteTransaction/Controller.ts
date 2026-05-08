@@ -2,6 +2,7 @@ import { type Request, type Response, type NextFunction } from 'express';
 import transactionService from './Service';
 import { Types } from 'mongoose';
 
+// Tiếp nhận yêu cầu xóa giao dịch từ client và điều phối xử lý.
 const deleteTransaction = async (req: Request, res: Response, next: NextFunction) => {
 	try {
         const authUser 		= res.locals.authUser;

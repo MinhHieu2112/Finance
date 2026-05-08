@@ -5,6 +5,7 @@ import type { ChangePasswordPayload } from './types';
 import { Types } from 'mongoose';
 
 class changePasswordService {
+  // Xử lý logic kiểm tra mật khẩu cũ và cập nhật mật khẩu mới đã mã hóa.
   async changePassword(userId: Types.ObjectId | string, data: ChangePasswordPayload) {
     const { oldPassword, newPassword } = data;
 

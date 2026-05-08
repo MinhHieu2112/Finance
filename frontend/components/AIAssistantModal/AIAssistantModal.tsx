@@ -10,8 +10,12 @@ import type {
 	QuerySummary,
 } from './types';
 
-const formatMoney = (value: number) => `${Math.round(value).toLocaleString('en-US')} VND`;
+import { formatCurrency } from '../../lib/currencies';
+import { Currency } from '../../types/Transactions';
 
+const formatMoney = (value: number) => formatCurrency(value, Currency.VND);
+
+// Cửa sổ trợ lý AI, cho phép người dùng nhập yêu cầu bằng ngôn ngữ tự nhiên để thêm giao dịch hoặc truy vấn dữ liệu.
 export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 	isOpen,
 	onClose,
@@ -85,60 +89,90 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 	};
 
 	return (
-		<div className="fixed inset-0 z-50 bg-black/50 p-4 flex items-center justify-center">
-			<div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden">
-				<div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+		<div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm p-4 flex items-center justify-center" onClick={resetAndClose}>
+			<div 
+				className="w-full max-w-2xl bg-white dark:bg-[#1a1c26] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-[#2a2d3d] transition-colors"
+				onClick={(event) => event.stopPropagation()}
+			>
+				<div className="px-6 py-4 border-b border-gray-100 dark:border-[#2a2d3d] flex items-center justify-between">
 					<div className="flex items-center gap-3">
-						<div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center">
-							<Sparkles size={18} />
+						<div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-sm">
+							<Sparkles size={20} />
 						</div>
 						<div>
-						<h2 className="text-lg font-bold text-gray-900">Trợ lý AI</h2>
-						<p className="text-sm text-gray-500">Một lờ nhập cho thao tác thêm giao dịch hoặc truy vấn tài chính</p>
+						<h2 className="text-lg font-bold text-gray-900 dark:text-white">Trợ lý AI</h2>
+						<p className="text-xs text-gray-500 dark:text-slate-400">Sử dụng ngôn ngữ tự nhiên để thao tác.</p>
 						</div>
 					</div>
-					<button type="button" onClick={resetAndClose} className="text-gray-400 hover:text-gray-600" aria-label="Close">
+					<button type="button" onClick={resetAndClose} className="text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors p-1.5" aria-label="Close">
 						<X size={22} />
 					</button>
 				</div>
 
-				<div className="px-6 py-5 space-y-4 max-h-[65vh] overflow-y-auto">
-					<div className="space-y-3">
-						<textarea
-							value={prompt}
-							onChange={(event) => setPrompt(event.target.value)}
-							rows={4}
-							placeholder="Hôm nay chi 50k ăn sáng | Tôi đã chi bao nhiều cho cafe trong tháng 12"
-							className="w-full rounded-xl border border-gray-200 p-3 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-						/>
-<Button onClick={handleUnifiedPrompt} isLoading={isSubmitting}>Gửi yêu cầu</Button>
+				<div className="px-6 py-8 space-y-6 max-h-[75vh] overflow-y-auto">
+					<div className="space-y-4">
+						<div className="space-y-2">
+							<label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Nhập yêu cầu của bạn</label>
+							<textarea
+								value={prompt}
+								onChange={(event) => setPrompt(event.target.value)}
+								rows={4}
+								placeholder="Ví dụ: 'Hôm nay tôi đã chi 50k ăn sáng' hoặc 'Tháng này tôi đã tiêu bao nhiêu tiền?'"
+								className="w-full rounded-2xl border border-gray-200 dark:border-[#2a2d3d] bg-gray-50 dark:bg-[#13151f] p-4 text-gray-700 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all leading-relaxed"
+							/>
+						</div>
+						
+						<Button onClick={handleUnifiedPrompt} isLoading={isSubmitting} className="w-full py-3 shadow-lg shadow-indigo-600/20">
+							<Sparkles size={18} className="mr-2" />
+							Gửi yêu cầu tới AI
+						</Button>
 
 						{detectedIntent && (
-							<div className="rounded-lg border border-indigo-100 bg-indigo-50 text-indigo-700 px-3 py-2 text-sm">
-								Detected intent: {detectedIntent}
+							<div className="rounded-xl border border-indigo-100 dark:border-indigo-900/30 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 px-4 py-2 text-[10px] font-black uppercase tracking-widest w-fit">
+								Mục đích: {detectedIntent === 'add' ? 'Thêm giao dịch' : 'Truy vấn'}
 							</div>
 						)}
 
 						{queryResult && (
-							<div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm">
-							<div className="text-sm">
-								<p className="font-semibold text-gray-800">Câu trả lời</p>
-								<p className="text-gray-700 mt-1">{queryResult.answer}</p>
-							</div>
-							<div className="grid grid-cols-2 gap-2 text-xs">
-								<div className="rounded-lg border border-gray-200 bg-white p-2">Tổng: {formatMoney(queryResult.total)}</div>
-								<div className="rounded-lg border border-gray-200 bg-white p-2">Số giao dịch: {queryResult.count}</div>
-							</div>
-							{queryResult.transactions.length > 0 && (
-								<div className="space-y-2">
-									<p className="font-semibold text-gray-700">Giao dịch phù hợp</p>
-										<div className="space-y-2 max-h-44 overflow-y-auto">
+							<div className="space-y-4 rounded-2xl border border-gray-100 dark:border-[#2a2d3d] bg-gray-50/50 dark:bg-[#13151f]/50 p-6">
+								<div className="flex items-start gap-3">
+									<div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0 mt-1 shadow-lg shadow-indigo-600/20">
+										<Sparkles size={14} className="text-white" />
+									</div>
+									<div className="flex-1">
+										<p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Câu trả lời từ AI</p>
+										<p className="text-slate-800 dark:text-slate-200 font-medium leading-relaxed">{queryResult.answer}</p>
+									</div>
+								</div>
+
+								<div className="grid grid-cols-2 gap-4">
+									<div className="rounded-xl border border-gray-100 dark:border-[#2a2d3d] bg-white dark:bg-[#1a1c26] p-4 shadow-sm">
+										<p className="text-[10px] text-slate-400 font-bold uppercase mb-1">Tổng cộng</p>
+										<p className="text-lg font-black text-slate-900 dark:text-white">{formatMoney(queryResult.total)}</p>
+									</div>
+									<div className="rounded-xl border border-gray-100 dark:border-[#2a2d3d] bg-white dark:bg-[#1a1c26] p-4 shadow-sm">
+										<p className="text-[10px] text-slate-400 font-bold uppercase mb-1">Số lượng</p>
+										<p className="text-lg font-black text-slate-900 dark:text-white">{queryResult.count} <span className="text-xs font-medium text-slate-500 lowercase">giao dịch</span></p>
+									</div>
+								</div>
+
+								{queryResult.transactions.length > 0 && (
+									<div className="space-y-3 pt-4 border-t border-gray-200 dark:border-[#2a2d3d]">
+										<p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest px-1">Chi tiết kết quả</p>
+										<div className="space-y-2 max-h-56 overflow-y-auto pr-1">
 											{queryResult.transactions.map((transaction) => (
-												<div key={transaction._id} className="rounded-lg border border-gray-200 bg-white px-3 py-2">
-													<p className="font-medium text-gray-800">{transaction.description}</p>
-													<p className="text-xs text-gray-600">
-														{formatMoney(transaction.total_amount)} | {transaction.details[0]?.categoryName || 'Other'} | {transaction.date}
-													</p>
+												<div key={transaction._id} className="rounded-xl border border-gray-100 dark:border-[#2a2d3d] bg-white dark:bg-[#1a1c26] px-4 py-3 hover:border-indigo-500/30 transition-all group">
+													<div className="flex justify-between items-start mb-1">
+														<p className="font-bold text-slate-800 dark:text-slate-200 text-sm group-hover:text-indigo-600 transition-colors">{transaction.description}</p>
+														<span className="text-xs font-black text-slate-900 dark:text-white">{formatMoney(transaction.total_amount)}</span>
+													</div>
+													<div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+														<span className="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded uppercase tracking-tighter">
+															{transaction.details[0]?.categoryName || 'Other'}
+														</span>
+														<span>•</span>
+														<span>{transaction.date}</span>
+													</div>
 												</div>
 											))}
 										</div>
@@ -149,14 +183,15 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 					</div>
 
 					{error && (
-						<div className="rounded-lg border border-red-100 bg-red-50 text-red-700 px-3 py-2 text-sm">
+						<div className="rounded-xl border border-red-100 dark:border-red-900/30 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-4 py-3 text-sm font-medium flex items-center gap-2">
+							<div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
 							{error}
 						</div>
 					)}
 				</div>
 
-				<div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-					<Button variant="secondary" onClick={resetAndClose}>Close</Button>
+				<div className="px-6 py-4 bg-gray-50/50 dark:bg-[#13151f]/50 border-t border-gray-100 dark:border-[#2a2d3d] flex justify-end">
+					<Button variant="secondary" onClick={resetAndClose}>Đóng cửa sổ</Button>
 				</div>
 			</div>
 		</div>

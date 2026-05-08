@@ -35,8 +35,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [draftPayload, setDraftPayload] = useState<TransactionPayload | null>(null);
   const [draftQueue, setDraftQueue] = useState<TransactionPayload[]>([]);
   const [pendingDeleteTransactionId, setPendingDeleteTransactionId] = useState<string | null>(null);
-  const [deleteTransactionError, setDeleteTransactionError] = useState<string | null>(null);
 
+  // Chuẩn bị danh sách danh mục cho form từ danh sách danh mục hiện có.
   const categoryFormOptions = useMemo<CategoryOption[]>(() => {
     return categories
       .map((category) => ({
@@ -49,6 +49,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       .filter((category) => Boolean(category.name));
   }, [categories]);
 
+  // Tải dữ liệu ban đầu cho dashboard gồm giao dịch và danh mục.
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
@@ -63,13 +64,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         setTransactions(transactionData.transactions);
         setCategories(categoryData.categories);
       } catch (error) {
-        console.error(error);
+        toast.error('Không thể tải dữ liệu. Vui lòng kiểm tra kết nối.');
       }
     };
 
     loadDashboardData();
   }, [user.token]);
 
+  // Gọi API để tạo một giao dịch mới.
   const createTransaction = async (newTx: TransactionPayload): Promise<Transaction> => {
     try {
       const response = await api.post<SaveTransactionResponse>('/transactions/add', newTx);
@@ -77,15 +79,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       toast.success(getApiSuccessMessage(data, 'Giao dịch đã được thêm thành công'));
       return data.transaction;
     } catch (error) {
-      throw new Error(getApiErrorMessage(error, 'Không thể thêm giao dịch'));
+      const message = getApiErrorMessage(error, 'Không thể thêm giao dịch');
+      toast.error(message);
+      throw new Error(message);
     }
   };
 
+  // Thêm giao dịch mới vào danh sách hiển thị sau khi tạo thành công.
   const addTransaction = async (newTx: TransactionPayload) => {
     const createdTransaction = await createTransaction(newTx);
     setTransactions((prev) => [createdTransaction, ...prev]);
   };
 
+  // Cập nhật thông tin một giao dịch hiện có.
   const updateTransaction = async (id: string, updatedTx: TransactionPayload) => {
     try {
       const response = await api.put<SaveTransactionResponse>(`/transactions/edit/${id}`, updatedTx);
@@ -93,10 +99,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       setTransactions((prev) => prev.map((t) => (t._id === id ? data.transaction : t)));
       toast.success(getApiSuccessMessage(data, 'Giao dịch đã được cập nhật thành công'));
     } catch (error) {
-      throw new Error(getApiErrorMessage(error, 'Không thể cập nhật giao dịch'));
+      const message = getApiErrorMessage(error, 'Không thể cập nhật giao dịch');
+      toast.error(message);
+      throw new Error(message);
     }
   };
 
+  // Xử lý lưu giao dịch (tạo mới hoặc chỉnh sửa).
   const handleSaveTransaction = async (tx: TransactionPayload) => {
     if (editingTransaction) {
       await updateTransaction(editingTransaction._id, tx);
@@ -106,6 +115,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     await addTransaction(tx);
   };
 
+  // Tạo một danh mục mới.
   const createCategory = async (payload: { name: string; description: string; type: CategoryType; catalogId?: string }) => {
     try {
       const response = await api.post<SaveCategoryResponse>('/categories/add', payload);
@@ -113,10 +123,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       setCategories((prev) => [data.category, ...prev.filter((item) => item._id !== data.category._id)]);
       toast.success(getApiSuccessMessage(data, 'Danh mục đã được thêm thành công'));
     } catch (error) {
-      throw new Error(getApiErrorMessage(error, 'Không thể tạo danh mục'));
+      const message = getApiErrorMessage(error, 'Không thể tạo danh mục');
+      toast.error(message);
+      throw new Error(message);
     }
   };
 
+  // Cập nhật thông tin danh mục.
   const updateCategory = async (id: string, payload: { name: string; description: string }) => {
     try {
       const response = await api.put<SaveCategoryResponse>(`/categories/edit/${id}`, payload);
@@ -124,17 +137,22 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       setCategories((prev) => prev.map((item) => (item._id === id ? data.category : item)));
       toast.success(getApiSuccessMessage(data, 'Danh mục đã được cập nhật thành công'));
     } catch (error) {
-      throw new Error(getApiErrorMessage(error, 'Không thể cập nhật danh mục'));
+      const message = getApiErrorMessage(error, 'Không thể cập nhật danh mục');
+      toast.error(message);
+      throw new Error(message);
     }
   };
 
+  // Xóa một danh mục.
   const deleteCategory = async (id: string) => {
     try {
       const response = await api.delete('/categories/delete/' + id);
       setCategories((prev) => prev.filter((item) => item._id !== id));
       toast.success(getApiSuccessMessage(response.data, 'Danh mục đã được xóa thành công'));
     } catch (error) {
-      throw new Error(getApiErrorMessage(error, 'Không thể xóa danh mục'));
+      const message = getApiErrorMessage(error, 'Không thể xóa danh mục');
+      toast.error(message);
+      throw new Error(message);
     }
   };
 
@@ -214,12 +232,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     const targetTransactionId = pendingDeleteTransactionId;
 
     try {
-      setDeleteTransactionError(null);
       const response = await api.delete('/transactions/delete/' + targetTransactionId);
       setTransactions((prev) => prev.filter((t) => t._id !== targetTransactionId));
       toast.success(getApiSuccessMessage(response.data, 'Giao dịch đã xóa thành công'));
     } catch (error) {
-      setDeleteTransactionError(getApiErrorMessage(error, 'Không thể xóa giao dịch'));
+      toast.error(getApiErrorMessage(error, 'Không thể xóa giao dịch'));
     } finally {
       setPendingDeleteTransactionId(null);
     }
@@ -248,10 +265,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         {/* Action Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900"> 
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white"> 
               Tổng quan
             </h1>
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 dark:text-slate-400 text-sm">
               Bức tranh nhanh về sức khoẻ tài chính của bạn
             </p>
           </div>
@@ -262,7 +279,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
               className = "flex-1 sm:flex-none"
             >
               <ScanText size={18} />
-              Quét hóa đơn
+              Trích xuất hóa đơn
             </Button>
             <Button 
               variant   = "secondary" 
@@ -336,22 +353,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
       />
 
       <ToastModal
-        isOpen={Boolean(pendingDeleteTransactionId)}
+        isOpen={!!pendingDeleteTransactionId}
         type="confirm"
-        title="Xác nhận xóa giao dịch"
-        message="Bạn có chắc chắn muốn xóa giao dịch này không?"
+        title="Xóa giao dịch"
+        message="Bạn có chắc chắn muốn xóa giao dịch này không? Hành động này không thể hoàn tác."
         confirmText="Xóa"
         cancelText="Hủy"
         onClose={() => setPendingDeleteTransactionId(null)}
         onConfirm={confirmDeleteTransaction}
-      />
-
-      <ToastModal
-        isOpen={Boolean(deleteTransactionError)}
-        type="error"
-        title="Xóa thất bại"
-        message={deleteTransactionError || ''}
-        onClose={() => setDeleteTransactionError(null)}
       />
 
     </div>

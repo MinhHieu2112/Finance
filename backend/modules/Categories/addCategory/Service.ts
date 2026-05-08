@@ -5,6 +5,7 @@ import type { CategoryPayload, CategoryType, CategoryWithUserPayload } from './t
 const isValidCategoryType = (value: unknown): value is CategoryType => value === 'income' || value === 'expense';
 
 class categoryService {
+    // Xử lý logic nghiệp vụ khi thêm danh mục, bao gồm kiểm tra trùng lặp và tính hợp lệ của catalog.
 	async addCategory(data: CategoryPayload & { userId: CategoryWithUserPayload['userId'] }) {
 		const userId 	= data.userId;
 		const name 		= data.name.trim();

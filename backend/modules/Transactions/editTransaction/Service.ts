@@ -1,10 +1,13 @@
 import transactionRepository from './Repository';
 import AppError from '../../../utils/appError';
-import { TransactionFrequency, TransactionType } from './types';
+import { TransactionFrequency, TransactionType, Currency } from './types';
 import type { editTransactionSchema, transactionDetailSchema } from './types';
 import { Types } from 'mongoose';
+import { convertToBase } from '../../../utils/currencyConverter';
+import { parseCurrencyInput } from '../../../utils/parseCurrencyInput';
 
 class transactionService {
+	// Xử lý nghiệp vụ cập nhật thông tin giao dịch và quy đổi.
 	async editTransaction(id	: Types.ObjectId,
 						  userId: Types.ObjectId,
 						  data	: editTransactionSchema) {
@@ -13,6 +16,7 @@ class transactionService {
         const type        = data.type?.trim() as TransactionType;
         const frequency   = data.frequency?.trim() as TransactionFrequency;
         const details     = data.details as transactionDetailSchema[];
+        let inferredCurrency: Currency | null = null;
 
         if (!description ||
             !type ||
@@ -35,45 +39,67 @@ class transactionService {
             throw new AppError('total_amount must be greater than or equal to 0', 400);
         }
 
-        const normalizedDetails = [];
+        const parsedDetails = [];
         for (const detail of details) {
             const categoryId   = detail.categoryId;
-            const amount       = Number(detail.amount);
             const quantity     = Number(detail.quantity) || 1;
             const name         = detail.name?.trim() || '';
+            const parsedAmount = parseCurrencyInput(detail.amount);
+            const amount       = parsedAmount.amount;
 
             if (!categoryId) {
                 throw new AppError('Transaction detail is missing categoryId', 400);
             }
 
-            if (!Number.isFinite(amount) || amount < 0) {
+            if (parsedAmount.detectedCurrency) {
+                if (inferredCurrency && inferredCurrency !== parsedAmount.detectedCurrency) {
+                    throw new AppError('Mixed currencies in one transaction are not supported', 400);
+                }
+                inferredCurrency = parsedAmount.detectedCurrency;
+            }
+
+            if (!Number.isFinite(amount) || amount === null || amount < 0) {
                 throw new AppError(`Transaction detail has invalid amount`, 400);
             }
 
             if (!Number.isFinite(quantity) || quantity <= 0) {
                 throw new AppError(`Transaction detail has invalid quantity`, 400);
             }
+            parsedDetails.push({categoryId, name, amount, quantity});
+        }
 
-			const existingCategory = await transactionRepository.findCategoryNameById(userId, categoryId, type);
+        const currency = inferredCurrency || data.currency || Currency.VND;
+
+        if (!Object.values(Currency).includes(currency)) {
+            throw new AppError('Invalid currency', 400);
+        }
+
+        const normalizedDetails = [];
+        for (const detail of parsedDetails) {
+			const existingCategory = await transactionRepository.findCategoryNameById(userId, detail.categoryId, type);
             if (!existingCategory) {
                 throw new AppError('Category not found for this user', 400);
             }
             normalizedDetails.push({
-                    categoryId,
+                    categoryId  : detail.categoryId,
                     categoryName: existingCategory.name,
-                    name,
-                    amount,
-                    quantity
+                    name        : detail.name,
+                    amount      : detail.amount,
+                    quantity    : detail.quantity,
+                    base_amount : convertToBase(detail.amount, currency)
                 });
         }
 
         totalAmount = normalizedDetails.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
+        const baseAmount = convertToBase(totalAmount, currency);
     
         const updatedTransaction = await transactionRepository.editTransactionById(id,
                                                            userId,
                                                                         		  {description : description,
                                                                         		   type        : type,
                                                                         		   frequency   : frequency,
+                                                                        		   currency    : currency,
+                                                                        		   base_amount : baseAmount,
                                                                         		   date        : data.date,
                                                                         		   total_amount: totalAmount,
                                                                         		   details     : normalizedDetails,});

@@ -8,10 +8,12 @@ import { ProfilePage } from './pages/ProfilePage/ProfilePage';
 import Sidebar from './components/Sidebar/Sidebar';
 import { Navbar } from './components/Navbar/Navbar';
 import { Footer } from './components/Footer/Footer';
+import { ToastModal } from './components/ToastModal/ToastModal';
 import type { User } from './types/Users';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
   // Load user from local storage on mount (simple persistence)
   useEffect(() => {
@@ -32,6 +34,7 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
+    setIsLogoutConfirmOpen(false);
     setUser(null);
     localStorage.removeItem('smart_finance_user');
   };
@@ -43,11 +46,11 @@ const App: React.FC = () => {
       {!user ? (
         <LoginPage onLogin={handleLogin} />
       ) : (
-        <div className="min-h-screen bg-gray-100 dark:bg-slate-900 transition-colors">
+        <div className="min-h-screen bg-gray-50 dark:bg-[#0f111a] transition-colors font-sans">
           <div className="flex min-h-screen">
             <Sidebar />
             <div className="flex-1 min-w-0 flex flex-col">
-              <Navbar user={user} onLogout={handleLogout} />
+              <Navbar user={user} onLogout={() => setIsLogoutConfirmOpen(true)} />
               <main className="flex-1">
                 <Routes>
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -60,6 +63,17 @@ const App: React.FC = () => {
               <Footer />
             </div>
           </div>
+          
+          <ToastModal
+            isOpen={isLogoutConfirmOpen}
+            type="confirm"
+            title="Xác nhận đăng xuất"
+            message="Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng không?"
+            confirmText="Đăng xuất"
+            cancelText="Hủy"
+            onClose={() => setIsLogoutConfirmOpen(false)}
+            onConfirm={handleLogout}
+          />
         </div>
       )}
     </>

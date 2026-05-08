@@ -11,18 +11,18 @@ class insightsService {
         this.genAI = new GoogleGenerativeAI(apiKey);
     }
 
+    // Tạo thông tin phân tích dựa trên các quy tắc logic cơ bản (fallback khi AI không khả dụng).
     private generateRuleBasedInsights(transactions: any[]) {
-        // Fallback rule-based insight generation
         let totalIncome = 0;
         let totalExpense = 0;
         const expensesByCategory: Record<string, number> = {};
 
         transactions.forEach(t => {
-            if (t.type === 'income') totalIncome += t.total_amount;
+            if (t.type === 'income') totalIncome += (t.base_amount || t.total_amount);
             if (t.type === 'expense') {
-                totalExpense += t.total_amount;
+                totalExpense += (t.base_amount || t.total_amount);
                 t.details.forEach((d: any) => {
-                    expensesByCategory[d.categoryName] = (expensesByCategory[d.categoryName] || 0) + (d.amount * d.quantity);
+                    expensesByCategory[d.categoryName] = (expensesByCategory[d.categoryName] || 0) + ((d.base_amount || d.amount) * d.quantity);
                 });
             }
         });
@@ -48,6 +48,7 @@ class insightsService {
         };
     }
 
+    // Sử dụng AI (Gemini) để phân tích thói quen chi tiêu và đưa ra lời khuyên tài chính.
     async generateInsights(userId: Types.ObjectId) {
         const transactions = await insightsRepository.getRecentTransactions(userId, 3);
         
@@ -66,8 +67,20 @@ class insightsService {
         };
 
         transactions.forEach(t => {
-            if (t.type === 'income') summaryObj.incomes.push({ date: t.date, amount: t.total_amount, desc: t.description });
-            else summaryObj.expenses.push({ date: t.date, amount: t.total_amount, desc: t.description, details: t.details.map((d:any) => ({ category: d.categoryName, amount: d.amount * d.quantity })) });
+            const amount = t.base_amount || t.total_amount;
+            if (t.type === 'income') {
+                summaryObj.incomes.push({ date: t.date, amount, desc: t.description });
+            } else {
+                summaryObj.expenses.push({ 
+                    date: t.date, 
+                    amount, 
+                    desc: t.description, 
+                    details: t.details.map((d: any) => ({ 
+                        category: d.categoryName, 
+                        amount: (d.base_amount || d.amount) * d.quantity 
+                    })) 
+                });
+            }
         });
 
         const prompt = `
@@ -88,7 +101,7 @@ ${JSON.stringify(summaryObj).substring(0, 3000)} // Giới hạn độ dài đ�
             const result = await model.generateContent(prompt);
             const text = result.response.text();
             
-            // Extract JSON from markdown codeblock if exists
+            // Trích xuất JSON từ codeblock markdown nếu có
             let jsonStr = text;
             const match = text.match(/```(?:json)?\\n([\\s\\S]*?)\\n```/);
             if (match) {
@@ -98,7 +111,7 @@ ${JSON.stringify(summaryObj).substring(0, 3000)} // Giới hạn độ dài đ�
             } else if (text.startsWith('{')) {
                 jsonStr = text.trim();
             } else {
-                // If AI doesn't return JSON but plain text, fallback to parsing manually or use rule-based
+                // Nếu AI không trả về JSON mà là văn bản, hãy quay lại phân tích theo quy tắc
                 throw new Error("Invalid format from AI");
             }
 

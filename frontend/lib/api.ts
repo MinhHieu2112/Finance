@@ -22,8 +22,7 @@ const getStoredToken = () => {
 
 api.interceptors.request.use((config) => {
   const token = getStoredToken();
-  if (token) {
-    config.headers = config.headers ?? {};
+  if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
 

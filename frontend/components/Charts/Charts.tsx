@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from 'react';
+import { formatCurrency } from '../../lib/currencies';
+import { Currency } from '../../types/Transactions';
 import type { ChartsProps } from './types';
 import { TransactionType } from './types';
 import {
@@ -12,9 +14,11 @@ import {
   CartesianGrid,
   LineChart,
   Line,
+  Legend,
 } from 'recharts';
+import { X } from 'lucide-react';
 
-const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6366F1'];
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#0ea5e9'];
 
 type Period = 'week' | 'month' | 'year' | 'custom';
 
@@ -96,7 +100,8 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     const map      = new Map<string, number>();
     expenses.forEach((t) => {
       t.details.forEach((detail) => {
-        map.set(detail.categoryName, (map.get(detail.categoryName) || 0) + detail.amount);
+        const amount = detail.base_amount || detail.amount;
+        map.set(detail.categoryName, (map.get(detail.categoryName) || 0) + (amount * (detail.quantity || 1)));
       });
     });
     const rows  = Array.from(map.entries()).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
@@ -136,71 +141,89 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     }
     startDate.setHours(0, 0, 0, 0);
 
-    const groupedDailyNet = new Map<string, number>();
+    const groupedDailyIncome = new Map<string, number>();
+    const groupedDailyExpense = new Map<string, number>();
     parsedTransactions.forEach((t) => {
       if (t.parsedDate < startDate || t.parsedDate > endDate) return;
-      const signed = t.type === TransactionType.INCOME ? t.total_amount : -t.total_amount;
-      const key    = formatDateKey(t.parsedDate);
-      groupedDailyNet.set(key, (groupedDailyNet.get(key) || 0) + signed);
+      const key = formatDateKey(t.parsedDate);
+      const amount = t.base_amount || t.total_amount;
+      if (t.type === TransactionType.INCOME) {
+        groupedDailyIncome.set(key, (groupedDailyIncome.get(key) || 0) + amount);
+      } else {
+        groupedDailyExpense.set(key, (groupedDailyExpense.get(key) || 0) + amount);
+      }
     });
 
-    const result: Array<{ date: string; label: string; balance: number }> = [];
+    const initialBalance = transactions.reduce((acc, t) => {
+      const d = parseTransactionDate(t.date);
+      if (d && d < startDate) {
+        const amount = t.base_amount || t.total_amount;
+        return t.type === TransactionType.INCOME ? acc + amount : acc - amount;
+      }
+      return acc;
+    }, 0);
+
+    const result: Array<{ date: string; label: string; income: number; expense: number; balance: number }> = [];
     const cursor = new Date(startDate);
-    let runningBalance = 0;
+    let runningBalance = initialBalance;
     while (cursor <= endDate) {
       const dateKey = formatDateKey(cursor);
-      runningBalance += groupedDailyNet.get(dateKey) || 0;
-      result.push({ date: dateKey, label: formatShortDate(cursor), balance: runningBalance });
+      const income = groupedDailyIncome.get(dateKey) || 0;
+      const expense = groupedDailyExpense.get(dateKey) || 0;
+      runningBalance += (income - expense);
+      result.push({ 
+        date: dateKey, 
+        label: formatShortDate(cursor), 
+        income, 
+        expense, 
+        balance: runningBalance 
+      });
       cursor.setDate(cursor.getDate() + 1);
     }
     return result;
-  }, [filteredTransactions, period]);
+  }, [transactions, filteredTransactions, period]);
 
   const formatTooltipMoney = (value: unknown) =>
-    `${Math.round(Number(value ?? 0)).toLocaleString('vi-VN')} VND`;
+    formatCurrency(Number(value ?? 0), Currency.VND);
 
   if (transactions.length === 0) return null;
 
   return (
     <div className="mb-6">
-      {/* Period Filter */}
-      <div className="flex flex-col gap-3 mb-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold text-gray-800 dark:text-slate-100">
-            Biểu đồ tài chính
-          </h3>
-          <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-700/50 p-1 rounded-lg">
-            {PERIODS.map(({ label, value }) => (
-              <button
-                key={value}
-                onClick={() => setPeriod(value)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                  period === value
-                    ? 'bg-white dark:bg-slate-700 text-primary dark:text-indigo-400 shadow-sm'
-                    : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-700/50 p-1 rounded-xl shadow-sm">
+          {PERIODS.map(({ label, value }) => (
+            <button
+              key={value}
+              onClick={() => setPeriod(value)}
+              className={`px-4 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition-all ${
+                period === value
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-md'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         {period === 'custom' && (
-          <div className="flex items-center justify-end gap-2 animate-fade-in">
-            <div className="flex items-center gap-1 bg-white dark:bg-slate-700 p-1 border border-gray-200 dark:border-slate-600 rounded-lg shadow-sm">
+          <div className="flex items-center gap-3 animate-fade-in-up">
+            <div className="flex items-center gap-2 bg-white dark:bg-[#1a1c26] p-1.5 border border-gray-200 dark:border-[#2a2d3d] rounded-xl shadow-sm">
               <input
                 type="date"
                 value={customStartDate}
                 onChange={(e) => setCustomStartDate(e.target.value)}
-                className="px-2 py-1 text-sm text-gray-600 dark:text-slate-300 bg-transparent focus:outline-none border-none"
+                className="px-2 py-1 text-xs font-bold text-gray-700 dark:text-slate-300 bg-transparent focus:outline-none border-none outline-none"
               />
-              <span className="text-gray-300 dark:text-slate-500">→</span>
+              <span className="text-gray-300 dark:text-slate-600">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </span>
               <input
                 type="date"
                 value={customEndDate}
                 onChange={(e) => setCustomEndDate(e.target.value)}
-                className="px-2 py-1 text-sm text-gray-600 dark:text-slate-300 bg-transparent focus:outline-none border-none"
+                className="px-2 py-1 text-xs font-bold text-gray-700 dark:text-slate-300 bg-transparent focus:outline-none border-none outline-none"
               />
             </div>
             {(customStartDate || customEndDate) && (
@@ -209,9 +232,10 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
                   setCustomStartDate('');
                   setCustomEndDate('');
                 }}
-                className="text-xs text-red-500 hover:text-red-600 px-2 font-medium"
+                className="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                title="Xóa lọc"
               >
-                Xóa
+                <X size={16} />
               </button>
             )}
           </div>
@@ -272,6 +296,9 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
                       color: isDark ? '#e2e8f0' : '#374151',
                     }}
                   />
+                  <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
+                  <Line type="monotone" dataKey="income" name="Thu nhập" stroke="#10B981" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="expense" name="Chi tiêu" stroke="#EF4444" strokeWidth={2} dot={false} />
                   <Line type="monotone" dataKey="balance" name="Số dư" stroke="#6366f1" strokeWidth={2.5} dot={false} />
                 </LineChart>
               </ResponsiveContainer>

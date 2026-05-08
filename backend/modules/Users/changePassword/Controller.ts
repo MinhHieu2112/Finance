@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import changePasswordService from './Service';
 
+// Tiếp nhận yêu cầu đổi mật khẩu từ người dùng đã đăng nhập.
 const changePassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authUser = res.locals.authUser;

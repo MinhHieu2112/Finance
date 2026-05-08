@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import transactionService from './Service';
 
+// Xử lý yêu cầu lấy danh sách giao dịch của người dùng hiện tại.
 const listTransaction = async (_req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authUser 	   = res.locals.authUser;

@@ -3,6 +3,7 @@ import { type Types } from 'mongoose';
 import type { CategoryListItem } from './types';
 
 class categoryRepository {
+	// Truy vấn danh sách danh mục từ cơ sở dữ liệu và liên kết với bảng catalog.
 	async listCategories(userId: Types.ObjectId): Promise<CategoryListItem[]> {
 		return categoryModel
 			.find({ userId })

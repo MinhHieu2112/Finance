@@ -6,6 +6,7 @@ import AppError from '../../../utils/appError';
 import type { AuthResult, AuthTokenPayload, LoginPayload } from './types';
 
 class authService {
+    // Tạo mã xác thực JWT cho người dùng khi đăng nhập thành công.
 	createToken(userData: AuthTokenPayload) {
 		const secret = process.env.JWT_SECRET;
 		if (!secret) {
@@ -17,6 +18,7 @@ class authService {
 						 secret)
 	}
 
+	// Xử lý quy trình đăng nhập, bao gồm xác thực email và mật khẩu.
 	async login(data: LoginPayload): Promise<AuthResult> {
 		const email    = data.email?.trim().toLowerCase();
 		const password = data.password;
@@ -41,7 +43,8 @@ class authService {
 
 		const userData = {id	  : user._id,
 						  username: user.username,
-						  email   : user.email};
+						  email   : user.email,
+						  phone   : user.phone};
 
 		return {user : userData,
 				token: this.createToken(userData)};

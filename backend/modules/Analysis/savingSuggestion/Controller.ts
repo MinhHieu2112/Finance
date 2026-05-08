@@ -3,6 +3,7 @@ import forcastingTrendService from '../forcastingTrend/Service';
 import detectAnomaliesService from '../detectAnomalies/Service';
 import savingSuggestionService from './Service';
 
+// Kết hợp dữ liệu dự báo và phân tích bất thường để đưa ra các gợi ý tiết kiệm tối ưu.
 const getSavingSuggestion = async (_req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authUser    = res.locals.authUser;

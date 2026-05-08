@@ -5,11 +5,13 @@ import { type Types } from 'mongoose';
 import type { AITransactionType } from '../aiAssistant';
 
 class add_query_nlpRepository {
+	// Thêm một giao dịch mới được trích xuất từ dữ liệu AI vào cơ sở dữ liệu.
 	async addTransaction(data: transactionSchema): Promise<transactionSchema> {
 		const transaction = await transactionModel.create(data);
 		return transaction;
 	}
 
+	// Truy vấn danh sách các giao dịch dựa trên bộ lọc đã được chuẩn hóa.
 	async queryTransaction(queryFilter: Record<string, unknown>,): Promise<transactionSchema[]> {
 		return transactionModel.find(queryFilter)
 							   .sort({ date: -1 })
@@ -17,12 +19,13 @@ class add_query_nlpRepository {
 							   .select('_id userId description type frequency date total_amount details createdAt updatedAt')
 							   .lean<transactionSchema[]>();
 	}
+	// Tìm danh mục dựa trên tên và loại giao dịch để phục vụ ánh xạ dữ liệu AI.
 	async findCategoryByName(userId: Types.ObjectId, type: AITransactionType, name: string) {
 		const category = await categoryModel.findOne({ userId, type, name })
 											.select('_id name')
 											.lean<{ _id: Types.ObjectId; name: string }>();
 
-		return category ?? null;
+		return category;
 	}
 }
 export default new add_query_nlpRepository();

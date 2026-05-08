@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import categoryService from './Service';
 
+// Tiếp nhận yêu cầu thêm danh mục chi tiêu/thu nhập mới từ client.
 const addCategory = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { name, type, catalogId } = req.body;

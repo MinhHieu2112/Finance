@@ -7,6 +7,7 @@ import { readFile } from 'node:fs/promises';
 import { en } from 'zod/locales';
 
 class add_query_nlpService {
+    // Khởi tạo danh sách các công cụ (tools) cho AI với các định nghĩa hàm cụ thể.
 	private getTools(categoryList: string[]) {
 		return [
 			{
@@ -126,6 +127,7 @@ class add_query_nlpService {
 		];
 	}
 
+    // Xây dựng nội dung prompt hướng dẫn AI cách xử lý dữ liệu.
 	private buildPrompt(text: string | null, categoryList: string[]) {
 		const today = new Date().toISOString().slice(0, 10);
 		if (text === null) {
@@ -221,6 +223,7 @@ class add_query_nlpService {
 		].join('\n');
 	}
 
+    // Cấu hình yêu cầu gửi tới AI, bao gồm model, nội dung và các công cụ hỗ trợ.
 	private buildRequest(prompt		 : string | null, 
 						 file		 : Buffer | undefined, 
 						 categoryList: string[]) 
@@ -258,6 +261,7 @@ class add_query_nlpService {
 		};
 	}	
 
+    // Xử lý luồng chính của yêu cầu từ người dùng thông qua AI và công cụ MCP.
 	async handlePrompt(userId: Types.ObjectId, prompt: string | null, file: Buffer | undefined): Promise<unknown> {
 		if (!userId) {
 			throw new AppError('User id is required', 400);

@@ -9,10 +9,13 @@ export interface AIDetailInput {
   name: string;
 }
 
+import { Currency } from '../types/Transactions';
+
 export interface AITransactionInput {
   description: string;
   type: AITransactionType;
   frequency: AITransactionFrequency;
+  currency?: Currency;
   date: Date;
   details: AIDetailInput[];
 }

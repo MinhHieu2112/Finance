@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import categoryService from './Service';
 
+// Tiếp nhận yêu cầu xóa danh mục từ client.
 const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authUser 	 = res.locals.authUser;

@@ -1,6 +1,7 @@
 import type { AnalysisAnomaly, ForcastingTrendResult } from './types';
 
 class savingSuggestionService {
+    // Tính giá trị trung bình của một mảng số. (sử dụng internal method)
 	private mean(values: number[]) {
 		if (!values.length) {
 			return 0;
@@ -9,6 +10,7 @@ class savingSuggestionService {
 		return values.reduce((sum, value) => sum + value, 0) / values.length;
 	}
 
+    // Xây dựng danh sách các gợi ý tiết kiệm dựa trên xu hướng thu nhập và chi tiêu.
 	buildSavingSuggestion(trend: ForcastingTrendResult, anomalies: AnalysisAnomaly[]) {
 		const incomeSeries  = trend.monthlySeries.map((point) => point.income);
 		const expenseSeries = trend.monthlySeries.map((point) => point.expense);

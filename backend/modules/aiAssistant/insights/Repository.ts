@@ -2,6 +2,7 @@ import transactionModel from '../../../models/Transaction';
 import { Types } from 'mongoose';
 
 class insightsRepository {
+    // Truy vấn danh sách giao dịch trong vài tháng gần nhất để phục vụ phân tích insights.
     async getRecentTransactions(userId: Types.ObjectId, months: number = 3) {
         const fromDate = new Date();
         fromDate.setMonth(fromDate.getMonth() - months);

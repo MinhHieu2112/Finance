@@ -5,6 +5,7 @@ enum TransactionType {
   EXPENSE = 'expense',
 }
 
+// Schema cho danh mục thu nhập hoặc chi tiêu của người dùng.
 const categorySchema = new Schema({userId     : {type    : Schema.Types.ObjectId,
                                                  required: true,
                                                  ref     : 'User',

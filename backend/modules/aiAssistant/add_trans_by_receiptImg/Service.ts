@@ -2,11 +2,15 @@ import { type Types } from 'mongoose';
 import AppError from '../../../utils/appError';
 import add_trans_by_receiptImgRepository from './Repository';
 import { FinancetSchema } from "../../../utils/normalized"
+import { convertToBase } from '../../../utils/currencyConverter';
 import type { AIDetailInput, 
 			  AIIntentPayload, 
 			  AITransactionInput } from './types';
 
+import { Currency } from '../../types/Transactions';
+
 class add_trans_by_receiptImgService {
+	// Xử lý dữ liệu trích xuất từ hóa đơn và quy đổi sang đơn vị VND.
 	async handleReceiptImage(userId: Types.ObjectId, 
 							 data  : AIIntentPayload): Promise<unknown[]> {
 		if (!userId || !data) {
@@ -39,6 +43,7 @@ class add_trans_by_receiptImgService {
 								categoryName: category.name,
 								quantity	: d.quantity,
 								amount		: d.amount,
+								base_amount	: convertToBase(d.amount, t.currency || Currency.VND),
 								name		: d.name,}
 					})
 				);
@@ -48,8 +53,10 @@ class add_trans_by_receiptImgService {
 				return {description	: t.description,
 						type		: t.type,
 						frequency	: t.frequency,
+						currency	: t.currency || Currency.VND,
 						date		: t.date,
 						total_amount: totalAmount,
+						base_amount	: convertToBase(totalAmount, t.currency || Currency.VND),
 						details		: details,};
 			})
 		);

@@ -12,6 +12,15 @@ enum TransactionFrequency {
   ONE_TIME = 'one-time',
 }
 
+enum Currency {
+  VND = 'VND',
+  USD = 'USD',
+  EUR = 'EUR',
+  JPY = 'JPY',
+  GBP = 'GBP',
+}
+
+// Schema chi tiết cho từng mục trong một giao dịch (ví dụ: các món hàng trong một hóa đơn).
 const transactionDetailSchema = new Schema({categoryId  : {type    : Schema.Types.ObjectId,
                                                             required: true,
                                                             ref     : 'Category',},
@@ -24,12 +33,19 @@ const transactionDetailSchema = new Schema({categoryId  : {type    : Schema.Type
                                              amount      : {type    : Number,
                                                             required: true,
                                                             min     : 0,},
-                                             name        : {type   : String,
-                                                            default: '',
-                                                            trim   : true,}},
+                                             base_amount : {type    : Number,
+                                                            required: true,
+                                                            min     : 0,
+                                                            default : 0,},
+                                             name        : {type    : String,
+                                                            default : '',
+                                                            trim    : true,}},
                                             { _id: false }
 );
 
+/**
+ * Schema chính cho giao dịch (thu nhập hoặc chi tiêu).
+ */
 const transactionSchema = new Schema({userId      : {type    : Schema.Types.ObjectId,
                                                      required: true,
                                                      ref     : 'User',
@@ -49,6 +65,14 @@ const transactionSchema = new Schema({userId      : {type    : Schema.Types.Obje
                                       total_amount: {type    : Number,
                                                      required: true,
                                                      min     : 0,},
+                                      currency    : {type    : String,
+                                                     required: true,
+                                                     enum    : Object.values(Currency),
+                                                     default : Currency.VND,},
+                                      base_amount : {type    : Number,
+                                                     required: true,
+                                                     min     : 0,
+                                                     default : 0,},
                                       details     : {type    : [transactionDetailSchema],
                                                      required: true,
                                                      validate: [(value: unknown[]) => value.length > 0, 'At least one transaction detail is required'],}},

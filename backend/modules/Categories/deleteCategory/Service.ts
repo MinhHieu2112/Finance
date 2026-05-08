@@ -3,6 +3,7 @@ import categoryRepository from './Repository';
 import { Types } from 'mongoose';
 
 class categoryService {
+    // Xử lý logic xóa danh mục và kiểm tra quyền sở hữu của người dùng.
 	async deleteCategory(categoryId: string, userId: Types.ObjectId) {
 		if (!categoryId || !userId) {
 			throw new AppError('Category id and user id are required', 400);

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '../Button/Button';
 import { Plus, Trash2, X } from 'lucide-react';
-import { ToastModal } from '../ToastModal/ToastModal';
+import toast from 'react-hot-toast';
 import {
   TransactionFrequency,
   TransactionType,
@@ -13,11 +13,20 @@ import type {
   TransactionDetailInput,
   TransactionPayload,
 } from './types';
+import { Currency } from '../../types/Transactions';
+import { formatCurrency } from '../../lib/currencies';
+import { parseCurrencyAmountInput } from '../../lib/currencyInput';
+import { getApiErrorMessage } from '@/lib/api';
+import { ToastModal } from '../ToastModal/ToastModal';
 
 // Tạo ID cho từng row
+// Tạo ID duy nhất cho từng dòng hạng mục chi tiết.
 const createRowId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+// Lấy ngày hiện tại định dạng ISO (YYYY-MM-DD).
 const getTodayISO = () => new Date().toISOString().split('T')[0];
 
+// Chuyển đổi giá trị ngày sang định dạng chuẩn của input date.
 const toDateInputValue = (dateValue?: string) => {
   if (!dateValue) {
     return getTodayISO();
@@ -31,6 +40,7 @@ const toDateInputValue = (dateValue?: string) => {
   return parsedDate.toISOString().split('T')[0];
 };
 
+// Tạo một hạng mục chi tiết trống mặc định.
 const createEmptyDetail = (defaultCategoryId = ''): TransactionDetailInput => ({
   id: createRowId(),
   categoryId: defaultCategoryId,
@@ -39,6 +49,10 @@ const createEmptyDetail = (defaultCategoryId = ''): TransactionDetailInput => ({
   name: '',
 });
 
+// Phân tích chuỗi số tiền nhập vào thành giá trị số nguyên.
+const getParsedAmount = (rawValue: string) => parseCurrencyAmountInput(rawValue).amount;
+
+// Xây dựng danh sách hạng mục ban đầu dựa trên dữ liệu giao dịch hoặc payload có sẵn.
 const buildInitialDetails = (
   categoryOptions: CategoryOption[],
   type: TransactionType,
@@ -91,6 +105,12 @@ const getInitialDate = (
   payload?: TransactionPayload | null,
 ) => toDateInputValue(transaction?.date || payload?.date);
 
+const getInitialCurrency = (
+  transaction?: Transaction | null,
+  payload?: TransactionPayload | null,
+) => transaction?.currency || payload?.currency || Currency.VND;
+
+// Biểu mẫu xử lý việc tạo mới hoặc chỉnh sửa giao dịch tài chính.
 export const TransactionForm: React.FC<TransactionFormProps> = ({
   onSave,
   onClose,
@@ -105,6 +125,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   const [frequency, setFrequency] = useState<TransactionFrequency>(
     getInitialFrequency(initialTransaction, initialPayload),
   );
+  const [currency, setCurrency] = useState<Currency>(getInitialCurrency(initialTransaction, initialPayload));
   const [date, setDate] = useState(getInitialDate(initialTransaction, initialPayload));
   const [details, setDetails] = useState<TransactionDetailInput[]>(
     buildInitialDetails(categoryOptions, getInitialType(initialTransaction, initialPayload), initialTransaction, initialPayload),
@@ -113,9 +134,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isEditConfirmOpen, setIsEditConfirmOpen] = useState(false);
   const [pendingEditPayload, setPendingEditPayload] = useState<TransactionPayload | null>(null);
-  const fieldLabelClass = 'block text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2 ml-1';
-  const detailLabelClass = 'block text-[10px] font-bold uppercase tracking-wide text-gray-400 mb-2 ml-1';
-  const fieldClass = 'h-14 w-full rounded-xl bg-gray-50 px-4 text-sm text-gray-700 ring-1 ring-gray-200 outline-none transition-all duration-200 focus:bg-white focus:ring-2 focus:ring-indigo-500';
+  const fieldLabelClass = 'block text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5 ml-1';
+  const detailLabelClass = 'block text-[9px] font-black uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1.5 ml-1';
+  const fieldClass = 'h-11 w-full rounded-xl bg-gray-50 dark:bg-[#13151f] px-4 text-sm text-gray-700 dark:text-slate-200 ring-1 ring-gray-200 dark:ring-[#2a2d3d] outline-none transition-all duration-200 focus:bg-white dark:focus:bg-[#1a1c26] focus:ring-2 focus:ring-indigo-500/40';
   
   const filteredCategoryOptions = useMemo(
     () => categoryOptions.filter((category) => category.type === type),
@@ -145,6 +166,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     setDescription(getInitialDescription(initialTransaction, initialPayload));
     setType(initialType);
     setFrequency(getInitialFrequency(initialTransaction, initialPayload));
+    setCurrency(getInitialCurrency(initialTransaction, initialPayload));
     setDate(getInitialDate(initialTransaction, initialPayload));
     setDetails(buildInitialDetails(categoryOptions, initialType, initialTransaction, initialPayload));
   }, [initialTransaction, initialPayload, mode, categoryOptions]);
@@ -187,15 +209,47 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   };
 
   const totalAmountPreview = details.reduce((sum, detail) => {
-    const amountValue = Number.parseFloat(detail.amount);
+    const amountValue = getParsedAmount(detail.amount);
     const quantityValue = Number.parseInt(detail.quantity, 10);
     return Number.isFinite(amountValue) && amountValue >= 0 && Number.isFinite(quantityValue) && quantityValue > 0
       ? sum + amountValue * quantityValue
       : sum;
   }, 0);
 
+  const handleAmountChange = (detailId: string, rawValue: string) => {
+    const { detectedCurrency } = parseCurrencyAmountInput(rawValue);
+    updateDetail(detailId, { amount: rawValue });
+
+    if (detectedCurrency && detectedCurrency !== currency) {
+      setCurrency(detectedCurrency);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    const detectedCurrencies = Array.from(new Set(
+      details
+        .map((detail) => parseCurrencyAmountInput(detail.amount).detectedCurrency)
+        .filter((value): value is Currency => value !== null),
+    ));
+
+    if (detectedCurrencies.length > 1) {
+      setSubmitError('Mỗi giao dịch chỉ hỗ trợ một loại tiền tệ. Vui lòng dùng cùng một đơn vị cho tất cả hạng mục.');
+      return;
+    }
+
+    const invalidAmountExists = details.some((detail) => {
+      const hasRawValue = detail.amount.trim().length > 0;
+      return hasRawValue && getParsedAmount(detail.amount) === null;
+    });
+
+    if (invalidAmountExists) {
+      setSubmitError('Có hạng mục có số tiền không hợp lệ. Bạn có thể nhập như `20000`, `20$` hoặc `500000đ`.');
+      return;
+    }
+
+    const resolvedCurrency = detectedCurrencies[0] || currency;
 
     const normalizedDetails = details.map((detail) => {
       const matchedCategory = categoryOptions.find((category) => category._id === detail.categoryId);
@@ -203,7 +257,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
         categoryId: detail.categoryId,
         categoryName: matchedCategory?.name || '',
         quantity: Number.parseInt(detail.quantity, 10) || 1,
-        amount: Number.parseFloat(detail.amount) || 0,
+        amount: getParsedAmount(detail.amount) || 0,
         name: detail.name,
       };
     });
@@ -212,6 +266,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       description,
       type,
       frequency,
+      currency: resolvedCurrency,
       date,
       total_amount: normalizedDetails.reduce((sum, detail) => sum + (detail.amount * detail.quantity), 0),
       details: normalizedDetails,
@@ -224,12 +279,12 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     }
 
     try {
-      setSubmitError(null);
       setIsSubmitting(true);
       await onSave(payload);
+      toast.success('Lưu giao dịch thành công!');
       onClose('saved');
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'Không thể lưu giao dịch. Vui lòng thử lại.');
+      toast.error(getApiErrorMessage(error, 'Không thể lưu giao dịch. Vui lòng thử lại.'));
     } finally {
       setIsSubmitting(false);
     }
@@ -241,78 +296,88 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     }
 
     try {
-      setSubmitError(null);
       setIsSubmitting(true);
       await onSave(pendingEditPayload);
       setIsEditConfirmOpen(false);
       setPendingEditPayload(null);
+      toast.success('Cập nhật giao dịch thành công!');
       onClose('saved');
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'Không thể cập nhật giao dịch. Vui lòng thử lại.');
+      toast.error(getApiErrorMessage(error, 'Không thể cập nhật giao dịch. Vui lòng thử lại.'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#fcfcfd] rounded-[32px] w-full max-w-5xl relative shadow-2xl animate-fade-in-up max-h-[95vh] flex flex-col overflow-hidden border border-white">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => onClose('cancelled')}>
+      <div 
+        className="bg-white dark:bg-[#1a1c26] rounded-[2rem] w-full max-w-4xl relative shadow-2xl animate-fade-in-up max-h-[90vh] flex flex-col overflow-hidden border border-gray-100 dark:border-[#2a2d3d] transition-colors"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header - Sticky */}
-        <div className="px-8 py-6 flex justify-between items-center border-b border-gray-100 bg-white/80 backdrop-blur-md">
-          <div>
-            <h2 className="text-2xl font-black text-gray-800 tracking-tight">
-              {mode === 'edit' ? 'Chỉnh sửa giao dịch' : 'Tạo giao dịch mới'}
-            </h2>
-            <p className="text-sm text-gray-500 font-medium">Cập nhật dòng tiền của bạn một cách chính xác</p>
+        <div className="px-6 py-5 flex justify-between items-center border-b border-gray-100 dark:border-[#2a2d3d] bg-white/80 dark:bg-[#1a1c26]/80 backdrop-blur-md">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+              <Plus size={20} />
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
+                {mode === 'edit' ? 'Chỉnh sửa giao dịch' : 'Tạo giao dịch mới'}
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-slate-400 font-medium">Cập nhật thông tin tài chính của bạn</p>
+            </div>
           </div>
           <button 
             onClick={() => onClose('cancelled')} 
-            className="p-2.5 rounded-full hover:bg-gray-100 text-gray-400 transition-colors"
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#232634] text-gray-400 dark:text-slate-500 transition-colors"
           >
-            <X size={20} />
+            <X size={22} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 overflow-y-auto flex-1 custom-scrollbar">
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto flex-1 custom-scrollbar bg-gray-50/30 dark:bg-transparent">
           
           {/* SECTION 1: THÔNG TIN CHUNG */}
-          <div className={"bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6"}>
-            <div className="grid grid-cols-1 gap-5 xl:grid-cols-12 xl:items-end">
-              <div className="xl:col-span-3">
-                <label className={fieldLabelClass}>Phân loại</label>
-                <div className="flex h-14 rounded-xl bg-gray-100 p-1">
-                  <button
-                    type="button"
-                    onClick={() => setType(TransactionType.EXPENSE)}
-                    className={`flex-1 rounded-lg text-sm font-bold transition-all ${type === TransactionType.EXPENSE ? 'bg-white shadow-sm text-red-500' : 'text-gray-500'}`}
-                  >
-                    Chi phí
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setType(TransactionType.INCOME)}
-                    className={`flex-1 rounded-lg text-sm font-bold transition-all ${type === TransactionType.INCOME ? 'bg-white shadow-sm text-emerald-500' : 'text-gray-500'}`}
-                  >
-                    Thu nhập
-                  </button>
+          <div className="bg-white dark:bg-[#1a1c26] rounded-2xl border border-gray-100 dark:border-[#2a2d3d] shadow-sm p-6 mb-6">
+            <div className="flex flex-col gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                <div className="md:col-span-4 lg:col-span-3">
+                  <label className={fieldLabelClass}>Phân loại</label>
+                  <div className="flex h-11 rounded-xl bg-gray-100 dark:bg-[#13151f] p-1 border border-gray-200 dark:border-[#2a2d3d]">
+                    <button
+                      type="button"
+                      onClick={() => setType(TransactionType.EXPENSE)}
+                      className={`flex-1 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${type === TransactionType.EXPENSE ? 'bg-white dark:bg-[#1a1c26] shadow-md text-red-600 dark:text-red-400' : 'text-slate-500'}`}
+                    >
+                      Chi tiêu
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setType(TransactionType.INCOME)}
+                      className={`flex-1 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${type === TransactionType.INCOME ? 'bg-white dark:bg-[#1a1c26] shadow-md text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}
+                    >
+                      Thu nhập
+                    </button>
+                  </div>
+                </div>
+
+                <div className="md:col-span-8 lg:col-span-9">
+                  <label className={fieldLabelClass}>Mô tả chính</label>
+                  <input
+                    type="text"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className={fieldClass}
+                    placeholder="Ví dụ: Shopping cuối tuần, Lương tháng..."
+                  />
                 </div>
               </div>
 
-              <div className="xl:col-span-5 text-left">
-                <label className={fieldLabelClass}>Mô tả chính</label>
-                <input
-                  type="text"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className={fieldClass}
-                  placeholder="Ví dụ: Shopping cuối tuần, Lương tháng..."
-                />
-              </div>
-
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:col-span-4 xl:grid-cols-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2 border-t border-gray-50 dark:border-[#2a2d3d]">
                 <div>
-                  <label className={fieldLabelClass}>Ngày</label>
+                  <label className={fieldLabelClass}>Ngày giao dịch</label>
                   <input
                     type="date"
                     value={date}
@@ -321,15 +386,32 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                   />
                 </div>
 
-                <div className="text-left">
-                  <label className={fieldLabelClass}>Định kỳ</label>
+                <div>
+                  <label className={fieldLabelClass}>Tần suất định kỳ</label>
                   <select
                     value={frequency}
                     onChange={(e) => setFrequency(e.target.value as TransactionFrequency)}
                     className={fieldClass}
                   >
                     <option value={TransactionFrequency.ONE_TIME}>Một lần</option>
+                    <option value={TransactionFrequency.WEEKLY}>Hàng tuần</option>
                     <option value={TransactionFrequency.MONTHLY}>Hàng tháng</option>
+                    <option value={TransactionFrequency.YEARLY}>Hàng năm</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className={fieldLabelClass}>Đơn vị tiền tệ chính</label>
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value as Currency)}
+                    className={fieldClass}
+                  >
+                    {Object.values(Currency).map((curr) => (
+                      <option key={curr} value={curr}>
+                        {curr}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -337,19 +419,19 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           </div>
 
           {/* SECTION 2: CHI TIẾT GIAO DỊCH */}
-          <div className="mb-8 text-left">
-            <div className="flex items-center justify-between mb-4 px-2">
-              <h3 className="text-sm font-black text-gray-700 uppercase tracking-widest">Danh sách chi tiết</h3>
-              <span className="text-[11px] font-bold px-2 py-1 bg-indigo-50 text-indigo-600 rounded-md uppercase">
-                {details.length} hạng mục
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Hạng mục chi tiết</h3>
+              <span className="text-[9px] font-black px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-full uppercase tracking-wider border border-indigo-100 dark:border-indigo-900/30">
+                {details.length} Hạng mục
               </span>
             </div>
 
             <div className="space-y-3">
               {details.map((detail, index) => (
-                <div key={detail.id} className="group relative grid grid-cols-1 gap-4 rounded-2xl border border-gray-100 bg-white p-4 transition-all duration-300 hover:border-indigo-200 hover:shadow-md xl:grid-cols-[minmax(0,2.2fr)_110px_170px_minmax(0,2fr)_auto] xl:items-end">
+                <div key={detail.id} className="group relative grid grid-cols-1 gap-4 rounded-2xl border border-gray-100 dark:border-[#2a2d3d] bg-white dark:bg-[#1a1c26] p-4 transition-all duration-300 hover:border-indigo-200 dark:hover:border-indigo-500/30 hover:shadow-lg xl:grid-cols-[minmax(0,2.2fr)_90px_150px_minmax(0,2fr)_auto] xl:items-end">
                   <div>
-                    <label className={detailLabelClass}>Hạng mục</label>
+                    <label className={detailLabelClass}>Danh mục</label>
                     <select
                       value={detail.categoryId}
                       onChange={(e) => updateDetail(detail.id, { categoryId: e.target.value })}
@@ -369,22 +451,24 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                       type="number"
                       value={detail.quantity}
                       onChange={(e) => updateDetail(detail.id, { quantity: e.target.value })}
-                      className={`${fieldClass} text-center`}
+                      className={`${fieldClass} text-center font-bold`}
                     />
                   </div>
 
                   <div>
-                    <label className={detailLabelClass}>Đơn giá (VND)</label>
+                    <label className={detailLabelClass}>Đơn giá ({currency})</label>
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="decimal"
                       value={detail.amount}
-                      onChange={(e) => updateDetail(detail.id, { amount: e.target.value })}
-                      className={`${fieldClass} text-right font-semibold`}
+                      onChange={(e) => handleAmountChange(detail.id, e.target.value)}
+                      className={`${fieldClass} text-right font-black text-indigo-600 dark:text-indigo-400`}
+                      placeholder="20$, 500000đ..."
                     />
                   </div>
 
                   <div>
-                    <label className={detailLabelClass}>Ghi chú chi tiết</label>
+                    <label className={detailLabelClass}>Ghi chú hạng mục</label>
                     <input
                       type="text"
                       value={detail.name}
@@ -398,17 +482,17 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                     <button
                       type="button"
                       onClick={() => addDetailAfter(index)}
-                      className="flex h-14 w-14 items-center justify-center rounded-xl text-indigo-500 transition-colors hover:bg-indigo-50"
+                      className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 transition-all hover:scale-105 active:scale-95 shadow-sm"
                     >
-                      <Plus size={20} />
+                      <Plus size={18} />
                     </button>
                     {details.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeDetail(detail.id)}
-                        className="flex h-14 w-14 items-center justify-center rounded-xl text-red-400 transition-colors hover:bg-red-50"
+                        className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 transition-all hover:scale-105 active:scale-95 shadow-sm"
                       >
-                        <Trash2 size={20} />
+                        <Trash2 size={18} />
                       </button>
                     )}
                   </div>
@@ -418,23 +502,22 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           </div>
         </form>
 
-        {/* Footer - Sticky với Tổng tiền nổi bật */}
-        <div className="px-8 py-6 bg-white border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+        {/* Footer - Sticky */}
+        <div className="px-8 py-6 bg-white dark:bg-[#1a1c26] border-t border-gray-100 dark:border-[#2a2d3d] flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-indigo-50 rounded-2xl">
-              <div className="text-[10px] font-black text-indigo-400 uppercase leading-none mb-1">Tổng cộng dự tính</div>
-              <div className="text-2xl font-black text-indigo-600 tracking-tight">
-                {Math.round(totalAmountPreview).toLocaleString('vi-VN')} 
-                <span className="text-sm ml-1.5 opacity-70 italic font-medium">VND</span>
+            <div className="px-5 py-3 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100/50 dark:border-indigo-900/20">
+              <div className="text-[9px] font-black text-indigo-400 dark:text-indigo-500 uppercase tracking-widest mb-0.5">Tổng dự tính</div>
+              <div className="text-xl font-black text-indigo-600 dark:text-indigo-400 tracking-tighter">
+                {formatCurrency(totalAmountPreview, currency)}
               </div>
             </div>
           </div>
 
-          <div className="flex gap-3 w-full md:w-auto">
+          <div className="flex items-center gap-4 w-full md:w-auto">
             <button
               type="button"
               onClick={() => onClose('cancelled')}
-              className="px-6 py-3 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
+              className="flex-1 md:flex-none px-6 py-2 text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
             >
               Hủy bỏ
             </button>
@@ -442,38 +525,32 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
               type="submit"
               onClick={handleSubmit}
               isLoading={isSubmitting}
-              className="flex-1 md:flex-none px-10 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200 transition-all active:scale-95"
+              className="flex-[2] md:flex-none px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-indigo-600/20 transition-all active:scale-95"
             >
-              {mode === 'edit' ? 'Cập nhật giao dịch' : 'Lưu giao dịch'}
+              {mode === 'edit' ? 'Cập nhật' : 'Lưu giao dịch'}
             </Button>
           </div>
         </div>
 
         {/* RE-INSERTED MODALS */}
-      <ToastModal
-        isOpen={isEditConfirmOpen}
-        type="confirm"
-        title="Xác nhận cập nhật"
-        message="Bạn có chắc chắn muốn lưu những thay đổi này không?"
-        confirmText="Lưu thay đổi"
-        cancelText="Hủy"
-        isLoading={isSubmitting}
-        onClose={() => {
-          if (isSubmitting) return;
-          setIsEditConfirmOpen(false);
-          setPendingEditPayload(null);
-        }}
-        onConfirm={handleConfirmEdit}
-      />
-
-      <ToastModal
-        isOpen={Boolean(submitError)}
-        type="error"
-        title="Lỗi khi lưu"
-        message={submitError || ''}
-        onClose={() => setSubmitError(null)}
-      />
+        <ToastModal
+          isOpen={isEditConfirmOpen}
+          type="confirm"
+          title="Xác nhận thay đổi"
+          message="Bạn có chắc chắn muốn cập nhật thông tin giao dịch này không?"
+          confirmText="Xác nhận"
+          cancelText="Hủy"
+          isLoading={isSubmitting}
+          onClose={() => {
+            if (isSubmitting) return;
+            setIsEditConfirmOpen(false);
+            setPendingEditPayload(null);
+          }}
+          onConfirm={handleConfirmEdit}
+        />
       </div>
     </div>
   );
 };
+
+export default TransactionForm;

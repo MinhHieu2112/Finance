@@ -1,6 +1,7 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import MCP_toolsServiec from './Service';
 
+// Tiếp nhận yêu cầu từ client để xử lý thông qua các công cụ MCP (Model Context Protocol).
 const mcp_tools = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authUser = res.locals.authUser;

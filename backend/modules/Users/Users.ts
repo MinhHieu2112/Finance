@@ -10,6 +10,7 @@ export interface AuthPublicUser {
   id: Types.ObjectId;
   username: string;
   email: string;
+  phone?: string;
 }
 
 export interface AuthResult {
@@ -26,6 +27,7 @@ export interface RegisterPayload {
   username: string;
   email: string;
   password: string;
+  phone: string;
 }
 
 export interface UserCategorySchema {

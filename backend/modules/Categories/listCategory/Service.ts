@@ -4,6 +4,7 @@ import AppError from '../../../utils/appError';
 import { Types } from 'mongoose';
 
 class categoryService {
+	// Lấy danh sách tất cả các danh mục của người dùng và đính kèm thông tin catalog.
 	async listCategories(userId: Types.ObjectId) {
 		if (!userId) {
 			throw new AppError('User id is required', 400);

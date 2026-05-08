@@ -11,6 +11,7 @@ type normalizedExpensePoint = {
 };
 
 class detectAnomaliesService {
+    // Tính toán giá trị trung bình của mảng số.
 	private mean(values: number[]) {
 		if (!values.length) {
 			return 0;
@@ -18,6 +19,7 @@ class detectAnomaliesService {
 		return values.reduce((sum, value) => sum + value, 0) / values.length;
 	}
 
+    // Tính độ lệch chuẩn để đo lường mức độ biến động của dữ liệu.
 	private stdDev(values: number[]) {
 		if (values.length < 2) {
 			return 0;
@@ -27,6 +29,7 @@ class detectAnomaliesService {
 		return Math.sqrt(variance);
 	}
 
+    // Chuẩn hóa dữ liệu chi tiêu từ danh sách giao dịch.
 	private normalizeExpenses(transactions: transactionSchema[]) {
 		const rows: normalizedExpensePoint[] = [];
 
@@ -39,7 +42,7 @@ class detectAnomaliesService {
 				}
 
 				transaction.details.forEach((detail) => {
-					const amount = Number(detail.amount) || 0;
+					const amount = Number(detail.base_amount || detail.amount) || 0;
 					if (amount <= 0) {
 						return;
 					}
@@ -56,6 +59,7 @@ class detectAnomaliesService {
 		return rows;
 	}
 
+    // Phân tích và phát hiện các giao dịch bất thường dựa trên thống kê.
 	private detect(transactions: transactionSchema[]) {
 		const expenses = this.normalizeExpenses(transactions);
 		if (!expenses.length) {
@@ -94,8 +98,8 @@ class detectAnomaliesService {
 
 				const ratio  = refMean > 0 ? amount / refMean : 0;
 				const reason = ratio > 0
-					? `About ${ratio.toFixed(2)}x higher than your average ${item.category} spending`
-					: 'Unusually large transaction compared with your spending history';
+					? `Cao hơn khoảng ${ratio.toFixed(2)} lần so với mức chi tiêu trung bình cho ${item.category}`
+					: 'Giao dịch lớn bất thường so với lịch sử chi tiêu của bạn';
 
 				return {
 					    date        : item.date,
@@ -109,6 +113,7 @@ class detectAnomaliesService {
 			.slice(0, 10);
 	}
 
+    // Lấy danh sách các giao dịch bất thường của một người dùng cụ thể.
 	async getDetectAnomalies(userId: Types.ObjectId) {
 		if (!userId) {
 			throw new AppError('User id is required for anomaly detection', 400);

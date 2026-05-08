@@ -1,6 +1,7 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import add_query_nlpService from './Service';
 
+// Xử lý yêu cầu trích xuất thông tin hoặc truy vấn dữ liệu từ câu lệnh ngôn ngữ tự nhiên.
 const add_query_nlp = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authUser   = res.locals.authUser;

@@ -11,11 +11,20 @@ export enum TransactionFrequency {
   ONE_TIME = 'one-time',
 }
 
+export enum Currency {
+  VND = 'VND',
+  USD = 'USD',
+  EUR = 'EUR',
+  JPY = 'JPY',
+  GBP = 'GBP',
+}
+
 export interface TransactionDetail {
   categoryId: string;
   categoryName: string;
   quantity: number;
   amount: number;
+  base_amount?: number;
   name: string;
 }
 
@@ -29,6 +38,8 @@ export interface Transaction {
   frequency: TransactionFrequency;
   date: string;
   total_amount: number;
+  currency: Currency;
+  base_amount: number;
   details: TransactionDetail[];
   createdAt?: string;
   updatedAt?: string;
@@ -40,6 +51,7 @@ export interface TransactionPayload {
   frequency: TransactionFrequency;
   date: string;
   total_amount: number;
+  currency: Currency;
   details: TransactionPayloadDetail[];
 }
 

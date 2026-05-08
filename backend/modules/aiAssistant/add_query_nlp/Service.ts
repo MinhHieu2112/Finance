@@ -1,7 +1,9 @@
 import AppError from '../../../utils/appError';
+import { Currency } from '../../types/Transactions';
 import add_query_nlpRepository from './Repository';
 import { Types } from 'mongoose';
 import { FinancetSchema, QuerySchema } from "../../../utils/normalized"
+import { convertToBase } from '../../../utils/currencyConverter';
 import type { AIIntentPayload, 
 			  AIIntentResult, 
 			  AIQueryInput, 
@@ -10,6 +12,7 @@ import type { AIIntentPayload,
 
 class add_query_nlpService {
 
+	// Xây dựng bộ lọc truy vấn MongoDB dựa trên dữ liệu trích xuất từ AI.
 	private buildQuerryFilter(query: AIQueryInput) {
 		const filter: Record<string, unknown> = {};
 
@@ -47,6 +50,7 @@ class add_query_nlpService {
 		return filter;
 	}
 
+	// Phân loại ý định của người dùng và điều hướng xử lý thêm giao dịch hoặc truy vấn.
 	async handlePrompt(userId: Types.ObjectId, data: AIIntentPayload): Promise<AIIntentResult> {
 		if(!userId || !data) {
 			throw new AppError('User ID and data are required', 400);
@@ -80,6 +84,7 @@ class add_query_nlpService {
 									categoryName: category.name,
 									quantity	: d.quantity,
 									amount		: d.amount,
+									base_amount	: convertToBase(d.amount, t.currency || Currency.VND),
 									name		: d.name}
 						})
 					);
@@ -90,6 +95,8 @@ class add_query_nlpService {
 																description	: t.description,
 																type			: t.type,
 																frequency	: t.frequency,
+																currency	: t.currency || Currency.VND,
+																base_amount	: convertToBase(totalAmount, t.currency || Currency.VND),
 																date			: t.date, 
 																total_amount : totalAmount,
 																details		: details});

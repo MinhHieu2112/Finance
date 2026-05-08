@@ -18,4 +18,12 @@ userRouter
 	.route('/change-password')
 	.put(auth, changePassword);
 
+userRouter.post('/forgot-password/request', (req, res, next) => {
+    import('../modules/Users/forgotPassword/Controller').then(m => m.default.requestReset(req, res, next));
+});
+
+userRouter.post('/forgot-password/reset', (req, res, next) => {
+    import('../modules/Users/forgotPassword/Controller').then(m => m.default.resetPassword(req, res, next));
+});
+
 export default userRouter;

@@ -10,6 +10,9 @@ interface TokenPayload {
 	username?: string;
 }
 
+/**
+ * Middleware xác thực người dùng bằng JSON Web Token (JWT).
+ */
 const protect = (req: Request, res: Response, next: NextFunction) => {
 	const authHeader = req.headers.authorization;
 	if (!authHeader || !authHeader.startsWith('Bearer ')) {
