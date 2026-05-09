@@ -29,33 +29,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
         const otpCode = res.data.otp;
         setReceivedOtp(otpCode);
         
-        // Show OTP in toast for 20 seconds as requested
-        toast.custom((t) => (
-          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white dark:bg-slate-900 shadow-2xl rounded-[2rem] pointer-events-auto flex ring-1 ring-black ring-opacity-5 border-2 border-indigo-500 overflow-hidden`}>
-            <div className="flex-1 w-0 p-6">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 pt-0.5">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600">
-                    <KeyRound size={24} />
-                  </div>
-                </div>
-                <div className="ml-4 flex-1">
-                  <p className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">Mã xác thực OTP (Demo)</p>
-                  <p className="mt-1 text-4xl font-black text-indigo-600 tracking-[0.2em]">{otpCode}</p>
-                  <p className="mt-2 text-[10px] text-gray-400 font-bold uppercase">Mã này sẽ biến mất sau 20 giây</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex border-l border-gray-200 dark:border-slate-800">
-              <button
-                onClick={() => toast.dismiss(t.id)}
-                className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-bold text-indigo-600 hover:text-indigo-500 focus:outline-none"
-              >
-                Đóng
-              </button>
-            </div>
-          </div>
-        ), { duration: 20000, position: 'top-center' });
+        // Show compact OTP toast with 10s countdown
+        toast.custom((t) => <OtpToast t={t} otpCode={otpCode} />, { duration: 10000, position: 'top-center' });
 
         setStep(2);
       }
@@ -124,7 +99,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
         return (
           <form onSubmit={handleRequestOtp} className="space-y-6">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-indigo-600 dark:text-indigo-400">
+              <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary dark:text-indigo-400">
                 <ShieldQuestion size={32} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">Quên mật khẩu?</h3>
@@ -134,13 +109,13 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
             <div className="space-y-2">
               <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1">Số điện thoại</label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500 transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
                   <Phone size={18} />
                 </div>
                 <input
                   type="tel"
                   required
-                  className="w-full pl-11 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all dark:text-white font-medium"
+                  className="w-full pl-11 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all dark:text-white font-medium"
                   placeholder="0912 xxx xxx"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -148,7 +123,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
               </div>
             </div>
 
-            <Button type="submit" className="w-full py-4 text-sm font-bold shadow-xl shadow-indigo-500/20" isLoading={loading}>
+            <Button type="submit" className="w-full py-4 text-sm font-bold shadow-xl shadow-primary/20" isLoading={loading}>
               Gửi mã OTP <ArrowRight size={18} className="ml-2" />
             </Button>
           </form>
@@ -172,7 +147,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
                 type="text"
                 required
                 maxLength={6}
-                className="w-full text-center text-3xl font-black py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all dark:text-white tracking-[0.3em]"
+                className="w-full text-center text-3xl font-black py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all dark:text-white tracking-[0.3em]"
                 placeholder="000000"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
@@ -180,7 +155,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
               <p className="text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest">Nhập mã 6 chữ số</p>
             </div>
 
-            <Button type="submit" className="w-full py-4 text-sm font-bold shadow-xl shadow-indigo-500/20">
+            <Button type="submit" className="w-full py-4 text-sm font-bold shadow-xl shadow-primary/20">
               Xác nhận mã <CheckCircle2 size={18} className="ml-2" />
             </Button>
           </form>
@@ -201,14 +176,14 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
               <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1">Mật khẩu mới</label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500 transition-colors">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
                     <Lock size={18} />
                   </div>
                   <input
                     type="password"
                     required
                     min={4}
-                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all dark:text-white font-medium"
+                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all dark:text-white font-medium"
                     placeholder="••••••••"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
@@ -219,14 +194,14 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
               <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider ml-1">Xác nhận mật khẩu</label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500 transition-colors">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
                     <CheckCircle2 size={18} />
                   </div>
                   <input
                     type="password"
                     required
                     min={4}
-                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all dark:text-white font-medium"
+                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all dark:text-white font-medium"
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -235,7 +210,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
               </div>
             </div>
 
-            <Button type="submit" className="w-full py-4 text-sm font-bold shadow-xl shadow-indigo-500/20" isLoading={loading}>
+            <Button type="submit" className="w-full py-4 text-sm font-bold shadow-xl shadow-primary/20" isLoading={loading}>
               Hoàn tất đổi mật khẩu <ArrowRight size={18} className="ml-2" />
             </Button>
           </form>
@@ -250,7 +225,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
             <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Xong rồi!</h3>
             <p className="text-slate-500 dark:text-slate-400 font-medium mb-8">Mật khẩu của bạn đã được cập nhật thành công. <br />Đang quay lại trang đăng nhập...</p>
             <div className="flex justify-center">
-              <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
+              <Loader2 className="w-6 h-6 text-primary animate-spin" />
             </div>
           </div>
         );
@@ -287,6 +262,45 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
     </div>
   );
 };
+
+// Component thông báo OTP nhỏ gọn với bộ đếm ngược 10 giây.
+const OtpToast = ({ t, otpCode }: { t: any; otpCode: string }) => {
+  const [timeLeft, setTimeLeft] = useState(10);
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  return (
+    <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-[340px] w-full bg-white dark:bg-slate-900 shadow-2xl rounded-2xl pointer-events-auto flex border border-indigo-100 dark:border-slate-800 overflow-hidden`}>
+      <div className="flex-1 p-4 flex items-center gap-4">
+        <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center text-primary shrink-0">
+          <KeyRound size={20} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-0.5">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Mã OTP (Demo)</p>
+            <span className="text-[10px] font-bold text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-1.5 py-0.5 rounded-md">
+              {timeLeft}s
+            </span>
+          </div>
+          <p className="text-2xl font-black text-primary tracking-[0.15em] leading-none">{otpCode}</p>
+        </div>
+      </div>
+      <button
+        onClick={() => toast.dismiss(t.id)}
+        className="px-4 border-l border-slate-50 dark:border-slate-800 text-xs font-bold text-slate-400 hover:text-primary transition-colors uppercase tracking-widest bg-slate-50/50 dark:bg-slate-800/50"
+      >
+        Đóng
+      </button>
+    </div>
+  );
+};
+
 function setError(arg0: null) {
   throw new Error('Function not implemented.');
 }

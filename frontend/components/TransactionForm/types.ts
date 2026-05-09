@@ -9,10 +9,11 @@ export interface TransactionFormProps {
   onSave: (transaction: TransactionPayload) => Promise<void> | void;
   onClose: (reason?: 'saved' | 'cancelled') => void;
   categoryOptions: CategoryOption[];
-  onManageCategories?: (type: 'income' | 'expense') => void;
+  onManageCategories?: (type: string) => void;
   mode?: 'create' | 'edit';
   initialTransaction?: Transaction | null;
   initialPayload?: TransactionPayload | null;
+  defaultType?: 'income' | 'expense' | 'debt' | 'savings';
 }
 
 export interface TransactionDetailInput {

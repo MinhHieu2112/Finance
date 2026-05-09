@@ -3,6 +3,8 @@ import { Types } from 'mongoose';
 export enum TransactionType {
   INCOME  = 'income',
   EXPENSE = 'expense',
+  DEBT    = 'debt',
+  SAVINGS = 'savings',
 }
 
 export enum TransactionFrequency {
@@ -38,7 +40,7 @@ export interface transactionSchema {
 	frequency: string;
 	date: Date;
 	total_amount: number | string;
-	currency: Currency;
+	currency: string;
 	base_amount?: number;
 	details: transactionDetailSchema[];
 	createdAt?: Date;
@@ -52,7 +54,7 @@ export interface editTransactionSchema {
 	frequency: string;
 	date: Date;
 	total_amount: number | string;
-	currency: Currency;
+	currency: string;
 	base_amount?: number;
 	details: transactionDetailSchema[];
 }

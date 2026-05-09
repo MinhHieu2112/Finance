@@ -1,36 +1,26 @@
-export enum Currency {
-  VND = 'VND',
-  USD = 'USD',
-  EUR = 'EUR',
-  JPY = 'JPY',
-  GBP = 'GBP',
-}
+// Định dạng số thành chuỗi tiền tệ dựa trên mã tiền tệ cung cấp.
+export const formatCurrency = (amount: number, currencyCode: string = 'VND'): string => {
+  const code = currencyCode.toUpperCase();
 
-export const CURRENCY_METADATA: Record<Currency, { symbol: string; locale: string }> = {
-  [Currency.VND]: { symbol: '₫', locale: 'vi-VN' },
-  [Currency.USD]: { symbol: '$', locale: 'en-US' },
-  [Currency.EUR]: { symbol: '€', locale: 'de-DE' },
-  [Currency.JPY]: { symbol: '¥', locale: 'ja-JP' },
-  [Currency.GBP]: { symbol: '£', locale: 'en-GB' },
-};
-
-/**
- * Formats a number as a currency string based on the provided currency type.
- * @param amount The numerical amount to format.
- * @param currency The currency type (VND, USD, etc.).
- * @returns A formatted currency string.
- */
-export const formatCurrency = (amount: number, currency: Currency = Currency.VND): string => {
-  const metadata = CURRENCY_METADATA[currency] || CURRENCY_METADATA[Currency.VND];
-  
   try {
-    return new Intl.NumberFormat(metadata.locale, {
-      style: 'currency',
-      currency: currency,
-      maximumFractionDigits: currency === Currency.VND ? 0 : 2,
+    // Với VND, giữ nguyên định dạng truyền thống (ví dụ: 500.000 ₫)
+    if (code === 'VND') {
+      return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+        maximumFractionDigits: 0,
+      }).format(amount);
+    }
+
+    // Với các loại tiền tệ khác, hiển thị theo dạng: 20 AUD, 15.5 USD...
+    const formattedAmount = new Intl.NumberFormat('en-US', {
+      style: 'decimal',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
     }).format(amount);
+
+    return `${formattedAmount} ${code}`;
   } catch (e) {
-    // Fallback if Intl fails
-    return `${amount.toLocaleString()} ${metadata.symbol}`;
+    return `${amount.toLocaleString()} ${code}`;
   }
 };

@@ -84,7 +84,7 @@ class add_query_nlpService {
 									categoryName: category.name,
 									quantity	: d.quantity,
 									amount		: d.amount,
-									base_amount	: convertToBase(d.amount, t.currency || Currency.VND),
+									base_amount	: await convertToBase(d.amount, t.currency || Currency.VND, userId.toString()),
 									name		: d.name}
 						})
 					);
@@ -96,7 +96,7 @@ class add_query_nlpService {
 																type			: t.type,
 																frequency	: t.frequency,
 																currency	: t.currency || Currency.VND,
-																base_amount	: convertToBase(totalAmount, t.currency || Currency.VND),
+																base_amount	: await convertToBase(totalAmount, t.currency || Currency.VND, userId.toString()),
 																date			: t.date, 
 																total_amount : totalAmount,
 																details		: details});

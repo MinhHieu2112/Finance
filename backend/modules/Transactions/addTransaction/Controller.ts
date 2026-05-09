@@ -16,7 +16,7 @@ const addTransaction = async (req: Request, res: Response, next: NextFunction) =
                                                                      total_amount,
                                                                      details});
         res.status(201).json({success: true,
-                              message: 'Transaction added successfully',
+                              message: 'Thêm giao dịch thành công',
                               transaction});
     } catch (error) {
         next(error);

@@ -8,7 +8,7 @@ const getDetectAnomalies = async (_req: Request, res: Response, next: NextFuncti
 		const anomalies = await detectAnomaliesService.getDetectAnomalies(authUser.id);
 
 		res.status(200).json({ success: true,
-							   message: 'Anomalies loaded successfully',
+							   message: 'Tải dữ liệu phân tích bất thường thành công',
 							   anomalies });
 	} catch (error) {
 		next(error);

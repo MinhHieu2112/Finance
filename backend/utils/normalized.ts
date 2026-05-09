@@ -20,7 +20,7 @@ export const TransactionDetailSchema = z.object({
 
 export const TransactionSchema = z.object({
   description: z.string().trim().default('No description'),
-  type: z.enum(['income', 'expense']),
+  type: z.enum(['income', 'expense', 'debt', 'savings']),
   frequency: z.enum(['weekly', 'monthly', 'yearly', 'one-time']),
   currency: z.enum(['VND', 'USD', 'EUR', 'JPY', 'GBP']).default('VND'),
   date: z.union([z.string(), z.date()]).transform(val => new Date(val)),
@@ -37,7 +37,7 @@ const TimePeriodSchema = z.object({
 });
 
 export const QuerySchema = z.object({
-  type: z.enum(['income', 'expense']),
+  type: z.enum(['income', 'expense', 'debt', 'savings']).optional(),
   category_keywords: z.array(z.string()),
   time: z.array(TimePeriodSchema),
 });

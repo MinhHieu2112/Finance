@@ -6,6 +6,9 @@ import analysisRoutes from './routes/analysisRoutes';
 import userRoutes from './routes/userRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import nlpRoutes from './routes/nlpRoutes';
+import currencyRoutes from './routes/currencyRoutes';
+import catalogRoutes from './routes/catalogRoutes';
+import debtRoutes from './routes/debtRoutes';
 import AppError from './utils/appError';
 import globalErrorHandler from './controllers/errorController';
 
@@ -58,6 +61,9 @@ app.use('/api/analysis', analysisRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/nlp', nlpRoutes);
+app.use('/api/currencies', currencyRoutes);
+app.use('/api/catalogs', catalogRoutes);
+app.use('/api/debts', debtRoutes);
 app.get('/', (req, res) => {
   res.send('API working');
 });

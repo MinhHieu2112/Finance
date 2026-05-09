@@ -12,7 +12,7 @@ const getSavingSuggestion = async (_req: Request, res: Response, next: NextFunct
 		const savingsPlan = savingSuggestionService.buildSavingSuggestion(trend, anomalies);
 
 		res.status(200).json({ success: true,
-							   message: 'Saving suggestions loaded successfully',
+							   message: 'Tải gợi ý tiết kiệm thành công',
 							   savingsPlan });
 	} catch (error) {
 		next(error);

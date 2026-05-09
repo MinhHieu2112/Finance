@@ -8,7 +8,7 @@ const listCategory = async (_req: Request, res: Response, next: NextFunction) =>
 		const categories = await categoryService.listCategories(authUser.id);
 
 		res.status(200).json({ success: true,
-							   message: 'Categories loaded successfully',
+							   message: 'Tải danh sách danh mục thành công',
 							   categories });
 	} catch (error) {
 		next(error);

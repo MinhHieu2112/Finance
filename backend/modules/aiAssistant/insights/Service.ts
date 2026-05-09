@@ -15,12 +15,17 @@ class insightsService {
     private generateRuleBasedInsights(transactions: any[]) {
         let totalIncome = 0;
         let totalExpense = 0;
+        let totalDebt = 0;
+        let totalSavings = 0;
         const expensesByCategory: Record<string, number> = {};
 
         transactions.forEach(t => {
-            if (t.type === 'income') totalIncome += (t.base_amount || t.total_amount);
-            if (t.type === 'expense') {
-                totalExpense += (t.base_amount || t.total_amount);
+            const amount = t.base_amount || t.total_amount;
+            if (t.type === 'income') totalIncome += amount;
+            else if (t.type === 'debt') totalDebt += amount;
+            else if (t.type === 'savings') totalSavings += amount;
+            else if (t.type === 'expense') {
+                totalExpense += amount;
                 t.details.forEach((d: any) => {
                     expensesByCategory[d.categoryName] = (expensesByCategory[d.categoryName] || 0) + ((d.base_amount || d.amount) * d.quantity);
                 });
@@ -30,8 +35,12 @@ class insightsService {
         const sortedExpenses = Object.entries(expensesByCategory).sort((a, b) => b[1] - a[1]);
         const topExpense = sortedExpenses.length > 0 ? sortedExpenses[0] : null;
 
-        const analysis = `Bạn đã chi tiêu tổng cộng ${totalExpense.toLocaleString()}đ và thu nhập ${totalIncome.toLocaleString()}đ trong thời gian gần đây. ${
-            topExpense ? `Danh mục chi tiêu lớn nhất của bạn là "${topExpense[0]}" với ${topExpense[1].toLocaleString()}đ.` : ''
+        const analysis = `Bạn đã chi tiêu ${totalExpense.toLocaleString()}đ và thu nhập ${totalIncome.toLocaleString()}đ. ${
+            totalDebt > 0 ? `Bạn cũng phát sinh khoản nợ mới là ${totalDebt.toLocaleString()}đ. ` : ''
+        }${
+            totalSavings > 0 ? `Bạn đã tiết kiệm được ${totalSavings.toLocaleString()}đ. ` : ''
+        }${
+            topExpense ? `Danh mục chi tiêu lớn nhất là "${topExpense[0]}" với ${topExpense[1].toLocaleString()}đ.` : ''
         }`;
 
         let prediction = "Dự kiến tháng tới chi tiêu của bạn sẽ duy trì ở mức tương đương nếu không có khoản chi đột biến.";
@@ -63,14 +72,20 @@ class insightsService {
         // Prepare data for prompt
         const summaryObj: any = {
             incomes: [],
-            expenses: []
+            expenses: [],
+            debts: [],
+            savings: []
         };
 
         transactions.forEach(t => {
             const amount = t.base_amount || t.total_amount;
             if (t.type === 'income') {
                 summaryObj.incomes.push({ date: t.date, amount, desc: t.description });
-            } else {
+            } else if (t.type === 'debt') {
+                summaryObj.debts.push({ date: t.date, amount, desc: t.description });
+            } else if (t.type === 'savings') {
+                summaryObj.savings.push({ date: t.date, amount, desc: t.description });
+            } else if (t.type === 'expense') {
                 summaryObj.expenses.push({ 
                     date: t.date, 
                     amount, 
@@ -84,11 +99,11 @@ class insightsService {
         });
 
         const prompt = `
-Tôi cung cấp cho bạn dữ liệu thu chi trong 3 tháng gần nhất của tôi.
+Tôi cung cấp cho bạn dữ liệu tài chính trong 3 tháng gần nhất của tôi (bao gồm Thu nhập, Chi tiêu, Khoản nợ và Tiết kiệm).
 Hãy phân tích và trả về kết quả theo định dạng JSON gồm 3 trường:
-- "analysis": Đánh giá tổng quan về thói quen chi tiêu.
-- "prediction": Dự đoán xu hướng chi tiêu tháng tới (có tăng/giảm không, vì sao).
-- "advice": Lời khuyên cụ thể để tiết kiệm hoặc cắt giảm chi tiêu.
+- "analysis": Đánh giá tổng quan về thói quen chi tiêu và tình hình nợ/tiết kiệm.
+- "prediction": Dự đoán xu hướng tài chính tháng tới.
+- "advice": Lời khuyên cụ thể để tối ưu hóa chi tiêu, quản lý nợ và tăng tiết kiệm.
 
 Dữ liệu (JSON):
 ${JSON.stringify(summaryObj).substring(0, 3000)} // Giới hạn độ dài để tránh quá tải

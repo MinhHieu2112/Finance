@@ -1,6 +1,6 @@
 import type { Types } from 'mongoose';
 
-export type CategoryType = 'income' | 'expense';
+export type CategoryType = 'income' | 'expense' | 'debt' | 'savings';
 
 export interface CategoryPayload {
   name: string;
@@ -11,6 +11,7 @@ export interface CategoryPayload {
 export interface CategoryUpdatePayload {
   name: string;
   description?: string;
+  catalogId?: Types.ObjectId;
 }
 
 export interface CategoryWithUserPayload extends CategoryPayload {

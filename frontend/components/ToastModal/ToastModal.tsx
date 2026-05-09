@@ -61,7 +61,7 @@ export const ToastModal: React.FC<ToastModalProps> = ({
 							</Button>
 						</>
 					) : (
-						<Button type="button" onClick={onClose} className="w-full shadow-lg shadow-indigo-600/10">
+						<Button type="button" onClick={onClose} className="w-full shadow-lg shadow-primary/10">
 							Đã hiểu
 						</Button>
 					)}

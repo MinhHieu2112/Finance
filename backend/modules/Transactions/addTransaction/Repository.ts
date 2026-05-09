@@ -31,7 +31,7 @@ class transactionRepository {
                     totalIncome: {
                         $sum: {
                             $cond: [
-                                { $eq: ['$type', 'income'] }, 
+                                { $in: ['$type', ['income', 'debt']] }, 
                                 { $cond: [{ $gt: ['$base_amount', 0] }, '$base_amount', '$total_amount'] }, 
                                 0
                             ]
@@ -40,7 +40,7 @@ class transactionRepository {
                     totalExpense: {
                         $sum: {
                             $cond: [
-                                { $eq: ['$type', 'expense'] }, 
+                                { $in: ['$type', ['expense', 'savings']] }, 
                                 { $cond: [{ $gt: ['$base_amount', 0] }, '$base_amount', '$total_amount'] }, 
                                 0
                             ]

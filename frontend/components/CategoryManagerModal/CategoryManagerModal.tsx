@@ -8,6 +8,8 @@ import { ToastModal } from '../ToastModal/ToastModal';
 const CATEGORY_TYPE_LABEL: Record<CategoryType, string> = {
   income: 'Thu nhập',
   expense: 'Chi tiêu',
+  debt: 'Khoản nợ',
+  savings: 'Tiết kiệm',
 };
 
 // Cửa sổ quản lý danh mục, cho phép người dùng thêm, sửa, xóa và phân loại các hạng mục chi tiêu/thu nhập.
@@ -90,7 +92,6 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
     setEditingCategoryId(category._id);
     setEditingName(category.name);
     setEditingDescription(category.description || '');
-    setError(null);
   };
 
   const cancelEdit = () => {
@@ -191,7 +192,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             <select
               value={createCatalogId}
               onChange={(event) => setCreateCatalogId(event.target.value)}
-              className="w-full px-3 py-2 border border-gray-200 dark:border-[#2a2d3d] rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none bg-white dark:bg-[#13151f] text-xs text-gray-700 dark:text-slate-200"
+              className="w-full px-3 py-2 border border-gray-200 dark:border-[#2a2d3d] rounded-xl focus:ring-2 focus:ring-primary/20 outline-none bg-white dark:bg-[#13151f] text-xs text-gray-700 dark:text-slate-200"
             >
               {!catalogOptions.length && <option value="">- Chọn nhóm -</option>}
               {catalogOptions.map((option) => (
@@ -207,11 +208,11 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Tên danh mục mới..."
-              className="w-full px-4 py-2 border border-gray-200 dark:border-[#2a2d3d] rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none bg-white dark:bg-[#13151f] text-xs text-gray-700 dark:text-slate-200"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-[#2a2d3d] rounded-xl focus:ring-2 focus:ring-primary/20 outline-none bg-white dark:bg-[#13151f] text-xs text-gray-700 dark:text-slate-200"
             />
           </div>
           <div className="md:col-span-1">
-            <Button type="submit" isLoading={isSubmitting} className="w-full py-2 shadow-lg shadow-indigo-600/10 text-xs">Thêm mới</Button>
+            <Button type="submit" isLoading={isSubmitting} className="w-full py-2 shadow-lg shadow-primary/10 text-xs">Thêm mới</Button>
           </div>
         </form>
 
@@ -237,10 +238,10 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                           type="text"
                           value={editingName}
                           onChange={(e) => setEditingName(e.target.value)}
-                          className="w-full px-3 py-1.5 border border-indigo-200 dark:border-indigo-900/50 rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none bg-white dark:bg-[#0f111a] text-xs"
+                          className="w-full px-3 py-1.5 border border-indigo-200 dark:border-indigo-900/50 rounded-lg focus:ring-2 focus:ring-primary/20 outline-none bg-white dark:bg-[#0f111a] text-xs"
                         />
                       ) : (
-                        <span className="font-bold text-gray-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{category.name}</span>
+                        <span className="font-bold text-gray-800 dark:text-slate-200 group-hover:text-primary dark:group-hover:text-indigo-400 transition-colors">{category.name}</span>
                       )}
                     </td>
                     <td className="px-5 py-3">
@@ -255,7 +256,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                             <button
                               type="button"
                               onClick={() => startEdit(category)}
-                              className="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all p-1.5 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg"
+                              className="text-gray-400 hover:text-primary dark:hover:text-indigo-400 transition-all p-1.5 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg"
                               title="Chỉnh sửa"
                             >
                               <Pencil size={16} />
@@ -304,7 +305,4 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
     </div>
   );
 };
-function setError(arg0: null) {
-  throw new Error('Function not implemented.');
-}
 

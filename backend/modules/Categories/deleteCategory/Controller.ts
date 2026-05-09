@@ -9,7 +9,7 @@ const deleteCategory = async (req: Request, res: Response, next: NextFunction) =
 
 		await categoryService.deleteCategory(categoryId as string, authUser.id);
 		res.status(200).json({ success: true,
-							   message: 'Category deleted successfully' });
+							   message: 'Xóa danh mục thành công' });
 	} catch (error) {
 		next(error);
 	}

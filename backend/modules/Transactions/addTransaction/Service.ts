@@ -66,11 +66,7 @@ class transactionService {
             parsedDetails.push({categoryId, name, amount, quantity});
         }
 
-        const currency = inferredCurrency || data.currency || Currency.VND;
-
-        if (!Object.values(Currency).includes(currency)) {
-            throw new AppError('Invalid currency', 400);
-        }
+        const currency = inferredCurrency || data.currency || 'VND';
 
         const normalizedDetails = [];
         for (const detail of parsedDetails) {
@@ -78,16 +74,18 @@ class transactionService {
             if (!existingCategory) {
                 throw new AppError('Category not found for this user', 400);
             }
-            normalizedDetails.push({categoryId  : detail.categoryId,
-                                    categoryName: existingCategory.name,
-                                    name        : detail.name,
-                                    amount      : detail.amount,
-                                    quantity    : detail.quantity,
-                                    base_amount : convertToBase(detail.amount, currency)});
+            normalizedDetails.push({
+                categoryId  : detail.categoryId,
+                categoryName: existingCategory.name,
+                name        : detail.name,
+                amount      : detail.amount,
+                quantity    : detail.quantity,
+                base_amount : await convertToBase(detail.amount, currency, data.userId.toString()),
+            });
         }
 
         totalAmount = normalizedDetails.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
-        const baseAmount = convertToBase(totalAmount, currency);
+        const baseAmount = await convertToBase(totalAmount, currency, data.userId.toString());
     
         if (type === TransactionType.EXPENSE) {
             const currentBalance = await transactionRepository.getCurrentBalance(data.userId as unknown as import('mongoose').Types.ObjectId);
@@ -96,16 +94,18 @@ class transactionService {
             }
         }
 
-        const transaction = await transactionRepository.addTransaction({userId      : data.userId,
-                                                                        description : description,
-                                                                        type        : type,
-                                                                        frequency   : frequency,
-                                                                        currency    : currency,
-                                                                        base_amount : baseAmount,
-                                                                        date        : data.date,
-                                                                        total_amount: totalAmount,
-                                                                        details     : normalizedDetails,});
-                                                                                // Run anomaly detection asynchronously
+        const transaction = await transactionRepository.addTransaction({
+            userId      : data.userId,
+            description : description,
+            type        : type,
+            frequency   : frequency,
+            currency    : currency,
+            base_amount : baseAmount,
+            date        : data.date,
+            total_amount: totalAmount,
+            details     : normalizedDetails,
+        });
+
         anomalyService.detectAnomaly(transaction).catch(err => console.error(err));
 
         return transaction;

@@ -34,7 +34,7 @@ class authService {
 			if (!deduped.has(key)) {
 				let catalogId = catalogIdCache.get(type);
 				if (!catalogId) {
-					const preferredName = type === 'income' ? 'Income' : 'Living Expenses';
+					const preferredName = type === 'income' ? 'Doanh thu' : 'Chi phí sinh hoạt';
 
 					catalogId = await authRepository.findCatalogIdByTypeAndName(type, preferredName)
 						?? await authRepository.findFirstCatalogIdByType(type)

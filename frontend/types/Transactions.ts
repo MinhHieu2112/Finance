@@ -1,7 +1,9 @@
 // Enum for Transaction Types (Money coming in vs going out)
 export enum TransactionType {
-  INCOME = 'income',
+  INCOME  = 'income',
   EXPENSE = 'expense',
+  DEBT    = 'debt',
+  SAVINGS = 'savings',
 }
 
 export enum TransactionFrequency {

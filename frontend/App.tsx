@@ -4,6 +4,9 @@ import { Toaster } from 'react-hot-toast';
 import { LoginPage } from './pages/LoginPage/LoginPage';
 import { DashboardPage } from './pages/DashboardPage/DashboardPage';
 import { AnalysisPage } from './pages/AnalysisPage/AnalysisPage';
+import { CategoriesPage } from './pages/CategoriesPage';
+import { CurrenciesPage } from './pages/CurrenciesPage';
+import { DebtPage } from './pages/DebtPage';
 import { ProfilePage } from './pages/ProfilePage/ProfilePage';
 import Sidebar from './components/Sidebar/Sidebar';
 import { Navbar } from './components/Navbar/Navbar';
@@ -11,6 +14,7 @@ import { Footer } from './components/Footer/Footer';
 import { ToastModal } from './components/ToastModal/ToastModal';
 import type { User } from './types/Users';
 
+// Component chính điều hướng toàn bộ ứng dụng và quản lý trạng thái đăng nhập.
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
@@ -28,11 +32,13 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // Xử lý lưu thông tin người dùng sau khi đăng nhập thành công.
   const handleLogin = (newUser: User) => {
     setUser(newUser);
     localStorage.setItem('smart_finance_user', JSON.stringify(newUser));
   };
 
+  // Xử lý đăng xuất và xóa dữ liệu phiên làm việc.
   const handleLogout = () => {
     setIsLogoutConfirmOpen(false);
     setUser(null);
@@ -56,6 +62,9 @@ const App: React.FC = () => {
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/dashboard" element={<DashboardPage user={user} />} />
                   <Route path="/analysis" element={<AnalysisPage user={user} />} />
+                  <Route path="/categories" element={<CategoriesPage user={user} />} />
+                  <Route path="/currencies" element={<CurrenciesPage user={user} />} />
+                  <Route path="/debt" element={<DebtPage user={user} />} />
                   <Route path="/profile" element={<ProfilePage user={user} />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>

@@ -11,7 +11,7 @@ const add_query_nlp = async (req: Request, res: Response, next: NextFunction) =>
 
 		res.status(200).json({
 			success: true,
-			message: 'AI query handled successfully',
+			message: 'Xử lý truy vấn AI thành công',
 			result,
 		});
 	} catch (error) {

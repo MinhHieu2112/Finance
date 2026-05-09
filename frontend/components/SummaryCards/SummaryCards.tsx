@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import type { SummaryCardsProps } from './types';
 import { TransactionType } from './types';
-import { ArrowUpCircle, ArrowDownCircle, Wallet } from 'lucide-react';
+import { ArrowUpCircle, ArrowDownCircle, Wallet, PiggyBank, Coins } from 'lucide-react';
 import { formatCurrency } from '../../lib/currencies';
 import { Currency } from '../../types/Transactions';
 
@@ -9,41 +9,108 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ transactions }) => {
   const { income, expense, balance } = useMemo(() => {
     let income = 0;
     let expense = 0;
+    let debt = 0;
+    let savings = 0;
 
     transactions.forEach((t) => {
-      const amount = t.base_amount || t.total_amount; // Fallback for old records
+      const amount = t.base_amount || t.total_amount;
       if (t.type === TransactionType.INCOME) income += amount;
-      else expense += amount;
+      else if (t.type === TransactionType.EXPENSE) expense += amount;
+      else if (t.type === TransactionType.DEBT) debt += amount;
+      else if (t.type === TransactionType.SAVINGS) savings += amount;
     });
 
-    return { income, expense, balance: income - expense };
+    return { 
+      income, 
+      expense, 
+      debt, 
+      savings, 
+      balance: income - expense
+    };
   }, [transactions]);
 
-  const Card = ({ title, amount, icon, colorClass }: { title: string; amount: number; icon: React.ReactNode; colorClass: string }) => (
-    <div className="bg-white dark:bg-[#1a1c26] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-[#2a2d3d] flex flex-col gap-4 relative overflow-hidden group transition-all hover:shadow-md hover:border-indigo-100 dark:hover:border-indigo-500/30">
-      {/* Background decoration */}
-      <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-5 group-hover:scale-110 transition-transform ${colorClass.replace('text', 'bg')}`}></div>
-      
-      <div className="flex items-center justify-between relative z-10">
-        <div className={`p-2.5 rounded-xl ${colorClass.replace('text', 'bg').replace('600', '100').replace('500', '100')} dark:bg-opacity-10`}>
-          {icon}
+  const Card = ({ 
+    title, 
+    amount, 
+    icon, 
+    type 
+  }: { 
+    title: string; 
+    amount: number; 
+    icon: React.ReactElement; 
+    type: 'balance' | 'income' | 'expense' | 'debt' | 'savings' 
+  }) => {
+    
+    // Bảng màu chuẩn cho từng loại thẻ
+    const colorConfigs = {
+      balance: {
+        text: 'text-indigo-600 dark:text-indigo-400',
+        bg: 'bg-indigo-50 dark:bg-indigo-900/30',
+        border: 'border-indigo-100 dark:border-indigo-800/50',
+        icon: 'text-indigo-600 dark:text-indigo-400',
+        accent: 'bg-indigo-500'
+      },
+      income: {
+        text: 'text-emerald-600 dark:text-emerald-400',
+        bg: 'bg-emerald-50 dark:bg-emerald-900/30',
+        border: 'border-emerald-100 dark:border-emerald-800/50',
+        icon: 'text-emerald-600 dark:text-emerald-400',
+        accent: 'bg-emerald-500'
+      },
+      expense: {
+        text: 'text-red-600 dark:text-red-400',
+        bg: 'bg-red-50 dark:bg-red-900/30',
+        border: 'border-red-100 dark:border-red-800/50',
+        icon: 'text-red-600 dark:text-red-400',
+        accent: 'bg-red-500'
+      },
+      debt: {
+        text: 'text-amber-600 dark:text-amber-400',
+        bg: 'bg-amber-50 dark:bg-amber-900/30',
+        border: 'border-amber-100 dark:border-amber-800/50',
+        icon: 'text-amber-600 dark:text-amber-400',
+        accent: 'bg-amber-500'
+      },
+      savings: {
+        text: 'text-blue-600 dark:text-blue-400',
+        bg: 'bg-blue-50 dark:bg-blue-900/30',
+        border: 'border-blue-100 dark:border-blue-800/50',
+        icon: 'text-blue-600 dark:text-blue-400',
+        accent: 'bg-blue-500'
+      }
+    };
+
+    const config = colorConfigs[type];
+    
+    return (
+      <div className={`bg-white dark:bg-[#1a1c26] rounded-[2rem] p-7 shadow-sm border transition-all duration-300 relative overflow-hidden group hover:shadow-xl ${config.border} hover:border-indigo-200 dark:hover:border-indigo-700`}>
+        {/* Decorative background element */}
+        <div className={`absolute -right-6 -top-6 w-32 h-32 rounded-full opacity-[0.03] group-hover:scale-125 transition-transform duration-500 ${config.accent}`}></div>
+        
+        <div className="flex flex-col gap-5 relative z-10">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 duration-300 ${config.bg} border ${config.border}`}>
+            {React.cloneElement(icon, { size: 28, className: config.icon } as any)}
+          </div>
+  
+          <div>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-[0.2em] mb-1.5">{title}</p>
+            <h3 className={`text-2xl font-black ${config.text} tracking-tight`}>
+              {formatCurrency(amount, Currency.VND)}
+            </h3>
+          </div>
         </div>
       </div>
-
-      <div className="relative z-10">
-        <p className="text-xs text-gray-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-1">{title}</p>
-        <h3 className={`text-2xl font-black ${colorClass} tracking-tight`}>
-          {formatCurrency(amount, Currency.VND)}
-        </h3>
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <Card title = "Tổng số dư" amount = {balance} icon = {<Wallet className="text-indigo-600 w-6 h-6" />} colorClass="text-indigo-600" />
-      <Card title = "Tổng thu nhập" amount = {income}  icon = {<ArrowUpCircle className="text-emerald-600 w-6 h-6" />} colorClass="text-emerald-600" />
-      <Card title = "Tổng chi tiêu" amount = {expense} icon = {<ArrowDownCircle className="text-red-500 w-6 h-6" />} colorClass="text-red-500" />
+    <div className="space-y-6 mb-8">
+      {/* Primary Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card title="Tổng số dư" amount={balance} icon={<Wallet />} type="balance" />
+        <Card title="Tổng thu nhập" amount={income} icon={<ArrowUpCircle />} type="income" />
+        <Card title="Tổng chi tiêu" amount={expense} icon={<ArrowDownCircle />} type="expense" />
+      </div>
     </div>
   );
 };

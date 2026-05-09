@@ -3,6 +3,8 @@ import mongoose, { Schema } from 'mongoose';
 enum TransactionType {
   INCOME  = 'income',
   EXPENSE = 'expense',
+  DEBT    = 'debt',
+  SAVINGS = 'savings',
 }
 
 // Schema cho danh mục thu nhập hoặc chi tiêu của người dùng.

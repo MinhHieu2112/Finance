@@ -9,6 +9,7 @@ process.on('uncaughtException', (err: Error) => {
   process.exit(1);
 });
 
+
 dotenv.config({ path: './.env' });
 
 const resolveDbUri = (): string => {

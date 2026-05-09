@@ -21,7 +21,7 @@ const editTransaction = async (req: Request, res: Response, next: NextFunction) 
 																 	 details,});
 
 		res.status(200).json({success: true,
-							  message: 'Transaction updated successfully',
+							  message: 'Cập nhật giao dịch thành công',
 							  transaction});
 	} catch (error) {
 		next(error);

@@ -12,7 +12,7 @@ const mcp_tools = async (req: Request, res: Response, next: NextFunction) => {
 		console.log('Output:', JSON.stringify(result, null, 2));
 		res.status(200).json({
 			success: true,
-			message: 'Prompt processed successfully',
+			message: 'Xử lý yêu cầu thành công',
 			result,
 		});
 	} catch (error) {

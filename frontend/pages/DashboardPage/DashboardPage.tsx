@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { SummaryCards } from '../../components/SummaryCards/SummaryCards';
 import { TransactionList } from '../../components/TransactionList/TransactionList';
 import { TransactionForm } from '../../components/TransactionForm/TransactionForm';
-import { CategoryManagerModal } from '../../components/CategoryManagerModal/CategoryManagerModal';
 import { AIAssistantModal } from '../../components/AIAssistantModal/AIAssistantModal';
 import { ReceiptOCRPanel } from '../../components/ReceiptOCRPanel/ReceiptOCRPanel';
 import { ToastModal } from '../../components/ToastModal/ToastModal';
+import { Charts } from '../../components/Charts/Charts';
 import { Button } from '../../components/Button/Button';
 import type {
   Category,
@@ -15,20 +16,19 @@ import type {
   DashboardPageProps,
   ListCategoryResponse,
   ListTransactionResponse,
-  SaveCategoryResponse,
   SaveTransactionResponse,
   Transaction,
   TransactionPayload,
 } from './types';
-import { Plus, ScanText, Sparkles, Tags } from 'lucide-react';
+import { Plus, ScanText, Sparkles } from 'lucide-react';
 import { api, getApiErrorMessage, getApiSuccessMessage } from '../../lib/api';
 
+// Trang Dashboard hiển thị tổng quan tài chính, biểu đồ và danh sách giao dịch.
 export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
+  const navigate = useNavigate();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isFormOpen, setIsFormOpen]     = useState(false);
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
-  const [categoryModalType, setCategoryModalType] = useState<CategoryType>('expense');
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [isReceiptOCROpen, setIsReceiptOCROpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
@@ -115,47 +115,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     await addTransaction(tx);
   };
 
-  // Tạo một danh mục mới.
-  const createCategory = async (payload: { name: string; description: string; type: CategoryType; catalogId?: string }) => {
-    try {
-      const response = await api.post<SaveCategoryResponse>('/categories/add', payload);
-      const data = response.data;
-      setCategories((prev) => [data.category, ...prev.filter((item) => item._id !== data.category._id)]);
-      toast.success(getApiSuccessMessage(data, 'Danh mục đã được thêm thành công'));
-    } catch (error) {
-      const message = getApiErrorMessage(error, 'Không thể tạo danh mục');
-      toast.error(message);
-      throw new Error(message);
-    }
-  };
+  // Xử lý lưu giao dịch (tạo mới hoặc chỉnh sửa).
 
-  // Cập nhật thông tin danh mục.
-  const updateCategory = async (id: string, payload: { name: string; description: string }) => {
-    try {
-      const response = await api.put<SaveCategoryResponse>(`/categories/edit/${id}`, payload);
-      const data = response.data;
-      setCategories((prev) => prev.map((item) => (item._id === id ? data.category : item)));
-      toast.success(getApiSuccessMessage(data, 'Danh mục đã được cập nhật thành công'));
-    } catch (error) {
-      const message = getApiErrorMessage(error, 'Không thể cập nhật danh mục');
-      toast.error(message);
-      throw new Error(message);
-    }
-  };
-
-  // Xóa một danh mục.
-  const deleteCategory = async (id: string) => {
-    try {
-      const response = await api.delete('/categories/delete/' + id);
-      setCategories((prev) => prev.filter((item) => item._id !== id));
-      toast.success(getApiSuccessMessage(response.data, 'Danh mục đã được xóa thành công'));
-    } catch (error) {
-      const message = getApiErrorMessage(error, 'Không thể xóa danh mục');
-      toast.error(message);
-      throw new Error(message);
-    }
-  };
-
+  // Mở biểu mẫu để tạo một giao dịch mới.
   const openCreateForm = () => {
     setEditingTransaction(null);
     setDraftPayload(null);
@@ -163,6 +125,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setIsFormOpen(true);
   };
 
+  // Mở biểu mẫu để chỉnh sửa một giao dịch có sẵn.
   const openEditForm = (transaction: Transaction) => {
     setEditingTransaction(transaction);
     setDraftPayload(null);
@@ -170,6 +133,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setIsFormOpen(true);
   };
 
+  // Đóng biểu mẫu giao dịch và dọn dẹp trạng thái tạm thời.
   const closeForm = (reason: 'saved' | 'cancelled' = 'cancelled') => {
     if (reason === 'saved') {
       const [nextDraft, ...restDrafts] = draftQueue;
@@ -187,21 +151,16 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setDraftQueue([]);
   };
 
-  const openCategoryManager = (type: CategoryType = 'expense') => {
-    setCategoryModalType(type);
-    setIsCategoryModalOpen(true);
+  // Điều hướng người dùng đến trang quản lý danh mục.
+  const openCategoryManager = (type?: CategoryType) => {
+    navigate(type ? `/categories?type=${type}` : '/categories');
   };
 
-  const closeCategoryManager = () => {
-    setIsCategoryModalOpen(false);
+  const openCategoryManagerFromForm = (type?: CategoryType) => {
+    navigate(type ? `/categories?type=${type}` : '/categories');
   };
 
-  const openCategoryManagerFromForm = (type: CategoryType) => {
-    closeForm();
-    setCategoryModalType(type);
-    setIsCategoryModalOpen(true);
-  };
-
+  // Bắt đầu quy trình kiểm tra các giao dịch nháp được tạo bởi AI.
   const startDraftReview = (drafts: TransactionPayload[]) => {
     const [firstDraft, ...restDrafts] = drafts;
 
@@ -220,10 +179,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setIsAIAssistantOpen(false);
   };
 
+  // Đặt ID giao dịch cần xóa và mở hộp thoại xác nhận.
   const deleteTransaction = (id: string) => {
     setPendingDeleteTransactionId(id);
   };
 
+  // Xác nhận và thực hiện xóa giao dịch qua API.
   const confirmDeleteTransaction = async () => {
     if (!pendingDeleteTransactionId) {
       return;
@@ -242,10 +203,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     }
   };
 
+  // Mở hộp thoại Trợ lý AI để nhận tư vấn tài chính.
   const handleGetAdvice = () => {
     setIsAIAssistantOpen(true);
   };
 
+  // Mở chức năng quét hóa đơn bằng OCR.
   const openReceiptOCR = () => {
     setIsReceiptOCROpen(true);
   };
@@ -268,9 +231,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white"> 
               Tổng quan
             </h1>
-            <p className="text-gray-500 dark:text-slate-400 text-sm">
-              Bức tranh nhanh về sức khoẻ tài chính của bạn
-            </p>
           </div>
           <div className="flex gap-3 w-full sm:w-auto">
             <Button
@@ -286,16 +246,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
               onClick   = {handleGetAdvice} 
               className = "flex-1 sm:flex-none"
             >
-              <Sparkles size={18} className="text-purple-500" />
+              <Sparkles size={18} className="text-primary" />
               Trợ lý AI
-            </Button>
-            <Button
-              variant   = "secondary"
-              onClick   = {() => openCategoryManager('expense')}
-              className = "flex-1 sm:flex-none"
-            >
-              <Tags size={18} />
-              Danh mục
             </Button>
             <Button 
               onClick   = {openCreateForm}
@@ -309,6 +261,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
 
         {/* Widgets */}
         <SummaryCards    transactions = {transactions} />
+        <div className="my-8">
+          <Charts transactions={transactions} />
+        </div>
         <TransactionList
           transactions={transactions}
           categoryOptions={categoryFormOptions}
@@ -329,16 +284,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         />
       )}
 
-      <CategoryManagerModal
-        isOpen={isCategoryModalOpen}
-        categories={categories}
-        activeType={categoryModalType}
-        onTypeChange={setCategoryModalType}
-        onClose={closeCategoryManager}
-        onCreate={createCategory}
-        onUpdate={updateCategory}
-        onDelete={deleteCategory}
-      />
 
       <AIAssistantModal
         isOpen={isAIAssistantOpen}

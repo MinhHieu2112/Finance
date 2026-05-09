@@ -43,7 +43,7 @@ class add_trans_by_receiptImgService {
 								categoryName: category.name,
 								quantity	: d.quantity,
 								amount		: d.amount,
-								base_amount	: convertToBase(d.amount, t.currency || Currency.VND),
+								base_amount	: await convertToBase(d.amount, t.currency || Currency.VND, userId.toString()),
 								name		: d.name,}
 					})
 				);
@@ -56,7 +56,7 @@ class add_trans_by_receiptImgService {
 						currency	: t.currency || Currency.VND,
 						date		: t.date,
 						total_amount: totalAmount,
-						base_amount	: convertToBase(totalAmount, t.currency || Currency.VND),
+						base_amount	: await convertToBase(totalAmount, t.currency || Currency.VND, userId.toString()),
 						details		: details,};
 			})
 		);

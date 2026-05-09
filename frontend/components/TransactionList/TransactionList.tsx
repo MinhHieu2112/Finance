@@ -5,10 +5,11 @@ import { Trash2, TrendingUp, TrendingDown, Search, Filter, X, Pencil, ChevronDow
 import { formatCurrency } from '../../lib/currencies';
 import { Currency } from '../../types/Transactions';
 
+// Component hiển thị danh sách các giao dịch tài chính với tính năng lọc, tìm kiếm và phân trang.
 export const TransactionList: React.FC<TransactionListProps> = ({ transactions, categoryOptions, onDelete, onEdit }) => {
   const ITEMS_PER_PAGE = 10;
-
-//--------------- Hàm định dạng ngày tháng ---------------
+  
+  // Định dạng ngày tháng sang kiểu hiển thị Việt Nam (DD/MM/YYYY).
   const formatDisplayDate = (rawDate: string) => {
     const date = new Date(rawDate);
     if (isNaN(date.getTime())) return rawDate;
@@ -17,9 +18,32 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
     }).format(date);
+  };
+
+  // Xóa bỏ tất cả các bộ lọc hiện tại và quay về trạng thái hiển thị mặc định.
+  const clearFilters = () => {
+    setSearchTerm('');
+    setTypeFilter('');
+    setCategoryFilter('');
+    setStartDate('');
+    setEndDate('');
+    setCurrentPage(1);
+  };
+
+  const transactionTypeLabels: Record<TransactionType, string> = {
+    [TransactionType.INCOME]: 'Thu nhập',
+    [TransactionType.EXPENSE]: 'Chi tiêu',
+    [TransactionType.DEBT]: 'Khoản nợ',
+    [TransactionType.SAVINGS]: 'Tiết kiệm',
+  };
+
+  const frequencyLabels: Record<string, string> = {
+    'one-time': 'Một lần',
+    'daily': 'Hàng ngày',
+    'weekly': 'Hàng tuần',
+    'monthly': 'Hàng tháng',
+    'yearly': 'Hàng năm',
   };
 
   const [searchTerm, setSearchTerm]         = useState('');
@@ -80,13 +104,9 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [transactions, searchTerm, typeFilter, categoryFilter, startDate, endDate]);
 
-  const clearFilters = () => {
-    setSearchTerm('');
-    setTypeFilter('');
-    setCategoryFilter('');
-    setStartDate('');
-    setEndDate('');
-    setCurrentPage(1);
+  // Đóng/Mở chi tiết của một dòng giao dịch khi người dùng nhấp vào.
+  const toggleExpandedRow = (id: string) => {
+    setExpandedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
   const hasActiveFilters = searchTerm || typeFilter || categoryFilter || startDate || endDate;
@@ -105,9 +125,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
   const paginatedTransactions = filteredTransactions.slice(pageStart, pageStart + ITEMS_PER_PAGE);
 
 
-  const toggleExpandedRow = (id: string) => {
-    setExpandedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
-  };
+
 
   return (
     <div className="bg-white dark:bg-[#1a1c26] rounded-xl shadow-sm border border-gray-100 dark:border-[#2a2d3d] overflow-hidden transition-colors">
@@ -153,6 +171,8 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                   <option value="">Tất cả loại</option>
                   <option value={TransactionType.EXPENSE}>Chi tiêu</option>
                   <option value={TransactionType.INCOME}>Thu nhập</option>
+                  <option value={TransactionType.DEBT}>Khoản nợ</option>
+                  <option value={TransactionType.SAVINGS}>Tiết kiệm</option>
                 </select>
                 <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
@@ -232,16 +252,26 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                     onClick={() => toggleExpandedRow(t._id)}
                     className="hover:bg-gray-50 dark:hover:bg-[#232634] transition-colors cursor-pointer"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-slate-400" title={t.date}>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-slate-400">
                       {formatDisplayDate(t.date)}
                     </td>
                     <td className="px-6 py-4">
                       <div className="inline-flex items-center gap-2">
-                        <span className={`p-2 rounded-full flex-shrink-0 ${t.type === TransactionType.INCOME ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'}`}>
-                          {t.type === TransactionType.INCOME ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                        <span className={`p-2 rounded-full flex-shrink-0 ${
+                          t.type === TransactionType.INCOME ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 
+                          t.type === TransactionType.EXPENSE ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' :
+                          t.type === TransactionType.DEBT ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' :
+                          'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        }`}>
+                          {t.type === TransactionType.INCOME || t.type === TransactionType.SAVINGS ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
                         </span>
-                        <span className={`text-xs font-semibold uppercase tracking-wide ${t.type === TransactionType.INCOME ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
-                          {t.type}
+                        <span className={`text-xs font-semibold uppercase tracking-wide ${
+                          t.type === TransactionType.INCOME ? 'text-emerald-700 dark:text-emerald-400' : 
+                          t.type === TransactionType.EXPENSE ? 'text-red-700 dark:text-red-400' :
+                          t.type === TransactionType.DEBT ? 'text-amber-700 dark:text-amber-400' :
+                          'text-blue-700 dark:text-blue-400'
+                        }`}>
+                          {transactionTypeLabels[t.type] || t.type}
                         </span>
                       </div>
                     </td>
@@ -255,9 +285,13 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                         </span>
                       </div>
                     </td>
-                    <td className={`px-6 py-4 text-right font-bold whitespace-nowrap ${t.type === TransactionType.INCOME ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-800 dark:text-slate-100'}`}>
-                      {/* Hiển thị số tiền giao dịch kèm đơn vị tiền tệ gốc */}
-                      {t.type === TransactionType.INCOME ? '+' : '-'}
+                    <td className={`px-6 py-4 text-right font-bold whitespace-nowrap ${
+                      t.type === TransactionType.INCOME ? 'text-emerald-600 dark:text-emerald-400' : 
+                      t.type === TransactionType.EXPENSE ? 'text-red-500 dark:text-red-400' :
+                      t.type === TransactionType.DEBT ? 'text-amber-600 dark:text-amber-400' :
+                      'text-blue-600 dark:text-blue-400'
+                    }`}>
+                      {t.type === TransactionType.INCOME || t.type === TransactionType.SAVINGS ? '+' : '-'}
                       {formatCurrency(t.total_amount, t.currency)}
                       {/* Hiển thị giá trị quy đổi sang VND nếu đơn vị gốc khác VND */}
                       {t.currency !== Currency.VND && t.base_amount && (
@@ -273,7 +307,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                             event.stopPropagation();
                             onEdit(t);
                           }}
-                          className="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-full"
+                          className="text-gray-400 hover:text-primary transition-colors p-2 hover:bg-indigo-50 rounded-full"
                           title="Chỉnh sửa"
                         >
                           <Pencil size={16} />
@@ -298,11 +332,11 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                             <div>
                               <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400 dark:text-slate-500">Phân loại</p>
-                              <p className="text-sm font-medium text-gray-700 dark:text-slate-300 capitalize">{t.type}</p>
+                              <p className="text-sm font-medium text-gray-700 dark:text-slate-300 capitalize">{transactionTypeLabels[t.type] || t.type}</p>
                             </div>
                             <div>
                               <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400 dark:text-slate-500">Tần suất</p>
-                              <p className="text-sm font-medium text-gray-700 dark:text-slate-300">{t.frequency}</p>
+                              <p className="text-sm font-medium text-gray-700 dark:text-slate-300">{frequencyLabels[t.frequency] || t.frequency}</p>
                             </div>
                             <div>
                               <p className="text-[11px] uppercase tracking-wide font-semibold text-gray-400 dark:text-slate-500">Cập nhật lần cuối</p>
@@ -331,7 +365,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
                                   </div>
                                   <div className="sm:col-span-4">
                                     <span className="inline-block px-2 py-1 bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-slate-300 rounded text-xs whitespace-nowrap">
-                                      {detail.categoryName || 'Other'}
+                                      {detail.categoryName || 'Khác'}
                                     </span>
                                   </div>
                                   <div className="sm:col-span-2">
@@ -367,7 +401,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
       {filteredTransactions.length > 0 && (
         <div className="px-6 py-4 border-t border-gray-100 dark:border-[#2a2d3d] bg-white dark:bg-[#1a1c26] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <p className="text-sm text-gray-500 dark:text-slate-500">
-            Showing {pageStart + 1}-{Math.min(pageStart + ITEMS_PER_PAGE, filteredTransactions.length)} of {filteredTransactions.length}
+            Hiển thị {pageStart + 1}-{Math.min(pageStart + ITEMS_PER_PAGE, filteredTransactions.length)} trong tổng số {filteredTransactions.length}
           </p>
 
           <div className="flex items-center gap-2">

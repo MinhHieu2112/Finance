@@ -13,7 +13,7 @@ const addCategory = async (req: Request, res: Response, next: NextFunction) => {
 															catalogId});
 
 		res.status(201).json({ success: true,
-							   message: 'Category added successfully',
+							   message: 'Thêm danh mục thành công',
 							   category });
 	} catch (error) {
 		next(error);

@@ -11,6 +11,7 @@ class transactionService {
 			throw new AppError('Transaction not found', 404);
 		}
 
+
 		return deletedTransaction;
 	}
 }

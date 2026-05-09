@@ -96,7 +96,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			>
 				<div className="px-6 py-4 border-b border-gray-100 dark:border-[#2a2d3d] flex items-center justify-between">
 					<div className="flex items-center gap-3">
-						<div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-sm">
+						<div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-primary dark:text-indigo-400 flex items-center justify-center shadow-sm">
 							<Sparkles size={20} />
 						</div>
 						<div>
@@ -118,11 +118,11 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 								onChange={(event) => setPrompt(event.target.value)}
 								rows={4}
 								placeholder="Ví dụ: 'Hôm nay tôi đã chi 50k ăn sáng' hoặc 'Tháng này tôi đã tiêu bao nhiêu tiền?'"
-								className="w-full rounded-2xl border border-gray-200 dark:border-[#2a2d3d] bg-gray-50 dark:bg-[#13151f] p-4 text-gray-700 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all leading-relaxed"
+								className="w-full rounded-2xl border border-gray-200 dark:border-[#2a2d3d] bg-gray-50 dark:bg-[#13151f] p-4 text-gray-700 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all leading-relaxed"
 							/>
 						</div>
 						
-						<Button onClick={handleUnifiedPrompt} isLoading={isSubmitting} className="w-full py-3 shadow-lg shadow-indigo-600/20">
+						<Button onClick={handleUnifiedPrompt} isLoading={isSubmitting} className="w-full py-3 shadow-lg shadow-primary/20">
 							<Sparkles size={18} className="mr-2" />
 							Gửi yêu cầu tới AI
 						</Button>
@@ -136,7 +136,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 						{queryResult && (
 							<div className="space-y-4 rounded-2xl border border-gray-100 dark:border-[#2a2d3d] bg-gray-50/50 dark:bg-[#13151f]/50 p-6">
 								<div className="flex items-start gap-3">
-									<div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0 mt-1 shadow-lg shadow-indigo-600/20">
+									<div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0 mt-1 shadow-lg shadow-primary/20">
 										<Sparkles size={14} className="text-white" />
 									</div>
 									<div className="flex-1">
@@ -161,9 +161,9 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 										<p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest px-1">Chi tiết kết quả</p>
 										<div className="space-y-2 max-h-56 overflow-y-auto pr-1">
 											{queryResult.transactions.map((transaction) => (
-												<div key={transaction._id} className="rounded-xl border border-gray-100 dark:border-[#2a2d3d] bg-white dark:bg-[#1a1c26] px-4 py-3 hover:border-indigo-500/30 transition-all group">
+												<div key={transaction._id} className="rounded-xl border border-gray-100 dark:border-[#2a2d3d] bg-white dark:bg-[#1a1c26] px-4 py-3 hover:border-primary/30 transition-all group">
 													<div className="flex justify-between items-start mb-1">
-														<p className="font-bold text-slate-800 dark:text-slate-200 text-sm group-hover:text-indigo-600 transition-colors">{transaction.description}</p>
+														<p className="font-bold text-slate-800 dark:text-slate-200 text-sm group-hover:text-primary transition-colors">{transaction.description}</p>
 														<span className="text-xs font-black text-slate-900 dark:text-white">{formatMoney(transaction.total_amount)}</span>
 													</div>
 													<div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 font-medium">

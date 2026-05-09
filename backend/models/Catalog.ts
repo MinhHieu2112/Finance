@@ -3,6 +3,8 @@ import mongoose, { Schema } from 'mongoose';
 enum TransactionType {
   INCOME  = 'income',
   EXPENSE = 'expense',
+  DEBT    = 'debt',
+  SAVINGS = 'savings',
 }
 
 // Schema cho các nhóm danh mục mặc định (Catalogs) dùng chung cho toàn bộ hệ thống.

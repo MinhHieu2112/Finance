@@ -1,4 +1,4 @@
-export type CategoryType = 'income' | 'expense';
+export type CategoryType = 'income' | 'expense' | 'debt' | 'savings';
 
 // Category entity returned by backend API
 export interface Category {
@@ -29,4 +29,15 @@ export interface ListCategoryResponse {
 export interface SaveCategoryResponse {
   success: boolean;
   category: Category;
+}
+
+export interface Catalog {
+  _id: string;
+  name: string;
+  type: CategoryType;
+}
+
+export interface ListCatalogResponse {
+  success: boolean;
+  catalogs: Catalog[];
 }

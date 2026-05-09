@@ -2,7 +2,8 @@ import categoryRepository from './Repository';
 import AppError from '../../../utils/appError';
 import type { CategoryPayload, CategoryType, CategoryWithUserPayload } from './types';
 
-const isValidCategoryType = (value: unknown): value is CategoryType => value === 'income' || value === 'expense';
+const isValidCategoryType = (value: unknown): value is CategoryType => 
+	['income', 'expense', 'debt', 'savings'].includes(value as string);
 
 class categoryService {
     // Xử lý logic nghiệp vụ khi thêm danh mục, bao gồm kiểm tra trùng lặp và tính hợp lệ của catalog.
@@ -14,26 +15,26 @@ class categoryService {
 
 		
 		if (!userId || !name || !type || !catalogId) {
-			throw new AppError('User id, name, type, and catalog id are required', 400);
+			throw new AppError('Không tìm thấy dữ liệu', 400);
 		}
 
 		const existingUser = await categoryRepository.findUserById(userId);
 		if (!existingUser) {
-			throw new AppError('User not found', 404);
+			throw new AppError('Không tìm thấy tài khoản', 404);
 		}
 
 		if (!isValidCategoryType(type)) {
-			throw new AppError('Category type must be income or expense', 400);
+			throw new AppError('Loại danh mục không hợp lệ', 400);
 		}
 
 		const existingCategory = await categoryRepository.findCategoryByName(userId, type, name);
 		if (existingCategory) {
-			throw new AppError('Category already exists', 409);
+			throw new AppError('Trùng danh mục', 409);
 		}
 
 		const existingCatalog = await categoryRepository.findCatalogByIdAndType(data.catalogId, type)
 		if (!existingCatalog) {
-			throw new AppError(`Catalog for ${type} not found or invalid.`, 400);
+			throw new AppError('Không tìm thấy nhóm danh mục', 400);
 		}
 
 		return categoryRepository.addCategory({ userId: userId,

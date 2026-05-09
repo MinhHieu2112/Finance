@@ -30,7 +30,7 @@ class categoryService {
 
 		const category = await categoryRepository.editCategoryById(objectId,
 										  							userId,
-																  { name });
+																  { name, catalogId: data.catalogId });
 		return category;
 	}
 }

@@ -81,13 +81,13 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 							type="file"
 							accept="image/*"
 							onChange={(event) => setReceiptFile(event.target.files?.[0] || null)}
-							className="block w-full text-sm text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-[#2a2d3d] bg-gray-50 dark:bg-[#13151f] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 dark:file:bg-indigo-900/30 file:text-indigo-600 dark:file:text-indigo-400 hover:file:bg-indigo-100 transition-all cursor-pointer"
+							className="block w-full text-sm text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-[#2a2d3d] bg-gray-50 dark:bg-[#13151f] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 dark:file:bg-indigo-900/30 file:text-primary dark:file:text-indigo-400 hover:file:bg-indigo-100 transition-all cursor-pointer"
 						/>
 					</div>
 
-					<Button onClick={handleReceiptOCR} isLoading={isSubmitting} className="w-full py-3 shadow-lg shadow-indigo-600/20">
+					<Button onClick={handleReceiptOCR} isLoading={isSubmitting} className="w-full py-3 shadow-lg shadow-primary/20">
 						<ScanText size={18} />
-						Trích xuất và Xem lại Giao dịch
+						Trích xuất và xem lại giao dịch
 					</Button>
 					{error && (
 						<div className="rounded-xl border border-red-100 dark:border-red-900/30 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-4 py-3 text-sm font-medium flex items-center gap-2">
