@@ -41,7 +41,16 @@ const protect = (req: Request, res: Response, next: NextFunction) => {
 							   username : decoded.username,};
 
 		return next();
-	} catch (_error) {
+	} catch (error) {
+		const errorName = error && typeof error === 'object' && 'name' in error ? String(error.name) : '';
+		if (errorName === 'TokenExpiredError') {
+			return next(new AppError('Your token has expired. Please log in again.', 401));
+		}
+
+		if (errorName === 'JsonWebTokenError') {
+			return next(new AppError('Invalid token. Please log in again.', 401));
+		}
+
 		return next(new AppError('Invalid or expired token', 401));
 	}
 };

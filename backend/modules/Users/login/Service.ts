@@ -12,10 +12,12 @@ class authService {
 		if (!secret) {
 			throw new AppError('Missing JWT_SECRET in backend environment', 500);
 		}
+		const expiresIn = '7d';
 		return jwt.sign({id	  : userData.id,
 						 email   : userData.email,
 						 username: userData.username,}, 
-						 secret)
+						 secret,
+						 { expiresIn });
 	}
 
 	// Xử lý quy trình đăng nhập, bao gồm xác thực email và mật khẩu.

@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import authRepository from './Repository';
 import AppError from '../../../utils/appError';
-import defaultCategories from '../../../config/categories.json';
+import defaultCategories from '../../../config/data/categories.json';
 import { Types } from 'mongoose';
 import type {
 	AuthResult,
@@ -69,10 +69,12 @@ class authService {
 		if (!secret) {
 			throw new AppError('Missing JWT_SECRET in backend environment', 500);
 		}
+		const expiresIn = '7d';
 		return jwt.sign({ id	 : userData.id,
 						  email   : userData.email,
 						  username: userData.username, },
-						  secret)
+						  secret,
+						  { expiresIn });
 	}
 
 	// Xử lý quy trình đăng ký người dùng mới, bao gồm mã hóa mật khẩu và tạo danh mục mặc định.

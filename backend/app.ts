@@ -15,9 +15,34 @@ app.use(express.json());
 app.use(ExpressMongoSanitize());
 app.use(morgan('dev'));
 
-// CORS (allow all by default for current web frontend local dev)
+const defaultAllowedOrigins = [
+  'http://localhost:3000',
+];
+
+const allowedOrigins = new Set(
+  (process.env.CORS_ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+    .concat(process.env.CORS_ALLOWED_ORIGINS ? [] : defaultAllowedOrigins)
+);
+
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+
+  if (!origin) {
+    return next();
+  }
+
+  if (!allowedOrigins.has(origin)) {
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(403);
+    }
+    return next(new AppError('CORS not allowed', 403));
+  }
+
+  res.header('Access-Control-Allow-Origin', origin);
+  res.header('Vary', 'Origin');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
