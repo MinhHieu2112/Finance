@@ -1,10 +1,10 @@
 import AppError from '../../../utils/appError';
-import forcastingTrendRepository from './Repository';
-import type { ForcastingTrendResult, MonthlyPoint, transactionSchema } from './types';
+import forecastingTrendRepository from './Repository';
+import type { ForecastingTrendResult, MonthlyPoint, transactionSchema } from './types';
 import { Types } from 'mongoose';
 
-class forcastingTrendService {
-    // Chuyển đổi ngày thành định dạng chuỗi "YYYY-MM" để phân loại theo tháng.
+class forecastingTrendService {
+	// Chuyển đổi ngày thành định dạng chuỗi "YYYY-MM" để phân loại theo tháng.
 	private monthKey(dateInput: string | Date): string | null {
 		const raw = dateInput instanceof Date
 			? dateInput.toISOString()
@@ -26,7 +26,7 @@ class forcastingTrendService {
 		return `${year}-${month}`;
 	}
 
-    // Tính giá trị trung bình của một mảng số.
+	// Tính giá trị trung bình của một mảng số.
 	private mean(values: number[]) {
 		if (!values.length) {
 			return 0;
@@ -34,37 +34,37 @@ class forcastingTrendService {
 		return values.reduce((sum, value) => sum + value, 0) / values.length;
 	}
 
-    // Dự báo giá trị tháng tiếp theo bằng thuật toán hồi quy tuyến tính.
-	private forecastWithLinearRegression(values: number[]) {
-		if (!values.length) {
-			return 0;
-		}
+	// Dự báo giá trị tháng tiếp theo bằng thuật toán hồi quy tuyến tính.
+	// private forecastWithLinearRegression(values: number[]) {
+	// 	if (!values.length) {
+	// 		return 0;
+	// 	}
 
-		if (values.length === 1) {
-			return Math.max(0, values[0]);
-		}
+	// 	if (values.length === 1) {
+	// 		return Math.max(0, values[0]);
+	// 	}
 
-		const n     = values.length;
-		const xMean = (n - 1) / 2;
-		const yMean = this.mean(values);
+	// 	const n     = values.length;
+	// 	const xMean = (n - 1) / 2;
+	// 	const yMean = this.mean(values);
 
-		let numerator   = 0;
-		let denominator = 0;
+	// 	let numerator   = 0;
+	// 	let denominator = 0;
 
-		values.forEach((value, index) => {
-			const xDiff  = index - xMean;
-			numerator   += xDiff * (value - yMean);
-			denominator += xDiff ** 2;
-		});
+	// 	values.forEach((value, index) => {
+	// 		const xDiff  = index - xMean;
+	// 		numerator   += xDiff * (value - yMean);
+	// 		denominator += xDiff ** 2;
+	// 	});
 
-		const slope     = denominator === 0 ? 0 : numerator / denominator;
-		const intercept = yMean - slope * xMean;
-		const predicted = intercept + slope * n;
+	// 	const slope     = denominator === 0 ? 0 : numerator / denominator;
+	// 	const intercept = yMean - slope * xMean;
+	// 	const predicted = intercept + slope * n;
 
-		return Math.max(0, predicted);
-	}
+	// 	return Math.max(0, predicted);
+	// }
 
-    // Xác định xu hướng chi tiêu (tăng, giảm, ổn định) dựa trên dữ liệu gần đây.
+	// Xác định xu hướng chi tiêu (tăng, giảm, ổn định) dựa trên dữ liệu gần đây.
 	private detectExpenseTrend(expenseSeries: number[]) {
 		if (expenseSeries.length < 2) {
 			return 'stable' as const;
@@ -98,7 +98,7 @@ class forcastingTrendService {
 		return 'stable' as const;
 	}
 
-    // Nhóm các giao dịch thành chuỗi dữ liệu theo từng tháng.
+	// Nhóm các giao dịch thành chuỗi dữ liệu theo từng tháng.
 	private buildMonthlySeries(transactions: transactionSchema[]) {
 		const map = new Map<string, { income: number; expense: number }>();
 
@@ -126,31 +126,31 @@ class forcastingTrendService {
 			.map(([month, values]) => ({ month, ...values })) as MonthlyPoint[];
 	}
 
-    // Tổng hợp dữ liệu thành kết quả dự báo hoàn chỉnh.
-	private toForcastingTrend(monthlySeries: MonthlyPoint[]): ForcastingTrendResult {
+	// Tổng hợp dữ liệu thành kết quả dự báo hoàn chỉnh.
+	private toForecastingTrend(monthlySeries: MonthlyPoint[]): ForecastingTrendResult {
 		const recentMonthlySeries = monthlySeries.slice(-6);
 		const incomeSeries        = recentMonthlySeries.map((point) => point.income);
 		const expenseSeries       = recentMonthlySeries.map((point) => point.expense);
 
 		return {
 			monthlySeries: recentMonthlySeries,
-			predictedNextMonthIncome: this.forecastWithLinearRegression(incomeSeries),
-			predictedNextMonthExpense: this.forecastWithLinearRegression(expenseSeries),
+			// predictedNextMonthIncome: this.forecastWithLinearRegression(incomeSeries),
+			// predictedNextMonthExpense: this.forecastWithLinearRegression(expenseSeries),
 			expenseTrend: this.detectExpenseTrend(expenseSeries),
 		};
 	}
 
-    // Lấy dữ liệu dự báo xu hướng tài chính cho một người dùng cụ thể.
-	async getForcastingTrend(userId: Types.ObjectId) {
+	// Lấy dữ liệu dự báo xu hướng tài chính cho một người dùng cụ thể.
+	async getForecastingTrend(userId: Types.ObjectId) {
 		if (!userId) {
 			throw new AppError('User id is required for forecasting trend', 400);
 		}
 
-		const transactions  = await forcastingTrendRepository.getRecentTransactions(500, userId);
+		const transactions  = await forecastingTrendRepository.getRecentTransactions(500, userId);
 		const monthlySeries = this.buildMonthlySeries(transactions);
 
-		return this.toForcastingTrend(monthlySeries);
+		return this.toForecastingTrend(monthlySeries);
 	}
 }
 
-export default new forcastingTrendService();
+export default new forecastingTrendService();

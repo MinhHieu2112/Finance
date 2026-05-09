@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import forcastingTrendService from '../forcastingTrend/Service';
+import forecastingTrendService from '../forecastingTrend/Service';
 import detectAnomaliesService from '../detectAnomalies/Service';
 import savingSuggestionService from './Service';
 
@@ -7,7 +7,7 @@ import savingSuggestionService from './Service';
 const getSavingSuggestion = async (_req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authUser    = res.locals.authUser;
-		const trend       = await forcastingTrendService.getForcastingTrend(authUser.id);
+		const trend       = await forecastingTrendService.getForecastingTrend(authUser.id);
 		const anomalies   = await detectAnomaliesService.getDetectAnomalies(authUser.id);
 		const savingsPlan = savingSuggestionService.buildSavingSuggestion(trend, anomalies);
 

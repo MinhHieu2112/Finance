@@ -2,9 +2,9 @@ import transactionModel from '../../../models/Transaction';
 import type { transactionSchema } from './types';
 import { type Types } from 'mongoose';
 
-class forcastingTrendRepository {
-    // Truy vấn danh sách các giao dịch gần đây của người dùng để phục vụ dự báo.
+class forecastingTrendRepository {
 	async getRecentTransactions(limit: number, userId: Types.ObjectId) {
+		// Truy vấn danh sách các giao dịch gần đây của người dùng để phục vụ dự báo.
 		return transactionModel.find({ userId })
 			                   .sort({ date: -1 })
 			                   .limit(limit)
@@ -13,4 +13,4 @@ class forcastingTrendRepository {
 	}
 }
 
-export default new forcastingTrendRepository();
+export default new forecastingTrendRepository();

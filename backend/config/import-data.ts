@@ -14,7 +14,7 @@ const DB = process.env.DATABASE_LOCAL!;
 mongoose.connect(DB);
 
 const read = (file: string) =>
-  JSON.parse(fs.readFileSync(path.resolve(__dirname, file), 'utf-8'));
+  JSON.parse(fs.readFileSync(path.resolve(__dirname, 'data', file), 'utf-8'));
 
 const users        = read('users.json');
 const catalogs     = read('catalogs.json') as Array<{

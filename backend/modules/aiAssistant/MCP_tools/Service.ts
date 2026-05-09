@@ -122,6 +122,10 @@ class add_query_nlpService {
 							required: ["transactions"]
 						}
 					},
+					{
+						name: "none",
+						description: "No relevant intent detected, or unable to parse the input. This is a fallback option when the input does not contain clear financial transaction information or queries.",
+					}
 				]
 			}
 		];
@@ -232,7 +236,7 @@ class add_query_nlpService {
 		const isFile = !!file;
 
 		return {
-			model: isFile ? 'gemma-4-31b-it' : 'gemini-3.1-flash-lite-preview',
+			model: isFile ? 'gemini-2.5-flash' : 'gemini-3.1-flash-lite-preview',
 			contents: isFile
 				? [{
 					role: 'user',
@@ -248,15 +252,11 @@ class add_query_nlpService {
 					functionCallingConfig: {
 						mode: FunctionCallingConfigMode.ANY,
 						allowedFunctionNames: isFile
-							? ['receiptParser']
-							: ['addTransaction', 'queryTransaction']
+							? ['receiptParser', 'none']
+							: ['addTransaction', 'queryTransaction', 'none']
 					}
 				},
-				...(!isFile && {
-					systemInstruction: `
-					- If the statement is NOT related to financial transaction,
-					call queryTransaction with empty parameters.`
-				})
+				
 			}
 		};
 	}	
@@ -302,6 +302,10 @@ class add_query_nlpService {
 			outputTokens: response.usageMetadata?.candidatesTokenCount,
 			totalTokens: response.usageMetadata?.totalTokenCount,
 		};
+
+		if (call.name === "none") {
+			throw new AppError('AI could not detect a clear intent from the input. Please rephrase and try again.', 400);
+		}
 		
 		if (call.name === "addTransaction" || call.name === "receiptParser") {
 			const normalized = FinancetSchema.safeParse(call.args);
@@ -317,7 +321,7 @@ class add_query_nlpService {
 					};
 			
 		}
-		else {
+		if (call.name === "queryTransaction") {
 			const normalized = QuerySchema.safeParse(call.args);
 			if (!normalized.success) {
 				const errorMessage = normalized.error.issues

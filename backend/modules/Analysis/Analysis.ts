@@ -4,10 +4,10 @@ export interface MonthlyPoint {
 	expense: number;
 }
 
-export interface ForcastingTrendResult {
+export interface ForecastingTrendResult {
 	monthlySeries: MonthlyPoint[];
-	predictedNextMonthIncome: number;
-	predictedNextMonthExpense: number;
+	// predictedNextMonthIncome: number;
+	// predictedNextMonthExpense: number;
 	expenseTrend: 'up' | 'down' | 'stable';
 }
 
@@ -21,7 +21,7 @@ export interface AnalysisAnomaly {
 }
 
 export interface AnalysisResult {
-	trend: ForcastingTrendResult;
+	trend: ForecastingTrendResult;
 	savingsPlan: string[];
 	anomalies: AnalysisAnomaly[];
 }

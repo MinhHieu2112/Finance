@@ -28,3 +28,4 @@ package-lock.json
 
 model
 backend/uploads/
+backend/config/data

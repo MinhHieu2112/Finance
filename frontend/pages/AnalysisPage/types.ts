@@ -34,7 +34,7 @@ export interface AnalysisPageProps {
   user: User;
 }
 
-export interface ForcastingTrendResponse {
+export interface ForecastingTrendResponse {
   success: boolean;
   trend: AnalysisResult['trend'];
 }

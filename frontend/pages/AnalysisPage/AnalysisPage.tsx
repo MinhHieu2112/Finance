@@ -6,7 +6,7 @@ import type {
   AnalysisPageProps,
   AnalysisResult,
   DetectAnomaliesResponse,
-  ForcastingTrendResponse,
+  ForecastingTrendResponse,
   ListTransactionResponse,
   MetricDriver,
   SavingsSnapshot,
@@ -401,7 +401,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
     const loadTransactions = async () => {
       try {
         const [trendResponse, savingSuggestionResponse, anomaliesResponse, transactionResponse] = await Promise.all([
-          api.get<ForcastingTrendResponse>('/analysis/forcasting-trend'),
+          api.get<ForecastingTrendResponse>('/analysis/forecasting-trend'),
           api.get<SavingSuggestionResponse>('/analysis/saving-suggestion'),
           api.get<DetectAnomaliesResponse>('/analysis/detect-anomalies'),
           api.get<ListTransactionResponse>('/transactions/list'),

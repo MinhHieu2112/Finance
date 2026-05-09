@@ -3,6 +3,6 @@ export type {
 } from '../../types/Transactions';
 
 export type {
-  ForcastingTrendResult,
+  ForecastingTrendResult,
   MonthlyPoint,
 } from '../Analysis';

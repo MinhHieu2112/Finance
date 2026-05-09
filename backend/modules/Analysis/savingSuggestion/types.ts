@@ -1,4 +1,4 @@
 export type {
   AnalysisAnomaly,
-  ForcastingTrendResult,
+  ForecastingTrendResult,
 } from '../Analysis';
