@@ -239,7 +239,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions, 
               <th className="px-6 py-4">Phân loại</th>
               <th className="px-6 py-4">Chi tiết</th>
               <th className="px-6 py-4 text-right">Tổng giá trị</th>
-              <th className="px-6 py-4 text-center">Hành động</th>
+              <th className="px-6 py-4 text-center">Thao tác</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-[#2a2d3d]">

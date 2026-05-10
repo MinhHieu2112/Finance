@@ -228,7 +228,7 @@ export const DebtPage: React.FC<DashboardPageProps> = ({ user }) => {
                             <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Thời gian giao dịch</th>
                             <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Số tiền</th>
                             <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Trạng thái</th>
-                            <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Hành động</th>
+                            <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>

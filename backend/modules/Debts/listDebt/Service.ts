@@ -46,7 +46,7 @@ class ListDebtService {
                 await listDebtRepository.createDebt(newDebtsToCreate);
             }
 
-            // --- B. CẬP NHẬT & XÓA: Dọn dẹp bản ghi mồ côi hoặc cập nhật số liệu ---
+            // --- B. CẬP NHẬT & XÓA: Dọn dẹp bản ghi trống hoặc cập nhật số liệu ---
             for (const debt of existingDebts) {
                 const transactionIdStr = debt.transactionId?.toString();
                 const relatedTransaction = transactionIdStr ? transactionMap.get(transactionIdStr) : null;

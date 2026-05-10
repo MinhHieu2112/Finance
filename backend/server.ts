@@ -1,5 +1,5 @@
+import './config/env';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import app from './app';
 
 // Handle uncaught exceptions
@@ -9,8 +9,6 @@ process.on('uncaughtException', (err: Error) => {
   process.exit(1);
 });
 
-
-dotenv.config({ path: './.env' });
 
 const resolveDbUri = (): string => {
   const isDocker = process.env.NODE_ENV === 'docker';

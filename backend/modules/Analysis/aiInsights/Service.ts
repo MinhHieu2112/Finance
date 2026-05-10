@@ -1,18 +1,20 @@
-import AppError from '../../../utils/appError';
 import insightsRepository from './Repository';
 import { Types } from 'mongoose';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import savingSuggestionService from '../savingSuggestion/Service';
 import forecastingTrendService from '../forecastingTrend/Service';
 import summaryService from '../summary/Service';
 
 class insightsService {
-    private genAI: GoogleGenerativeAI;
+    private _genAI: GoogleGenAI | null = null;
 
-    // Khởi tạo Gemini AI với API key từ môi trường
-    constructor() {
-        const apiKey = process.env.GEMINI_API_KEY || '';
-        this.genAI = new GoogleGenerativeAI(apiKey);
+    // Lấy instance Gemini AI, khởi tạo nếu chưa có
+    private get genAI(): GoogleGenAI {
+        if (!this._genAI) {
+            const apiKey = (process.env.GEMINI_API_KEY || '').trim();
+            this._genAI = new GoogleGenAI({ apiKey });
+        }
+        return this._genAI;
     }
 
     // Tạo thông tin phân tích tài chính dựa trên các thuật toán logic dự phòng (Fallback)
@@ -72,9 +74,15 @@ class insightsService {
         try {
             if (!process.env.GEMINI_API_KEY) throw new Error("No API key provided");
             
-            const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-            const result = await model.generateContent(prompt);
-            const text = result.response.text();
+            const response = await this.genAI.models.generateContent({
+                model: "gemini-2.5-flash",
+                contents: prompt
+            });
+
+            if (!response) throw new Error("No response from AI");
+            
+            const text = response.text;
+            if (!text) throw new Error("Empty response text");
             
             let jsonStr = text;
             const match = text.match(/```(?:json)?\n([\s\S]*?)\n```/);

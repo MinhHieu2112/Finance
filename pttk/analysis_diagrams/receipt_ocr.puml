@@ -1,0 +1,26 @@
+@startuml Receipt_OCR_Workflow
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+    ArrowColor #10B981
+    LifeLineBorderColor #10B981
+    ParticipantBorderColor #10B981
+    ParticipantBackgroundColor #ECFDF5
+    ParticipantFontName Outfit
+    ParticipantFontSize 14
+    ParticipantFontStyle bold
+}
+
+actor User
+participant "Frontend (React)" as FE
+participant "Backend (Express)" as BE
+participant "Gemini AI (Multimodal)" as AI
+
+== Nhập liệu từ Hóa đơn (OCR) ==
+User -> FE: Upload ảnh hóa đơn
+FE -> BE: POST /api/nlp/receipt { image_base64 }
+BE -> AI: Gửi Image + Prompt trích xuất
+AI --> BE: Trả về JSON danh sách mặt hàng
+BE --> FE: Trả về TransactionPayload nháp
+FE -> FE: Mở TransactionForm (Multi-items)
+FE -> User: Hiển thị danh sách mặt hàng trích xuất
+@enduml
