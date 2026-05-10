@@ -5,30 +5,37 @@ import { ArrowUpCircle, ArrowDownCircle, Wallet, PiggyBank, Coins } from 'lucide
 import { formatCurrency } from '../../lib/currencies';
 import { Currency } from '../../types/Transactions';
 
-export const SummaryCards: React.FC<SummaryCardsProps> = ({ transactions }) => {
+export const SummaryCards: React.FC<SummaryCardsProps> = ({ transactions, debts }) => {
   // Tính toán tổng hợp các loại giao dịch và số dư (Thu nhập - Chi tiêu)
   const { income, expense, balance, debt, savings } = useMemo(() => {
     let income = 0;
     let expense = 0;
-    let debt = 0;
+    let debtValue = 0;
     let savings = 0;
 
     transactions.forEach((t) => {
       const amount = t.base_amount || t.total_amount;
       if (t.type === TransactionType.INCOME) income += amount;
       else if (t.type === TransactionType.EXPENSE) expense += amount;
-      else if (t.type === TransactionType.DEBT) debt += amount;
+      else if (t.type === TransactionType.DEBT && !debts) debtValue += amount;
       else if (t.type === TransactionType.SAVINGS) savings += amount;
     });
+
+    // Nếu có danh sách nợ chính xác từ backend, ưu tiên sử dụng để tính dư nợ thực tế
+    if (debts) {
+      debtValue = debts
+        .filter(d => d.status === 'unpaid')
+        .reduce((sum, d) => sum + d.amount, 0);
+    }
 
     return { 
       income, 
       expense, 
-      debt,
+      debt: debtValue,
       savings,
       balance: income - expense
     };
-  }, [transactions]);
+  }, [transactions, debts]);
 
   // Thành phần UI dùng chung để hiển thị từng thẻ thông số (Card)
   const Card = ({ 

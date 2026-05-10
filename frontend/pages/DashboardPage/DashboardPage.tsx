@@ -20,6 +20,7 @@ import type {
   Transaction,
   TransactionPayload,
 } from './types';
+import type { Debt, ListDebtResponse } from '../../types/Debts';
 import { Plus, ScanText, Sparkles } from 'lucide-react';
 import { api, getApiErrorMessage, getApiSuccessMessage } from '../../lib/api';
 
@@ -35,6 +36,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   const [draftPayload, setDraftPayload] = useState<TransactionPayload | null>(null);
   const [draftQueue, setDraftQueue] = useState<TransactionPayload[]>([]);
   const [pendingDeleteTransactionId, setPendingDeleteTransactionId] = useState<string | null>(null);
+  const [debts, setDebts] = useState<Debt[]>([]);
 
   // Chuẩn bị danh sách danh mục cho form từ danh sách danh mục hiện có.
   const categoryFormOptions = useMemo<CategoryOption[]>(() => {
@@ -53,16 +55,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const [transactionResponse, categoryResponse] = await Promise.all([
+        const [transactionResponse, categoryResponse, debtResponse] = await Promise.all([
           api.get<ListTransactionResponse>('/transactions/list'),
           api.get<ListCategoryResponse>('/categories/list'),
+          api.get<ListDebtResponse>('/debts/list'),
         ]);
 
         const transactionData = transactionResponse.data;
         const categoryData = categoryResponse.data;
+        const debtData = debtResponse.data;
 
         setTransactions(transactionData.transactions);
         setCategories(categoryData.categories);
+        setDebts(debtData.debts);
       } catch (error) {
         toast.error('Không thể tải dữ liệu. Vui lòng kiểm tra kết nối.');
       }
@@ -265,7 +270,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         </div>
 
         {/* Widgets */}
-        <SummaryCards    transactions = {transactions} />
+        <SummaryCards    transactions = {transactions} debts={debts} />
         <div className="my-8">
           <Charts transactions={transactions} />
         </div>
