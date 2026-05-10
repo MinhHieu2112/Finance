@@ -156,6 +156,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     navigate(type ? `/categories?type=${type}` : '/categories');
   };
 
+  // Chuyển hướng người dùng đến trang quản lý danh mục từ biểu mẫu giao dịch
   const openCategoryManagerFromForm = (type?: CategoryType) => {
     navigate(type ? `/categories?type=${type}` : '/categories');
   };
@@ -170,11 +171,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setIsFormOpen(true);
   };
 
+  // Xử lý sau khi danh sách giao dịch nháp từ AI đã được chuẩn bị xong
   const onAIDraftsPrepared = (drafts: TransactionPayload[]) => {
     setIsAIAssistantOpen(false);
     startDraftReview(drafts);
   };
 
+  // Đóng hộp thoại Trợ lý AI
   const closeAIAssistant = () => {
     setIsAIAssistantOpen(false);
   };
@@ -213,10 +216,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     setIsReceiptOCROpen(true);
   };
 
+  // Đóng hộp thoại quét hóa đơn OCR
   const closeReceiptOCR = () => {
     setIsReceiptOCROpen(false);
   };
 
+  // Xử lý sau khi một giao dịch nháp từ hóa đơn (OCR) đã được trích xuất xong
   const onReceiptDraftPrepared = (draftTransaction: TransactionPayload) => {
     setIsReceiptOCROpen(false);
     startDraftReview([draftTransaction]);

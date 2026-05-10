@@ -1,10 +1,10 @@
 import transactionRepository from './Repository';
-import AppError from '../../../utils/appError';
+import AppError from '@/utils/appError';
 import { TransactionFrequency, TransactionType, Currency } from './types';
 import type { transactionDetailSchema, transactionSchema } from './types';
 
-import { convertToBase } from '../../../utils/currencyConverter';
-import { parseCurrencyInput } from '../../../utils/parseCurrencyInput';
+import { convertToBase } from '@/utils/currencyConverter';
+import { parseCurrencyInput } from '@/utils/parseCurrencyInput';
 
 class transactionService {
 	// Thực hiện nghiệp vụ thêm mới giao dịch, bao gồm kiểm tra số dư và quy đổi sang đơn vị VND.

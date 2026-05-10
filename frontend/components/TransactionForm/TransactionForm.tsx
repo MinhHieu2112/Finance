@@ -264,6 +264,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   // Xử lý gửi biểu mẫu, kiểm tra tính hợp lệ và chuẩn bị payload dữ liệu.
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (isSubmitting) return;
 
     const detectedCurrencies = Array.from(new Set(
       details
@@ -580,7 +581,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             </button>
             <Button
               type="submit"
-              onClick={handleSubmit}
               isLoading={isSubmitting}
               className="flex-[2] md:flex-none px-8 py-3 bg-primary hover:bg-indigo-700 text-white rounded-xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-primary/20 transition-all active:scale-95"
             >

@@ -23,7 +23,7 @@ class savingSuggestionService {
 
         // Trường hợp 3: Quỹ dự phòng < 3 tháng
         if (emergencyFundMonths < 3) {
-            return `Quỹ dự phòng hiện chỉ đủ cho ${emergencyFundMonths.toFixed(1)} tháng chi tiêu. Hãy ưu tiên xây dựng khoản tiết kiệm để có quỹ dự phòng ít nhất 3-6 tháng (${(totalExpense * 3).toLocaleString()}đ).`;
+            return `Quỹ dự phòng hiện chỉ đủ cho ${Math.round(emergencyFundMonths)} tháng chi tiêu. Hãy ưu tiên xây dựng khoản tiết kiệm để có quỹ dự phòng ít nhất 3-6 tháng (${(totalExpense * 3).toLocaleString()}đ).`;
         }
 
         // Trường hợp 4: Tỷ lệ tiết kiệm < 30% 
@@ -31,7 +31,7 @@ class savingSuggestionService {
             return `Tỷ lệ tiết kiệm hiện tại (${(savingsRate * 100).toFixed(1)}%) đang ở mức thấp so với tiêu chuẩn 30%. Hãy tối ưu hóa các khoản chi tiêu không thiết yếu để tăng cường tích lũy tài sản cho mục tiêu dài hạn.`;
         }
 
-        return `Tuyệt vời! Bạn có quỹ dự phòng an toàn (${emergencyFundMonths.toFixed(1)} tháng) và tỷ lệ tiết kiệm cao. Đây là thời điểm tốt để tìm kiếm các kênh đầu tư sinh lời.`;
+        return `Tuyệt vời! Bạn có quỹ dự phòng an toàn (${Math.round(emergencyFundMonths)} tháng) và tỷ lệ tiết kiệm cao. Đây là thời điểm tốt để tìm kiếm các kênh đầu tư sinh lời.`;
     }
 }
 

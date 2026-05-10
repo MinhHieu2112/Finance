@@ -16,6 +16,7 @@ const debtSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'Transaction',
+    unique: true,
   },
   amount: {
     type: Number,

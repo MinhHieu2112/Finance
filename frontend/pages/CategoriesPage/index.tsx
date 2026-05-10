@@ -55,6 +55,7 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({ user }) => {
   // State for deletion confirmation
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
+  // Tải danh sách các nhóm lớn (Catalogs) từ máy chủ
   const fetchCatalogs = async () => {
     try {
       const response = await api.get<ListCatalogResponse>('/catalogs/list');
@@ -64,6 +65,7 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({ user }) => {
     }
   };
 
+  // Tải danh sách tất cả các danh mục chi tiết (Categories) từ máy chủ
   const fetchCategories = async () => {
     try {
       setIsLoading(true);
@@ -160,6 +162,7 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({ user }) => {
       });
   }, [paginatedCategories, catalogs, activeType, isAddingToCatalog]);
 
+  // Gửi yêu cầu thêm một danh mục mới vào nhóm cụ thể
   const handleAddCategory = async (catalogId: string) => {
     if (!newName.trim()) return;
 
@@ -183,6 +186,7 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({ user }) => {
     }
   };
 
+  // Cập nhật thông tin (tên, nhóm) của một danh mục hiện có
   const handleUpdateCategory = async (id: string) => {
     if (!editingName.trim()) return;
 
@@ -206,6 +210,7 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({ user }) => {
     }
   };
 
+  // Thực hiện xóa hoàn toàn một danh mục khỏi hệ thống
   const handleDeleteCategory = async () => {
     if (!pendingDeleteId) return;
 
@@ -222,6 +227,7 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({ user }) => {
     }
   };
 
+  // Định dạng ngày tháng sang kiểu hiển thị Việt Nam (DD/MM/YYYY)
   const formatDate = (dateString?: string) => {
     if (!dateString) return '-';
     return new Date(dateString).toLocaleDateString('vi-VN', {

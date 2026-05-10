@@ -66,6 +66,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
   const [savingsPeriod, setSavingsPeriod] = useState<Period>('month');
 
   useEffect(() => {
+    // Tải dữ liệu giao dịch và nợ từ máy chủ
     const fetchData = async () => {
       try {
         const [transRes, debtRes] = await Promise.all([
@@ -84,6 +85,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
   }, [user.token]);
 
   useEffect(() => {
+    // Tải các phân tích tài chính thông minh từ trí tuệ nhân tạo (AI)
     const fetchInsights = async () => {
       try {
         const response = await api.get<{success: boolean, data: {analysis: string, prediction: string, advice: string}}>('/nlp/insights');
@@ -252,7 +254,9 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
   const debtTimeline = useMemo(() => getTimelineData('debt', debtPeriod), [debts, debtPeriod]);
   const savingsTimeline = useMemo(() => getTimelineData('savings', savingsPeriod), [transactions, savingsPeriod]);
 
+  // Định dạng số tiền sang kiểu tiền tệ (VND)
   const formatMoney = (v: number) => formatCurrency(v, Currency.VND);
+  // Rút gọn giá trị tiền tệ lớn để hiển thị trên biểu đồ (VD: 1,000,000 -> 1M)
   const formatShortValue = (v: any) => v > 0 ? `${(v/1000000).toFixed(1)}M` : '';
 
   if (loading) return (

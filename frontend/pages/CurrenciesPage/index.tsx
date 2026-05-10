@@ -47,9 +47,7 @@ export const CurrenciesPage: React.FC<CurrenciesPageProps> = ({ user }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
-  /**
-   * Tải danh sách tiền tệ từ API khi trang được tải.
-   */
+  // Tải danh sách tất cả các đơn vị tiền tệ và tỷ giá từ máy chủ
   const loadCurrencies = async () => {
     try {
       const response = await api.get<{ success: boolean; currencies: Currency[] }>('/currencies/list');
@@ -65,9 +63,7 @@ export const CurrenciesPage: React.FC<CurrenciesPageProps> = ({ user }) => {
     loadCurrencies();
   }, []);
 
-  /**
-   * Xử lý thêm tiền tệ mới.
-   */
+  // Gửi yêu cầu thêm một đơn vị tiền tệ mới vào hệ thống
   const handleAdd = async () => {
     if (!newCurrency.code || !newCurrency.name || newCurrency.rateToVnd <= 0) {
       toast.error('Vui lòng điền đầy đủ thông tin hợp lệ');
@@ -85,9 +81,7 @@ export const CurrenciesPage: React.FC<CurrenciesPageProps> = ({ user }) => {
     }
   };
 
-  /**
-   * Xử lý xóa tiền tệ.
-   */
+  // Thực hiện xóa hoàn toàn một đơn vị tiền tệ khỏi danh sách
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/currencies/delete/${id}`);
@@ -98,18 +92,13 @@ export const CurrenciesPage: React.FC<CurrenciesPageProps> = ({ user }) => {
     }
   };
 
-  /**
-   * Bắt đầu chế độ chỉnh sửa.
-   */
   // Kích hoạt chế độ chỉnh sửa cho một loại tiền tệ cụ thể.
   const startEdit = (currency: Currency) => {
     setEditingId(currency._id);
     setEditPayload(currency);
   };
 
-  /**
-   * Lưu thay đổi sau khi chỉnh sửa.
-   */
+  // Lưu các thay đổi về thông tin tiền tệ hoặc tỷ giá sau khi chỉnh sửa
   const handleEdit = async () => {
     if (!editingId) return;
     try {
