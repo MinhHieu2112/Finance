@@ -329,7 +329,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
   // Xác nhận và thực hiện gửi dữ liệu cập nhật sau khi người dùng đồng ý.
   const handleConfirmEdit = async () => {
-    if (!pendingEditPayload) {
+    if (!pendingEditPayload || isSubmitting) {
       return;
     }
 
@@ -374,7 +374,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto flex-1 custom-scrollbar bg-gray-50/30 dark:bg-transparent">
+        <form id="transactionForm" onSubmit={handleSubmit} className="p-6 overflow-y-auto flex-1 custom-scrollbar bg-gray-50/30 dark:bg-transparent">
           
           {/* SECTION 1: THÔNG TIN CHUNG */}
           <div className="bg-white dark:bg-[#1a1c26] rounded-2xl border border-gray-100 dark:border-[#2a2d3d] shadow-sm p-6 mb-6">
@@ -581,6 +581,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             </button>
             <Button
               type="submit"
+              form="transactionForm"
               isLoading={isSubmitting}
               className="flex-[2] md:flex-none px-8 py-3 bg-primary hover:bg-indigo-700 text-white rounded-xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-primary/20 transition-all active:scale-95"
             >
