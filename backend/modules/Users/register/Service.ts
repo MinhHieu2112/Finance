@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import authRepository from './Repository';
 import AppError from '../../../utils/appError';
-import defaultCategories from '../../../config/data/categories.json';
+import defaultCategories from '../../../config/categories.json';
 import { Types } from 'mongoose';
 import type {
 	AuthResult,

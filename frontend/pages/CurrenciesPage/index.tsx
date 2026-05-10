@@ -193,7 +193,6 @@ export const CurrenciesPage: React.FC<CurrenciesPageProps> = ({ user }) => {
                 placeholder="Ví dụ: 25400"
                 className="w-full bg-slate-50 dark:bg-[#0f111a] border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
               />
-              <p className="text-[9px] text-slate-400 italic mt-1">Hệ thống tự động xử lý dấu chấm/phẩy (Ví dụ: 26.308 sẽ là 26308)</p>
             </div>
             <div className="flex items-end gap-2">
               <Button onClick={handleAdd} className="flex-1 rounded-xl h-11">Lưu</Button>

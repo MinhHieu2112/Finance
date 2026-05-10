@@ -1,14 +1,9 @@
 import AppError from '../../../utils/appError';
-import add_query_nlpRepository from './Repository';
-import { FinancetSchema, QuerySchema } from '../../../utils/normalized';
-import { FunctionCallingConfigMode, GoogleGenAI, Type } from '@google/genai';
-import { Types } from 'mongoose';
-import { readFile } from 'node:fs/promises';
-import { en } from 'zod/locales';
+import { GoogleGenAI, Type, FunctionCallingConfigMode } from '@google/genai';
 
-class add_query_nlpService {
-    // Khởi tạo danh sách các công cụ (tools) cho AI với các định nghĩa hàm cụ thể.
-	private getTools(categoryList: string[]) {
+class AIProviderService {
+
+	private getTextTools(categoryList: string[]) {
 		return [
 			{
 				functionDeclarations: [
@@ -23,12 +18,9 @@ class add_query_nlpService {
 									items: {
 										type: Type.OBJECT,
 										properties: {
-											type: { type: Type.STRING, enum: ["income", "expense"] },
+											type: { type: Type.STRING, enum: ["income", "expense", "debt", "savings"] },
 											description: { type: Type.STRING },
-											frequency: { 
-												type: Type.STRING, 
-												enum: ["weekly", "monthly", "yearly", "one-time"] 
-											},
+											frequency: { type: Type.STRING, enum: ["weekly", "monthly", "yearly", "one-time"] },
 											date: { type: Type.STRING },
 											details: {
 												type: Type.ARRAY,
@@ -57,10 +49,7 @@ class add_query_nlpService {
 						parameters: {
 							type: Type.OBJECT,
 							properties: {
-								type: { 
-									type: Type.STRING, 
-									enum: ["income", "expense"] 
-								},
+								type: { type: Type.STRING, enum: ["income", "expense", "debt", "savings"] },
 								category_keywords: {
 									type: Type.ARRAY,
 									items: { type: Type.STRING, enum: categoryList },
@@ -70,19 +59,29 @@ class add_query_nlpService {
 									items: {
 										type: Type.OBJECT,
 										properties: {
-											months: {
-												type: Type.ARRAY,
-												items: { type: Type.NUMBER, minimum: 1, maximum: 12 },
-											},
+											months: { type: Type.ARRAY, items: { type: Type.NUMBER, minimum: 1, maximum: 12 } },
 											year: { type: Type.NUMBER },
 										},
 										required: ["year", "months"] 
 									}
-								}					
+								}
 							},
 							required: ["type", "category_keywords", "time"]
 						}
 					},
+					{
+						name: "none",
+						description: "No relevant intent detected, or unable to parse the input.",
+					}
+				]
+			}
+		];
+	}
+
+	private getReceiptTools(categoryList: string[]) {
+		return [
+			{
+				functionDeclarations: [
 					{
 						name: "receiptParser",
 						description: "Parse financial receipts and extract transaction information",
@@ -96,10 +95,7 @@ class add_query_nlpService {
 										properties: {
 											type: { type: Type.STRING, enum: ["income", "expense"] },
 											description: { type: Type.STRING },
-											frequency: { 
-												type: Type.STRING, 
-												enum: ["weekly", "monthly", "yearly", "one-time"] 
-											},
+											frequency: { type: Type.STRING, enum: ["weekly", "monthly", "yearly", "one-time"] },
 											date: { type: Type.STRING },
 											details: {
 												type: Type.ARRAY,
@@ -124,179 +120,107 @@ class add_query_nlpService {
 					},
 					{
 						name: "none",
-						description: "No relevant intent detected, or unable to parse the input. This is a fallback option when the input does not contain clear financial transaction information or queries.",
+						description: "No relevant intent detected, or unable to parse the input.",
 					}
 				]
 			}
 		];
 	}
 
-    // Xây dựng nội dung prompt hướng dẫn AI cách xử lý dữ liệu.
-	private buildPrompt(text: string | null, categoryList: string[]) {
+	private buildTextPrompt(text: string, categoryList: string[]) {
 		const today = new Date().toISOString().slice(0, 10);
-		if (text === null) {
-			return [
-				`You are a financial receipt parser for Vietnamese and English receipts.,
-				Return valid JSON only. No markdown. No explanation.,
-				Current Date: ${today},
-				Choose function addTransaction with parameters:
-				{
-					"transactions": Array<{
-						"type": "income" | "expense",
-						"description": string,
-						"frequency": "weekly" | "monthly" | "yearly" | "one-time", .default to one-time if not clear from prompt.
-						"date": "YYYY-MM-DD",  Use Current Date if not clear from prompt.
-						"details": Array<{
-							"name": string,
-							"categoryName": string, (MUST match nearest existing category: ${categoryList})
-							"quantity": number, .default to 1 if not clear from prompt.
-							"amount": number, .default to total_amount if not clear from prompt or if only one item in details.
-						}>,
-					}>,
-				}
-				Transaction and keys: description, type, frequency, date, details.
-				Detail item keys: categoryName, quantity, amount, name.
-				receipt may contain one or many transactions. if multiple, transactions must be an array with separate items.
-				Time rules:
-				- Use months as integer array 1..12.
-				- Use year as 4-digit array.
-				Transaction coverage rules:
-				- Support basic, multi-transaction, with (date, frequency, income+expense) mix, slang.
-				- If the input contains a list, table, or multiple lines 
-					→ you MUST extract ALL items.
-				- If transactions have same date, merge into one transaction with multiple details. Or else keep them separate with their own date.
-				- When receipt has amounts with decimal points you must understand that these are thousands separators, not decimal points.
-					→ Convert them to integers.
-				- Understand shorthand: k=1,000; tr=1,000,000; cu=1,000,000.
-				- Keep transactions as array even with one item.			
-				Field defaults:
-				- All fields MUST be filled. If not clear, use reasonable defaults as described above.`
-			].join('\n');
-		}
 		return [
-			`You are a finance intent classifier for Vietnamese and English prompts.
-			Return valid JSON only. No markdown. No explanation.
+			`Vai trò: Phân loại ý định tài chính VN & EN.
+			Chỉ trả JSON.
 			Prompt: "${text}"
-			Current Date: ${today}			
-			If intent is add, choose function addTransaction with parameters:
+			Ngày: ${today}			
+			1. Nếu ý định 'add', gọi addTransaction:
 			{
-				"transactions": Array<{
-					"type": "income" | "expense",
+				"transactions": [{
+					"type": "income"|"expense",
 					"description": string,
-					"frequency": "weekly" | "monthly" | "yearly" | "one-time", .default to one-time if not clear from prompt.
-					"date": "YYYY-MM-DD",  Use Current Date if not clear from prompt.
-					"details": Array<{
+					"frequency": "weekly"|"monthly"|"yearly"|"one-time" (Mặc định: "one-time"),
+					"date": "YYYY-MM-DD" (Mặc định: ${today}),
+					"details": [{
 						"name": string,
-						"categoryName": string, (MUST match nearest existing category: ${categoryList})
-						"quantity": number, .default to 1 if not clear from prompt.
-						"amount": number, .default to total_amount if not clear from prompt or if only one item in details.
-					}>,
-				}>,
+						"categoryName": string (BẮT BUỘC KHỚP: ${categoryList}),
+						"quantity": number (Mặc định: 1),
+						"amount": number
+					}]
+				}]
 			}
-			If intent is query, choose function queryTransaction with parameters:
+			2. Nếu ý định 'query' (tìm kiếm), gọi queryTransaction:
 			{
-				"query": {
-				"type": "income" | "expense",
-				"category_keywords": string[], (MUST match nearest existing category: ${categoryList})
-				"time": Array<{
-						"year": number,
-						"months": number[],
-					}>,
-				},
+				"type": "income"|"expense",
+				"category_keywords": string[] (Khớp: ${categoryList}),
+				"time": [{"year": number, "months": number[]}]
 			}
-			Transaction and keys: description, type, frequency, date, details.
-			Detail item keys: categoryName, quantity, amount, name.
-			Query keys: type, category_keywords, time.
-			Intent rules:
-			- add: user is recording one or many transactions. if multiple, transactions must be an array with separate items.
-			- query: user asks for filter data by category, time, or type.
-			Time rules:
-			- Use months as integer array 1..12.
-			- Use year as 4-digit array.
-			Add transaction coverage rules:
-			- Support basic, multi-transaction, with (date, frequency, income+expense) mix, slang.
-			- If the input contains a list, table, or multiple lines 
-				→ you MUST extract ALL items.
-			- If transactions have same date, merge into one transaction with multiple details. Or else keep them separate with their own date.
-			- When user enter amounts with decimal points you must understand that these are thousands separators, not decimal points.
-				→ Convert them to integers.
-			- Understand shorthand: k=1,000; tr=1,000,000; cu=1,000,000.
-			- Keep transactions as array even with one item.			
-			Field defaults:
-			- All fields MUST be filled. If not clear, use reasonable defaults as described above.`
+			Luật dữ liệu:
+			- add: đang ghi chép thu/chi. Tách nhiều giao dịch nếu cần.
+			- query: đang hỏi lọc dữ liệu.
+			- Đổi số tiền có chấm/phẩy thành số nguyên (10.000 -> 10000). Hiểu k=1000, tr/củ=1000000.
+			- Luôn trả mảng transactions.`
 		].join('\n');
 	}
 
-    // Cấu hình yêu cầu gửi tới AI, bao gồm model, nội dung và các công cụ hỗ trợ.
-	private buildRequest(prompt		 : string | null, 
-						 file		 : Buffer | undefined, 
-						 categoryList: string[]) 
-	{
-		const tools = this.getTools(categoryList);
-		const isFile = !!file;
-
-		return {
-			model: isFile ? 'gemini-2.5-flash' : 'gemini-3.1-flash-lite-preview',
-			contents: isFile
-				? [{
-					role: 'user',
-					parts: [
-						{ text: this.buildPrompt(null, categoryList) },
-						{ inlineData: { mimeType: 'image/jpeg', data: file!.toString('base64') } }
-					]
+	private buildReceiptPrompt(categoryList: string[]) {
+		const today = new Date().toISOString().slice(0, 10);
+		return [
+			`Vai trò: Chuyên gia trích xuất hóa đơn tài chính VN & EN.
+			Chỉ trả về JSON hợp lệ. Không có markdown.
+			Ngày hiện tại: ${today}
+			Dùng hàm receiptParser với JSON:
+			{
+				"transactions": [{
+					"type": "income" | "expense",
+					"description": string,
+					"frequency": "weekly"|"monthly"|"yearly"|"one-time" (Mặc định: "one-time"),
+					"date": "YYYY-MM-DD" (Mặc định: ${today}),
+					"details": [{
+						"name": string,
+						"categoryName": string (BẮT BUỘC KHỚP: ${categoryList}),
+						"quantity": number (Mặc định: 1),
+						"amount": number (Bằng tổng nếu chỉ có 1 mục)
+					}]
 				}]
-				: this.buildPrompt(prompt!.trim(), categoryList),
+			}
+			Luật trích xuất:
+			- Nếu có danh sách nhiều món, phải lấy TOÀN BỘ.
+			- Gộp các giao dịch cùng ngày.
+			- Số tiền có dấu chấm/phẩy phải chuyển thành số nguyên (VD: 10.000 -> 10000).
+			- Nhận diện viết tắt: k=1000, tr/củ=1000000.
+			- Bắt buộc điền đủ trường dữ liệu hợp lý.`
+		].join('\n');
+	}
+
+	async processTextIntent(prompt: string, categoryList: string[]) {
+		const apiKey = process.env.GEMINI_API_KEY?.trim();
+		if (!apiKey) throw new AppError('Dịch vụ AI chưa được cấu hình. Vui lòng thêm GEMINI_API_KEY.', 503);
+
+		const ai = new GoogleGenAI({ apiKey });
+		const request = {
+			model: 'gemini-3.1-flash-lite-preview',
+			contents: this.buildTextPrompt(prompt.trim(), categoryList),
 			config: {
-				tools: tools as any,
+				tools: this.getTextTools(categoryList) as any,
 				toolConfig: {
 					functionCallingConfig: {
 						mode: FunctionCallingConfigMode.ANY,
-						allowedFunctionNames: isFile
-							? ['receiptParser', 'none']
-							: ['addTransaction', 'queryTransaction', 'none']
+						allowedFunctionNames: ['addTransaction', 'queryTransaction', 'none']
 					}
-				},
-				
+				}
 			}
 		};
-	}	
 
-    // Xử lý luồng chính của yêu cầu từ người dùng thông qua AI và công cụ MCP.
-	async handlePrompt(userId: Types.ObjectId, prompt: string | null, file: Buffer | undefined): Promise<unknown> {
-		if (!userId) {
-			throw new AppError('User id is required', 400);
-		}		
-		
-		const categoryList = await add_query_nlpRepository.listCategoryNames(userId);
-		const apiKey 	   = process.env.GEMINI_API_KEY?.trim();
-
-		if (!apiKey) {
-			throw new AppError('AI service is not configured', 503);
-		}
-		
-		if (!prompt && !file) {
-			throw new AppError('Prompt or file is required', 400);
-		}
-		
-		const ai 	   = new GoogleGenAI({ apiKey: apiKey });
-		const request  = this.buildRequest(prompt, file, categoryList);
 		const response = await ai.models.generateContent(request);
+		if (!response) throw new AppError('Không nhận được phản hồi từ AI. Vui lòng thử lại sau.', 502);
 
-		if (!response) {
-			throw new AppError('No response from AI', 502);
-		}
-		
 		const functionCalls = response.functionCalls;
-
 		if (!functionCalls || functionCalls.length === 0) {
-			throw new AppError('AI did not return any function calls', 502);
+			throw new AppError('AI không thể nhận diện được hành động hợp lệ từ nội dung của bạn.', 502);
 		}
 
 		const call = functionCalls[0];
-
-		console.log("Input Tokens (Prompt):", response.usageMetadata?.promptTokenCount);
-		console.log("Output Tokens (Function Call):", response.usageMetadata?.candidatesTokenCount);
-		console.log("Total Tokens:", response.usageMetadata?.totalTokenCount);
 		const usage = {
 			inputTokens: response.usageMetadata?.promptTokenCount,
 			outputTokens: response.usageMetadata?.candidatesTokenCount,
@@ -304,38 +228,58 @@ class add_query_nlpService {
 		};
 
 		if (call.name === "none") {
-			throw new AppError('AI could not detect a clear intent from the input. Please rephrase and try again.', 400);
+			throw new AppError('AI không thể hiểu rõ ý định của bạn. Vui lòng nhập rõ ràng hơn (VD: Chi 50k ăn sáng).', 400);
 		}
-		
-		if (call.name === "addTransaction" || call.name === "receiptParser") {
-			const normalized = FinancetSchema.safeParse(call.args);
-			if (!normalized.success) {
-				const errorMessage = normalized.error.issues
-				.map(issue => `${issue.path.join('.')}: ${issue.message}`)
-				.join(', ');
-				throw new AppError(`Invalid data format: ${errorMessage}`, 400);
-			}			
-			return { intent: "add", 
-					 data: normalized.data, 
-					 usage
-					};
-			
-		}
-		if (call.name === "queryTransaction") {
-			const normalized = QuerySchema.safeParse(call.args);
-			if (!normalized.success) {
-				const errorMessage = normalized.error.issues
-				.map(issue => `${issue.path.join('.')}: ${issue.message}`)
-				.join(', ');
-				throw new AppError(`Invalid data format: ${errorMessage}`, 400);
-			}
-			return { intent: "query", 
-					 data: normalized.data, 
-					 usage
-					};
-		}	
 
+		return { intent: call.name === "addTransaction" ? "add" : "query", data: call.args, usage };
+	}
+
+	async processReceipt(file: Buffer, categoryList: string[]) {
+		const apiKey = process.env.GEMINI_API_KEY?.trim();
+		if (!apiKey) throw new AppError('Dịch vụ AI chưa được cấu hình. Vui lòng thêm GEMINI_API_KEY.', 503);
+
+		const ai = new GoogleGenAI({ apiKey });
+		const request = {
+			model: 'gemini-2.5-flash',
+			contents: [{
+				role: 'user',
+				parts: [
+					{ text: this.buildReceiptPrompt(categoryList) },
+					{ inlineData: { mimeType: 'image/jpeg', data: file.toString('base64') } }
+				]
+			}],
+			config: {
+				tools: this.getReceiptTools(categoryList) as any,
+				toolConfig: {
+					functionCallingConfig: {
+						mode: FunctionCallingConfigMode.ANY,
+						allowedFunctionNames: ['receiptParser', 'none']
+					}
+				}
+			}
+		};
+
+		const response = await ai.models.generateContent(request);
+		if (!response) throw new AppError('Không nhận được phản hồi từ AI đọc ảnh. Vui lòng thử lại.', 502);
+
+		const functionCalls = response.functionCalls;
+		if (!functionCalls || functionCalls.length === 0) {
+			throw new AppError('AI không thể đọc được nội dung tài chính từ hóa đơn này.', 502);
+		}
+
+		const call = functionCalls[0];
+		const usage = {
+			inputTokens: response.usageMetadata?.promptTokenCount,
+			outputTokens: response.usageMetadata?.candidatesTokenCount,
+			totalTokens: response.usageMetadata?.totalTokenCount,
+		};
+
+		if (call.name === "none") {
+			throw new AppError('AI không thể tìm thấy thông tin giao dịch rõ ràng trong hóa đơn này.', 400);
+		}
+
+		return { data: call.args, usage };
 	}
 }
 
-export default new add_query_nlpService();
+export default new AIProviderService();

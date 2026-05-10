@@ -1,17 +1,17 @@
 import transactionModel from '../../../models/Transaction';
 import { Types } from 'mongoose';
 
-class insightsRepository {
-    // Truy vấn danh sách giao dịch trong vài tháng gần nhất để phục vụ phân tích insights.
-    async getRecentTransactions(userId: Types.ObjectId, months: number = 3) {
+class summaryRepository {
+    // Lấy toàn bộ giao dịch của người dùng trong khoảng thời gian nhất định (mặc định 6 tháng)
+    async getTransactions(userId: Types.ObjectId, months: number = 6) {
         const fromDate = new Date();
         fromDate.setMonth(fromDate.getMonth() - months);
 
         return await transactionModel.find({
             userId,
             date: { $gte: fromDate }
-        }).sort({ date: -1 }).lean();
+        }).sort({ date: 1 }).lean();
     }
 }
 
-export default new insightsRepository();
+export default new summaryRepository();

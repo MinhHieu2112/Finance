@@ -6,7 +6,8 @@ import { formatCurrency } from '../../lib/currencies';
 import { Currency } from '../../types/Transactions';
 
 export const SummaryCards: React.FC<SummaryCardsProps> = ({ transactions }) => {
-  const { income, expense, balance } = useMemo(() => {
+  // Tính toán tổng hợp các loại giao dịch và số dư (Thu nhập - Chi tiêu)
+  const { income, expense, balance, debt, savings } = useMemo(() => {
     let income = 0;
     let expense = 0;
     let debt = 0;
@@ -23,12 +24,13 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ transactions }) => {
     return { 
       income, 
       expense, 
-      debt, 
-      savings, 
+      debt,
+      savings,
       balance: income - expense
     };
   }, [transactions]);
 
+  // Thành phần UI dùng chung để hiển thị từng thẻ thông số (Card)
   const Card = ({ 
     title, 
     amount, 
@@ -105,11 +107,12 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ transactions }) => {
 
   return (
     <div className="space-y-6 mb-8">
-      {/* Primary Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <Card title="Tổng số dư" amount={balance} icon={<Wallet />} type="balance" />
         <Card title="Tổng thu nhập" amount={income} icon={<ArrowUpCircle />} type="income" />
         <Card title="Tổng chi tiêu" amount={expense} icon={<ArrowDownCircle />} type="expense" />
+        <Card title="Các khoản nợ" amount={debt} icon={<Coins />} type="debt" />
+        <Card title="Tiết kiệm" amount={savings} icon={<PiggyBank />} type="savings" />
       </div>
     </div>
   );

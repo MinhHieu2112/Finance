@@ -26,21 +26,21 @@ class authService {
 		const password = data.password;
 
 		if (!email || !password) {
-			throw new AppError('Email and password are required', 400);
+			throw new AppError('Vui lòng nhập đầy đủ email và mật khẩu', 400);
 		}
 
 		if (!validator.isEmail(email)) {
-			throw new AppError('Please provide a valid email', 400);
+			throw new AppError('Vui lòng cung cấp định dạng email hợp lệ', 400);
 		}
 
 		const user = await authRepository.findUserByEmail(email);
 		if (!user) {
-			throw new AppError('Invalid email', 401);
+			throw new AppError('Tài khoản không tồn tại', 401);
 		}
 
 		const isPasswordValid = await bcrypt.compare(password, user.password);
 		if (!isPasswordValid) {
-			throw new AppError('Invalid password', 401);
+			throw new AppError('Mật khẩu không chính xác', 401);
 		}
 
 		const userData = {id	  : user._id,

@@ -7,6 +7,7 @@ import type {
   ListTransactionResponse,
   Transaction,
 } from './types';
+import { Bot, Sparkles, TrendingUp, Lightbulb } from 'lucide-react';
 import { 
   PieChart, 
   Pie, 
@@ -30,7 +31,7 @@ type Period = 'week' | 'month' | 'year';
 
 const DAYS_OF_WEEK = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
 
-// Custom Tooltip component for Dark Mode support
+// Thành phần hiển thị chú thích khi di chuột vào biểu đồ (Hỗ trợ chế độ Dark Mode)
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -57,6 +58,9 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
   const [debts, setDebts] = useState<Debt[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [aiInsights, setAiInsights] = useState<{analysis: string, prediction: string, advice: string} | null>(null);
+  const [loadingInsights, setLoadingInsights] = useState(true);
+
   const [summaryPeriod, setSummaryPeriod] = useState<Period>('month');
   const [debtPeriod, setDebtPeriod] = useState<Period>('month');
   const [savingsPeriod, setSavingsPeriod] = useState<Period>('month');
@@ -79,6 +83,21 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
     fetchData();
   }, [user.token]);
 
+  useEffect(() => {
+    const fetchInsights = async () => {
+      try {
+        const response = await api.get<{success: boolean, data: {analysis: string, prediction: string, advice: string}}>('/nlp/insights');
+        setAiInsights(response.data.data);
+      } catch (e) {
+        console.error('Lỗi tải AI Insights', e);
+      } finally {
+        setLoadingInsights(false);
+      }
+    };
+    fetchInsights();
+  }, [user.token]);
+
+  // Bộ lọc thời gian (Tuần/Tháng/Năm) cho các biểu đồ báo cáo
   const PeriodFilter = ({ current, onChange }: { current: Period, onChange: (p: Period) => void }) => (
     <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200/50 dark:border-slate-800/50">
         {(['week', 'month', 'year'] as Period[]).map((p) => (
@@ -93,6 +112,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
     </div>
   );
 
+  // Chuẩn bị và phân loại dữ liệu theo trục thời gian để hiển thị lên biểu đồ cột (BarChart)
   const getTimelineData = (filterType: 'summary' | 'debt' | 'savings', currentPeriod: Period) => {
     if (currentPeriod === 'week') {
         const now = new Date();
@@ -388,6 +408,70 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
         </div>
       </section>
 
+      {/*SECTION 4: LỜI KHUYÊN TỪ AI */}
+      <section className="space-y-8 animate-in fade-in duration-500">
+        <div className="flex items-center gap-4">
+          <div>
+            <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Cố vấn tài chính AI</h2>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-[#1a1c26] p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-[#2a2d3d] relative overflow-hidden">
+          {loadingInsights ? (
+            <div className="flex flex-col items-center justify-center py-12 space-y-4">
+              <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+              <p className="text-sm font-bold text-slate-400 animate-pulse">AI đang phân tích dữ liệu...</p>
+            </div>
+          ) : aiInsights ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+              {/* Đánh giá tổng quan */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 flex items-center justify-center">
+                    <Sparkles size={20} />
+                  </div>
+                  <h3 className="font-black text-slate-900 dark:text-white uppercase tracking-wider text-sm">Đánh giá tổng quan</h3>
+                </div>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-medium whitespace-pre-line">
+                  {aiInsights.analysis}
+                </p>
+              </div>
+
+              {/* Dự báo xu hướng */}
+              <div className="space-y-4 relative">
+                <div className="hidden md:block absolute -left-4 top-0 bottom-0 w-px bg-slate-100 dark:bg-[#2a2d3d]"></div>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/30 text-amber-500 flex items-center justify-center">
+                    <TrendingUp size={20} />
+                  </div>
+                  <h3 className="font-black text-slate-900 dark:text-white uppercase tracking-wider text-sm">Dự báo tháng tới</h3>
+                </div>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-medium whitespace-pre-line">
+                  {aiInsights.prediction}
+                </p>
+              </div>
+
+              {/* Lời khuyên */}
+              <div className="space-y-4 relative">
+                <div className="hidden md:block absolute -left-4 top-0 bottom-0 w-px bg-slate-100 dark:bg-[#2a2d3d]"></div>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center">
+                    <Lightbulb size={20} />
+                  </div>
+                  <h3 className="font-black text-slate-900 dark:text-white uppercase tracking-wider text-sm">Lời khuyên từ chuyên gia</h3>
+                </div>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-medium whitespace-pre-line">
+                  {aiInsights.advice}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="py-12 text-center">
+              <p className="text-slate-400 text-sm">Không thể kết nối với AI lúc này. Vui lòng thử lại sau.</p>
+            </div>
+          )}
+        </div>
+      </section>
       <footer className="pt-10 text-center border-t border-slate-50 dark:border-slate-800">
         <div className="inline-flex px-6 py-2 bg-slate-50 dark:bg-slate-900/50 rounded-full text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">
           Smart Finance Analytical Engine v10.0

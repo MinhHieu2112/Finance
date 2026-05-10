@@ -16,7 +16,7 @@ interface TokenPayload {
 const protect = (req: Request, res: Response, next: NextFunction) => {
 	const authHeader = req.headers.authorization;
 	if (!authHeader || !authHeader.startsWith('Bearer ')) {
-		return next(new AppError('Unauthorized', 401));
+		return next(new AppError('Bạn chưa đăng nhập. Vui lòng đăng nhập để truy cập.', 401));
 	}
 
 	const token = authHeader.slice('Bearer '.length).trim();

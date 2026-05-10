@@ -34,20 +34,16 @@ export const ReceiptOCRPanel: React.FC<ReceiptOCRPanelProps> = ({
 				formData.append('receipt', receiptFile);
 			}
 
-			const mcpResponse = await api.post('/nlp/mcp-tools', formData);
-			const orchestrationData = mcpResponse.data
-			// const receiptPayload = orchestrationData?.result?.data || orchestrationData?.result || orchestrationData;
-
 			const receiptData = await api.post<OCRResponse>(
 				'/nlp/add-by-receipt-image',
-				{ data: orchestrationData.result }
+				formData
 			);
 
 			const data = receiptData.data;
 			onDraftPrepared(data.result[0] as TransactionPayload);
 			resetAndClose();
 		} catch (submitError) {
-			setError(getApiErrorMessage(submitError, 'Không thể xử lý hóa đơn này ngay bãy giờ.'));
+			setError(getApiErrorMessage(submitError, 'Không thể xử lý hóa đơn này ngay bây giờ.'));
 		} finally {
 			setIsSubmitting(false);
 		}

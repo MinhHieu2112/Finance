@@ -6,9 +6,8 @@ export interface MonthlyPoint {
 
 export interface ForecastingTrendResult {
 	monthlySeries: MonthlyPoint[];
-	// predictedNextMonthIncome: number;
-	// predictedNextMonthExpense: number;
 	expenseTrend: 'up' | 'down' | 'stable';
+	nextMonthForecast?: number;
 }
 
 export interface AnalysisAnomaly {

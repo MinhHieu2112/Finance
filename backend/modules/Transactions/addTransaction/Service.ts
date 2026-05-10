@@ -2,7 +2,7 @@ import transactionRepository from './Repository';
 import AppError from '../../../utils/appError';
 import { TransactionFrequency, TransactionType, Currency } from './types';
 import type { transactionDetailSchema, transactionSchema } from './types';
-import anomalyService from '../../aiAssistant/analyzer/Service';
+
 import { convertToBase } from '../../../utils/currencyConverter';
 import { parseCurrencyInput } from '../../../utils/parseCurrencyInput';
 
@@ -23,19 +23,19 @@ class transactionService {
             !data.date ||
             !Array.isArray(data.details) ||
             data.details.length === 0) {
-            throw new AppError('Missing required transaction fields', 400);
+            throw new AppError('Giao dịch thiếu các trường thông tin bắt buộc', 400);
         }
 
         if (!Object.values(TransactionType).includes(type)) {
-            throw new AppError('Invalid transaction type', 400);
+            throw new AppError('Loại giao dịch không hợp lệ', 400);
         }
 
         if (!Object.values(TransactionFrequency).includes(frequency)) {
-            throw new AppError('Invalid transaction frequency', 400);
+            throw new AppError('Tần suất giao dịch không hợp lệ', 400);
         }
 
         if (totalAmount !== undefined && totalAmount !== null && Number(totalAmount) < 0) {
-            throw new AppError('total_amount must be greater than or equal to 0', 400);
+            throw new AppError('Tổng số tiền (total_amount) phải lớn hơn hoặc bằng 0', 400);
         }
         const parsedDetails = [];
         for (const detail of details) {
@@ -46,22 +46,22 @@ class transactionService {
             const amount       = parsedAmount.amount;
 
             if (!categoryId) {
-                throw new AppError('Transaction detail is missing categoryId', 400);
+                throw new AppError('Chi tiết giao dịch bị thiếu danh mục (categoryId)', 400);
             }
 
             if (parsedAmount.detectedCurrency) {
                 if (inferredCurrency && inferredCurrency !== parsedAmount.detectedCurrency) {
-                    throw new AppError('Mixed currencies in one transaction are not supported', 400);
+                    throw new AppError('Không hỗ trợ sử dụng nhiều loại tiền tệ trong cùng một giao dịch', 400);
                 }
                 inferredCurrency = parsedAmount.detectedCurrency;
             }
 
             if (!Number.isFinite(amount) || amount === null || amount < 0) {
-                throw new AppError(`Transaction detail has invalid amount`, 400);
+                throw new AppError(`Chi tiết giao dịch có số tiền không hợp lệ`, 400);
             }
 
             if (!Number.isFinite(quantity) || quantity <= 0) {
-                throw new AppError(`Transaction detail has invalid quantity`, 400);
+                throw new AppError(`Chi tiết giao dịch có số lượng không hợp lệ`, 400);
             }
             parsedDetails.push({categoryId, name, amount, quantity});
         }
@@ -72,7 +72,7 @@ class transactionService {
         for (const detail of parsedDetails) {
             const existingCategory = await transactionRepository.findCategoryNameById(data.userId, detail.categoryId, type);
             if (!existingCategory) {
-                throw new AppError('Category not found for this user', 400);
+                throw new AppError('Không tìm thấy danh mục cho tài khoản này', 400);
             }
             normalizedDetails.push({
                 categoryId  : detail.categoryId,
@@ -106,7 +106,7 @@ class transactionService {
             details     : normalizedDetails,
         });
 
-        anomalyService.detectAnomaly(transaction).catch(err => console.error(err));
+
 
         return transaction;
     }

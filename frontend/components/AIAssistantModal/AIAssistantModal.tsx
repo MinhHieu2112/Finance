@@ -38,15 +38,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 			setQueryResult(null);
 			setDetectedIntent(null);
 
-			const formData = new FormData();
-			formData.append('prompt', prompt);
-
-			const mcpResponse = await api.post<OrchestratorResponse>('/nlp/mcp-tools', formData);
-			const orchestrationData = mcpResponse.data;
-
-			const addQueryResponse = await api.post<AddQueryResponse>('/nlp/add&query',
-				{ data: orchestrationData.result },
-			);
+			const addQueryResponse = await api.post<AddQueryResponse>('/nlp/add&query', { prompt });
 
 			const addQueryData = addQueryResponse.data;
 			setDetectedIntent(addQueryData.result.intent);

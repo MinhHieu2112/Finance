@@ -28,7 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
 
 
   return (
-    <header className="bg-white/80 dark:bg-[#0f111a]/80 backdrop-blur-md shadow-sm dark:shadow-black/20 z-10 sticky top-0 border-b border-gray-100 dark:border-[#1f212e]">
+    <header className="bg-white/80 dark:bg-[#0f111a]/80 backdrop-blur-md shadow-sm dark:shadow-black/20 z-50 sticky top-0 border-b border-gray-100 dark:border-[#1f212e]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
         <div className="flex items-center gap-2">
           {/* Empty div or breadcrumbs could go here */}

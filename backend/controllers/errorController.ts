@@ -40,9 +40,9 @@ const handleValidationErrorDB = (err: KnownError) => {
 	return new AppError(message, 400);
 };
 
-const handleJWTError = () => new AppError('Invalid token. Please log in again.', 401);
+const handleJWTError = () => new AppError('Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.', 401);
 
-const handleJWTExpiredError = () => new AppError('Your token has expired. Please log in again.', 401);
+const handleJWTExpiredError = () => new AppError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.', 401);
 
 const sendErrorDev = (err: KnownError, res: Parameters<ErrorRequestHandler>[2]) => {
 	const statusCode = err.statusCode || 500;

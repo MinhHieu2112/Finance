@@ -110,7 +110,8 @@ export const Charts: React.FC<ChartsProps> = ({ transactions }) => {
     items.forEach((t) => {
       t.details.forEach((detail) => {
         const amount = detail.base_amount || detail.amount;
-        map.set(detail.categoryName, (map.get(detail.categoryName) || 0) + (amount * (detail.quantity || 1)));
+        const normalizedName = detail.categoryName.trim().toUpperCase();
+        map.set(normalizedName, (map.get(normalizedName) || 0) + (amount * (detail.quantity || 1)));
       });
     });
     const rows  = Array.from(map.entries()).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);

@@ -5,9 +5,9 @@ import add_query_nlpService from './Service';
 const add_query_nlp = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authUser   = res.locals.authUser;
-		const { data } = req.body;
+		const { prompt } = req.body;
 
-		const result = await add_query_nlpService.handlePrompt(authUser.id, data);
+		const result = await add_query_nlpService.handlePrompt(authUser.id, prompt);
 
 		res.status(200).json({
 			success: true,
