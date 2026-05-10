@@ -3,6 +3,7 @@ import { GoogleGenAI, Type, FunctionCallingConfigMode } from '@google/genai';
 
 class AIProviderService {
 
+	// Cấu hình các công cụ (tools) dành cho xử lý văn bản thuần túy (NLP)
 	private getTextTools(categoryList: string[]) {
 		return [
 			{
@@ -78,6 +79,7 @@ class AIProviderService {
 		];
 	}
 
+	// Cấu hình các công cụ (tools) dành cho xử lý hóa đơn/hình ảnh (OCR)
 	private getReceiptTools(categoryList: string[]) {
 		return [
 			{
@@ -93,7 +95,7 @@ class AIProviderService {
 									items: {
 										type: Type.OBJECT,
 										properties: {
-											type: { type: Type.STRING, enum: ["income", "expense"] },
+											type: { type: Type.STRING, enum: ["income", "expense", "debt", "savings"] },
 											description: { type: Type.STRING },
 											frequency: { type: Type.STRING, enum: ["weekly", "monthly", "yearly", "one-time"] },
 											date: { type: Type.STRING },
@@ -127,6 +129,7 @@ class AIProviderService {
 		];
 	}
 
+	// Xây dựng câu lệnh (prompt) hướng dẫn AI phân tích ý định từ văn bản
 	private buildTextPrompt(text: string, categoryList: string[]) {
 		const today = new Date().toISOString().slice(0, 10);
 		return [
@@ -137,7 +140,7 @@ class AIProviderService {
 			1. Nếu ý định 'add', gọi addTransaction:
 			{
 				"transactions": [{
-					"type": "income"|"expense",
+					"type": "income"|"expense"|"debt"|"savings",
 					"description": string,
 					"frequency": "weekly"|"monthly"|"yearly"|"one-time" (Mặc định: "one-time"),
 					"date": "YYYY-MM-DD" (Mặc định: ${today}),
@@ -151,7 +154,7 @@ class AIProviderService {
 			}
 			2. Nếu ý định 'query' (tìm kiếm), gọi queryTransaction:
 			{
-				"type": "income"|"expense",
+				"type": "income"|"expense"|"debt"|"savings",
 				"category_keywords": string[] (Khớp: ${categoryList}),
 				"time": [{"year": number, "months": number[]}]
 			}
@@ -163,6 +166,7 @@ class AIProviderService {
 		].join('\n');
 	}
 
+	// Xây dựng câu lệnh (prompt) hướng dẫn AI trích xuất thông tin từ ảnh hóa đơn
 	private buildReceiptPrompt(categoryList: string[]) {
 		const today = new Date().toISOString().slice(0, 10);
 		return [
@@ -172,7 +176,7 @@ class AIProviderService {
 			Dùng hàm receiptParser với JSON:
 			{
 				"transactions": [{
-					"type": "income" | "expense",
+					"type": "income" | "expense" | "debt" | "savings",
 					"description": string,
 					"frequency": "weekly"|"monthly"|"yearly"|"one-time" (Mặc định: "one-time"),
 					"date": "YYYY-MM-DD" (Mặc định: ${today}),
@@ -193,6 +197,7 @@ class AIProviderService {
 		].join('\n');
 	}
 
+	// Xử lý ý định người dùng từ câu lệnh văn bản (Text-to-Intent)
 	async processTextIntent(prompt: string, categoryList: string[]) {
 		const apiKey = process.env.GEMINI_API_KEY?.trim();
 		if (!apiKey) throw new AppError('Dịch vụ AI chưa được cấu hình. Vui lòng thêm GEMINI_API_KEY.', 503);
@@ -234,6 +239,7 @@ class AIProviderService {
 		return { intent: call.name === "addTransaction" ? "add" : "query", data: call.args, usage };
 	}
 
+	// Xử lý và trích xuất dữ liệu từ hình ảnh hóa đơn (OCR-to-Transaction)
 	async processReceipt(file: Buffer, categoryList: string[]) {
 		const apiKey = process.env.GEMINI_API_KEY?.trim();
 		if (!apiKey) throw new AppError('Dịch vụ AI chưa được cấu hình. Vui lòng thêm GEMINI_API_KEY.', 503);

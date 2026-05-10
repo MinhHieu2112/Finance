@@ -8,7 +8,7 @@ import AIProviderService from '../MCP_tools/Service';
 import type { AIDetailInput, AITransactionInput } from './types';
 
 class add_trans_by_receiptImgService {
-	// Tích hợp xử lý đọc ảnh hóa đơn (OCR) qua AI Provider kết hợp gọi Database
+	// Xử lý và trích xuất dữ liệu giao dịch từ hình ảnh hóa đơn bằng công nghệ OCR qua AI
 	async handleReceiptImage(userId: Types.ObjectId, file: Buffer): Promise<unknown[]> {
 		if (!userId) throw new AppError('Lỗi hệ thống: Thiếu User ID', 400);
 		if (!file) throw new AppError('Vui lòng cung cấp hình ảnh hóa đơn', 400);

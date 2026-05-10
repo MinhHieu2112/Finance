@@ -8,7 +8,7 @@ import AIProviderService from '../MCP_tools/Service';
 import type { AIQueryInput, AITransactionInput, AIDetailInput } from './types';
 
 class add_query_nlpService {
-	// Xây dựng bộ lọc truy vấn MongoDB dựa trên dữ liệu trích xuất từ AI.
+	// Xây dựng bộ lọc truy vấn MongoDB dựa trên dữ liệu trích xuất từ AI
 	private buildQuerryFilter(query: AIQueryInput) {
 		const filter: Record<string, unknown> = {};
 
@@ -46,7 +46,7 @@ class add_query_nlpService {
 		return filter;
 	}
 
-	// Tích hợp xử lý ngôn ngữ NLP qua AI Provider kết hợp gọi Database
+	// Tích hợp xử lý ngôn ngữ NLP qua AI Provider kết hợp gọi Database để xử lý ý định người dùng
 	async handlePrompt(userId: Types.ObjectId, prompt: string): Promise<unknown> {
 		if(!userId) throw new AppError('Lỗi hệ thống: Thiếu User ID', 400);
 		if(!prompt) throw new AppError('Vui lòng cung cấp văn bản yêu cầu', 400);
