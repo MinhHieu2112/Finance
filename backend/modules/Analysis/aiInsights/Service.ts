@@ -19,7 +19,6 @@ class insightsService {
 
     // Tạo thông tin phân tích tài chính dựa trên các thuật toán logic dự phòng (Fallback)
     private async generateRuleBasedInsights(userId: Types.ObjectId, transactions: any[]) {
-        // Lấy dữ liệu thống kê tổng hợp
         const data = summaryService.processSummary(transactions);
 
         // Lấy dữ liệu bổ trợ (Nợ chưa trả và Số dư thực tế)

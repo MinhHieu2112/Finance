@@ -171,7 +171,23 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
         return weekData;
     }
 
+    const currentYear = new Date().getFullYear();
     const map = new Map<string, any>();
+
+    // Nếu chế độ "month": khởi tạo đủ 12 tháng của năm hiện tại
+    if (currentPeriod === 'month') {
+        for (let m = 1; m <= 12; m++) {
+            const key = `${currentYear}-${m}`;
+            map.set(key, {
+                label: `T${m}/${currentYear}`,
+                income: 0, expense: 0,
+                debt_paid: 0, debt_unpaid: 0,
+                savings: 0,
+                sortKey: currentYear * 100 + m
+            });
+        }
+    }
+
     const processItem = (dateStr: string, type: string, amount: number, status?: DebtStatus) => {
         const d = new Date(dateStr);
         let key = '';
@@ -185,8 +201,10 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
         } else {
             const month = d.getMonth() + 1;
             const year = d.getFullYear();
+            // Chế độ "month": chỉ lấy dữ liệu trong năm hiện tại
+            if (currentPeriod === 'month' && year !== currentYear) return;
             key = `${year}-${month}`;
-            label = `${month}/${year}`;
+            label = `T${month}/${year}`;
             sortKey = year * 100 + month;
         }
 
