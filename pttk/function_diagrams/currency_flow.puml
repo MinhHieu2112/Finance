@@ -1,0 +1,30 @@
+@startuml
+title Luồng Quy đổi tiền tệ (Currency Conversion)
+
+participant "ClientService" as Svc
+participant "CurrencyConverter" as Utils
+database "MongoDB" as DB
+
+Svc -> Utils : convertToBase(amount, currencyCode, userId)
+activate Utils
+
+Utils -> Utils : Kiểm tra nếu currencyCode == 'VND'
+alt Là VND
+    Utils --> Svc : Trả về amount gốc
+else Không phải VND
+    Utils -> DB : CurrencyModel.findOne({userId, code})
+    activate DB
+    DB --> Utils : currency data (rateToVnd)
+    deactivate DB
+    
+    alt Tìm thấy tỷ giá
+        Utils -> Utils : rate = currency.rateToVnd
+    else Không tìm thấy
+        Utils -> Utils : rate = 1 (Mặc định)
+    end
+    
+    Utils -> Utils : result = amount * rate
+    Utils --> Svc : Trả về result (Số tiền theo VND)
+end
+deactivate Utils
+@enduml

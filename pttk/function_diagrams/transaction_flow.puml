@@ -1,0 +1,60 @@
+@startuml
+title Luồng Quản lý giao dịch (Thêm giao dịch)
+
+actor User
+participant "FrontendApp" as FE
+participant "TransactionController" as Ctrl
+participant "TransactionService" as Svc
+participant "CurrencyConverter" as Converter
+participant "TransactionRepository" as Repo
+database "MongoDB" as DB
+
+User -> FE : Nhập thông tin giao dịch (loại, tiền, danh mục,...)
+FE -> Ctrl : POST /api/transactions (data)
+activate Ctrl
+
+Ctrl -> Svc : addTransaction(data)
+activate Svc
+
+Svc -> Svc : Kiểm tra tính hợp lệ của dữ liệu (userId, type, date, details)
+Svc -> Svc : parseCurrencyInput (xử lý chuỗi tiền tệ và phát hiện loại tiền)
+
+loop Với mỗi món trong details
+    Svc -> Svc : Tính amount, quantity
+    Svc -> Repo : findCategoryNameById(userId, categoryId, type)
+    activate Repo
+    Repo --> Svc : Tên danh mục
+    deactivate Repo
+    Svc -> Converter : convertToBase(amount, currency, userId)
+    activate Converter
+    Converter --> Svc : baseAmount (VND)
+    deactivate Converter
+end
+
+Svc -> Svc : Tính tổng tiền (totalAmount & baseAmount)
+
+alt Nếu là EXPENSE (Chi tiêu)
+    Svc -> Repo : getCurrentBalance(userId)
+    activate Repo
+    Repo --> Svc : currentBalance
+    deactivate Repo
+    alt Nếu số dư không đủ
+        Svc --> Ctrl : Throw AppError(400, 'Số dư không đủ')
+    end
+end
+
+Svc -> Repo : addTransaction(finalData)
+activate Repo
+Repo -> DB : Save to transactions collection
+DB --> Repo : savedTransaction
+Repo --> Svc : transaction object
+deactivate Repo
+
+Svc --> Ctrl : Return transaction
+deactivate Svc
+
+Ctrl --> FE : 201 Created {success: true, transaction}
+deactivate Ctrl
+
+FE -> User : Hiển thị thông báo thành công / Cập nhật Dashboard
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+title Luồng Xác thực người dùng (Đăng nhập)
+
+actor User
+participant "FrontendApp" as FE
+participant "LoginController" as Ctrl
+participant "AuthService" as Svc
+participant "AuthRepository" as Repo
+database "MongoDB" as DB
+
+User -> FE : Nhập email & mật khẩu
+FE -> Ctrl : POST /api/users/login (email, password)
+activate Ctrl
+
+Ctrl -> Svc : login({email, password})
+activate Svc
+
+Svc -> Svc : Chuẩn hóa email (trim, lowerCase)
+Svc -> Svc : Kiểm tra email hợp lệ (validator.isEmail)
+
+Svc -> Repo : findUserByEmail(email)
+activate Repo
+Repo -> DB : query users collection
+DB --> Repo : user data
+Repo --> Svc : user object
+deactivate Repo
+
+alt Người dùng không tồn tại
+    Svc --> Ctrl : Throw AppError(401, 'Tài khoản không tồn tại')
+else Người dùng tồn tại
+    Svc -> Svc : bcrypt.compare(password, user.password)
+    alt Mật khẩu sai
+        Svc --> Ctrl : Throw AppError(401, 'Mật khẩu không chính xác')
+    else Mật khẩu đúng
+        Svc -> Svc : createToken(userData)
+        Svc --> Ctrl : Return {user, token}
+    end
+end
+deactivate Svc
+
+alt Thành công
+    Ctrl --> FE : 200 OK {success: true, user, token}
+else Thất bại (catch)
+    Ctrl -> Ctrl : next(error)
+    Ctrl --> FE : Error response (GlobalErrorHandler)
+end
+deactivate Ctrl
+
+FE -> User : Chuyển hướng tới Dashboard / Hiển thị lỗi
+@enduml

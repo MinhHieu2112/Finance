@@ -1,0 +1,67 @@
+@startuml
+title Luồng Phân tích thống kê & AI Insights
+
+actor User
+participant "FrontendApp" as FE
+participant "AnalysisController" as Ctrl
+participant "SummaryService" as SumSvc
+participant "AIInsightsService" as AISvc
+participant "ForecastingService" as ForecastSvc
+participant "SavingSuggestionService" as SavingSvc
+participant "AnalysisRepository" as Repo
+database "MongoDB" as DB
+
+User -> FE : Truy cập trang Phân tích / Dashboard
+FE -> Ctrl : GET /api/analysis/insights
+activate Ctrl
+
+Ctrl -> AISvc : generateInsights(userId)
+activate AISvc
+
+AISvc -> Repo : getRecentTransactions(userId, 3 tháng)
+activate Repo
+Repo -> DB : query transactions
+DB --> Repo : transactions data
+Repo --> AISvc : transactions list
+deactivate Repo
+
+alt Có dữ liệu giao dịch
+    AISvc -> AISvc : Chuẩn bị summaryObj (incomes, expenses, debts, savings)
+    
+    group Thử gọi AI Gemini (Try block)
+        AISvc -> AISvc : build prompt (JSON format)
+        AISvc -> "Gemini API" : models.generateContent(prompt)
+        "Gemini API" --> AISvc : AI JSON Response
+        AISvc -> AISvc : parse JSON
+        AISvc --> Ctrl : Trả về {analysis, prediction, advice} từ AI
+    end
+    
+    group Fallback (Catch block - Nếu AI lỗi)
+        AISvc -> SumSvc : processSummary(transactions)
+        activate SumSvc
+        SumSvc -> SumSvc : Tính toán totalIncome, totalExpense, topExpense,...
+        SumSvc --> AISvc : summary results
+        deactivate SumSvc
+        
+        AISvc -> ForecastSvc : getTrendPrediction(monthlySeries)
+        activate ForecastSvc
+        ForecastSvc --> AISvc : prediction text
+        deactivate ForecastSvc
+        
+        AISvc -> SavingSvc : getSavingAdvice(...)
+        activate SavingSvc
+        SavingSvc --> AISvc : advice text
+        deactivate SavingSvc
+        
+        AISvc --> Ctrl : Trả về kết quả dựa trên logic nghiệp vụ (Rule-based)
+    end
+else Không có dữ liệu
+    AISvc --> Ctrl : Trả về thông báo "Cần thêm dữ liệu"
+end
+deactivate AISvc
+
+Ctrl --> FE : 200 OK {success: true, analysis, prediction, advice}
+deactivate Ctrl
+
+FE -> User : Hiển thị biểu đồ, thống kê và lời khuyên từ AI
+@enduml

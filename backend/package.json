@@ -8,6 +8,8 @@
     "dev": "nodemon --watch . --ext ts,json --exec \"tsx server.ts\"",
     "resetdb": "tsx config/import-data.ts --delete && tsx config/import-data.ts --import",
     "mockdata": "tsx config/mock-data.ts",
+    "seed": "tsx config/seed.ts",
+    "seed:delete": "tsx config/seed.ts --delete",
     "test": "jest"
   },
   "dependencies": {

@@ -63,7 +63,7 @@ class forecastingTrendService {
         const transactions = await forecastingTrendRepository.getRecentTransactions(500, userId);
         const { monthlySeries } = summaryService.processSummary(transactions);
         
-        const recentSeries = monthlySeries.slice(-6);
+        const recentSeries = monthlySeries.slice(-3);
         const expenseSeries = recentSeries.map(p => p.expense);
         const { forecast, trend } = this.analyzeTrendHolt(expenseSeries);
 

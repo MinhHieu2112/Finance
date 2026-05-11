@@ -1,0 +1,44 @@
+@startuml
+title Luồng Quản lý công nợ (Cập nhật trạng thái Trả nợ)
+
+actor User
+participant "FrontendApp" as FE
+participant "DebtController" as Ctrl
+participant "UpdateDebtService" as Svc
+participant "DebtRepository" as Repo
+database "MongoDB" as DB
+
+User -> FE : Nhấn nút "Đánh dấu đã trả" trên một khoản nợ
+FE -> Ctrl : PATCH /api/debts/:id/paid
+activate Ctrl
+
+Ctrl -> Svc : markAsPaid(debtId, userId)
+activate Svc
+
+Svc -> Repo : findById(debtId)
+activate Repo
+Repo -> DB : query debts collection
+DB --> Repo : debt object
+Repo --> Svc : debt data
+deactivate Repo
+
+alt Không tìm thấy khoản nợ
+    Svc --> Ctrl : Throw AppError(404, 'Không tìm thấy bản ghi nợ')
+else Không phải chủ sở hữu
+    Svc --> Ctrl : Throw AppError(403, 'Không có quyền cập nhật')
+else Hợp lệ
+    Svc -> Repo : updateStatus(debtId, 'Paid')
+    activate Repo
+    Repo -> DB : update status field
+    DB --> Repo : updatedDebt
+    Repo --> Svc : updatedDebt object
+    deactivate Repo
+    Svc --> Ctrl : Return updatedDebt
+end
+deactivate Svc
+
+Ctrl --> FE : 200 OK {success: true, debt}
+deactivate Ctrl
+
+FE -> User : Cập nhật danh sách công nợ / Hiển thị thông báo
+@enduml
