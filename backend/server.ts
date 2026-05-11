@@ -1,8 +1,8 @@
 import './config/env';
 import mongoose from 'mongoose';
 import app from './app';
+import { bootstrapCatalogs } from './config/bootstrapCatalogs';
 
-// Handle uncaught exceptions
 process.on('uncaughtException', (err: Error) => {
   console.error('UNCAUGHT EXCEPTION! Shutting down...');
   console.error(err.name, err.message);
@@ -27,8 +27,9 @@ const resolveDbUri = (): string => {
 
 const DB = resolveDbUri();
 
-mongoose.connect(DB).then(() => {
+mongoose.connect(DB).then(async () => {
   console.log('DB connected');
+  await bootstrapCatalogs();
 });
 
 const port = Number(process.env.PORT) || 4000;
@@ -36,7 +37,6 @@ const server = app.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`);
 });
 
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (err: Error) => {
   console.error('UNHANDLED REJECTION! Shutting down...');
   console.error(err.name, err.message);

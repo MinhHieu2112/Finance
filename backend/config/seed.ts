@@ -1,15 +1,3 @@
-/**
- * seed.ts — Seed toàn bộ dữ liệu mock vào MongoDB trong một bước duy nhất.
- *
- * Chạy:
- *   npx tsx config/seed.ts           → seed (xoá cũ + thêm mới)
- *   npx tsx config/seed.ts --fresh   → chỉ seed (mặc định)
- *   npx tsx config/seed.ts --delete  → chỉ xoá dữ liệu
- *
- * Hoặc thêm vào package.json:
- *   "seed": "tsx config/seed.ts"
- */
-
 import path    from 'path';
 import dotenv  from 'dotenv';
 import mongoose, { Types } from 'mongoose';
@@ -20,54 +8,50 @@ import Catalog     from '../models/Catalog';
 import Category    from '../models/Category';
 import Transaction from '../models/Transaction';
 import Debt        from '../models/Debt';
+import { bootstrapCatalogs } from './bootstrapCatalogs';
+
+// Đọc nguồn dữ liệu chuẩn từ file config (nhất quán với server)
+import catalogsConfig  from './catalogs.json';
+import categoriesConfig from './categories.json';
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
-// ─────────────────────────────────────────────
 // Helpers
-// ─────────────────────────────────────────────
 const randInt  = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
-const randFrom = <T>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)];
-const addDays  = (d: Date, n: number) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
+const randFrom = <T>(arr: readonly T[]): T  => arr[Math.floor(Math.random() * arr.length)];
+const addDays  = (d: Date, n: number)       => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
 
-// ─────────────────────────────────────────────
 // 1. USERS
-// ─────────────────────────────────────────────
 async function buildUsers() {
   const hash = await bcrypt.hash('1234', 10);
   return [
     { _id: new Types.ObjectId(), username: 'tri',  email: 'tri@gmail.com',  phone: '0123459876', password: hash },
     { _id: new Types.ObjectId(), username: 'hieu', email: 'hieu@gmail.com', phone: '0123459871', password: hash },
     { _id: new Types.ObjectId(), username: 'lan',  email: 'lan@gmail.com',  phone: '0123459872', password: hash },
-    { _id: new Types.ObjectId(), username: 'test',  email: 'test@gmail.com',  phone: '0123459873', password: hash },
+    { _id: new Types.ObjectId(), username: 'test', email: 'test@gmail.com', phone: '0123459873', password: hash },
   ];
 }
 
-// ─────────────────────────────────────────────
-// 2. CATALOGS
-// ─────────────────────────────────────────────
-const CATALOG_SEEDS = [
-  { type: 'expense' as const, name: 'Chi phí sinh hoạt'   },
-  { type: 'expense' as const, name: 'Chi phí bất ngờ'     },
-  { type: 'expense' as const, name: 'Chi phí cố định'     },
-  { type: 'expense' as const, name: 'Đầu tư & Tiết kiệm'  },
-  { type: 'income'  as const, name: 'Doanh thu'           },
-  { type: 'debt'    as const, name: 'Khoản nợ'            },
-  { type: 'savings' as const, name: 'Tiết kiệm'           },
-];
+// 2. CATALOGS — lấy từ DB (đã upsert qua bootstrapCatalogs)
+async function loadCatalogs() {
+  const names = catalogsConfig.map(c => c.name);
+  const docs   = await Catalog.find({ name: { $in: names } }).lean();
+  if (docs.length !== catalogsConfig.length) {
+    throw new Error(
+      `Thiếu catalog trong DB. Tìm thấy ${docs.length}/${catalogsConfig.length}. Hãy chạy server một lần để bootstrapCatalogs khởi tạo.`
+    );
+  }
+  return docs as { _id: Types.ObjectId; name: string; type: string }[];
+}
 
-// ─────────────────────────────────────────────
-// 3. CATEGORIES (per user)
-// ─────────────────────────────────────────────
-const CATEGORY_TEMPLATES = [
-  { catalog: 'Chi phí sinh hoạt',  type: 'expense'  as const, names: ['Thực phẩm', 'Siêu thị', 'Ăn uống ngoài', 'Giao thông', 'Xăng xe'] },
-  { catalog: 'Chi phí bất ngờ',    type: 'expense'  as const, names: ['Mua sắm', 'Giải trí', 'Làm đẹp', 'Y tế', 'Từ thiện', 'Sửa chữa'] },
-  { catalog: 'Chi phí cố định',    type: 'expense'  as const, names: ['Hóa đơn điện nước', 'Thuê nhà', 'Internet', 'Điện thoại', 'Gia đình'] },
-  { catalog: 'Đầu tư & Tiết kiệm', type: 'expense'  as const, names: ['Đầu tư chứng khoán', 'Giáo dục & Khoá học', 'Sách'] },
-  { catalog: 'Doanh thu',          type: 'income'   as const, names: ['Lương', 'Thưởng', 'Lợi nhuận kinh doanh', 'Thu hồi nợ', 'Trợ cấp', 'Freelance'] },
-  { catalog: 'Khoản nợ',           type: 'debt'     as const, names: ['Vay tiêu dùng', 'Vay mua xe', 'Vay bạn bè'] },
-  { catalog: 'Tiết kiệm',          type: 'savings'  as const, names: ['Tiết kiệm ngân hàng', 'Quỹ khẩn cấp'] },
-];
+// 3. CATEGORIES (per user) — lấy từ categories.json
+// Map từ type → tên catalog tương ứng (khớp với catalogs.json)
+const TYPE_TO_CATALOG: Record<string, string> = {
+  income : 'Doanh thu',
+  expense: 'Chi tiêu',
+  debt   : 'Khoản nợ',
+  savings: 'Tiết kiệm',
+};
 
 function buildCategories(
   users   : { _id: Types.ObjectId }[],
@@ -77,18 +61,17 @@ function buildCategories(
   const result: any[] = [];
 
   users.forEach(user => {
-    CATEGORY_TEMPLATES.forEach(tmpl => {
-      const catalogId = catalogMap.get(tmpl.catalog);
-      if (!catalogId) return;
+    categoriesConfig.forEach(cat => {
+      const catalogName = TYPE_TO_CATALOG[cat.type];
+      const catalogId   = catalogMap.get(catalogName);
+      if (!catalogId) return; // bỏ qua type không có trong catalogs.json
 
-      tmpl.names.forEach(name => {
-        result.push({
-          _id      : new Types.ObjectId(),
-          userId   : user._id,
-          catalogId,
-          name,
-          type     : tmpl.type,
-        });
+      result.push({
+        _id      : new Types.ObjectId(),
+        userId   : user._id,
+        catalogId,
+        name     : cat.name,
+        type     : cat.type,
       });
     });
   });
@@ -96,32 +79,35 @@ function buildCategories(
   return result;
 }
 
-// ─────────────────────────────────────────────
 // 4. TRANSACTIONS  (2024-01-01 → 2026-03-31)
-// ─────────────────────────────────────────────
 function buildTransactions(
   users     : { _id: Types.ObjectId }[],
   categories: { _id: Types.ObjectId; userId: Types.ObjectId; name: string; type: string }[],
 ) {
-  const transactions: any[]  = [];
-  const debtTxnIds  : { userId: Types.ObjectId; txnId: Types.ObjectId; amount: number; date: Date }[] = [];
+  const transactions: any[] = [];
+  const debtTxnIds: { userId: Types.ObjectId; txnId: Types.ObjectId; amount: number; date: Date }[] = [];
 
   const frequencies = ['weekly', 'monthly', 'yearly', 'one-time'] as const;
 
   const getCat = (userId: Types.ObjectId, type: string, name?: string) => {
-    const pool = categories.filter(c => c.userId.equals(userId) && c.type === type && (!name || c.name === name));
+    const pool = categories.filter(c =>
+      c.userId.equals(userId) && c.type === type && (!name || c.name === name)
+    );
+    if (pool.length === 0) {
+      throw new Error(`Không tìm thấy category: type='${type}'${name ? `, name='${name}'` : ''}`);
+    }
     return randFrom(pool);
   };
 
   users.forEach(user => {
-    let day = new Date('2024-01-01');
-    const end = new Date('2026-03-31');
+    let day      = new Date('2024-01-01');
+    const end    = new Date('2026-03-31');
+    const userId = user._id;
 
     while (day <= end) {
-      const date   = new Date(day);
-      const month  = date.getMonth() + 1;
-      const year   = date.getFullYear();
-      const userId = user._id;
+      const date  = new Date(day);
+      const month = date.getMonth() + 1;
+      const year  = date.getFullYear();
 
       // ── Lương hàng tháng (ngày 1) ──
       if (date.getDate() === 1) {
@@ -130,14 +116,14 @@ function buildTransactions(
         transactions.push(makeTxn(userId, `Lương tháng ${month}/${year}`, 'income', 'monthly', date, amount, cat));
       }
 
-      // ── Thưởng / freelance (ngẫu nhiên ~15% ngày) ──
+      // ── Thu nhập thêm (ngẫu nhiên ~15% ngày) ──
       if (Math.random() < 0.15) {
         const cat    = getCat(userId, 'income');
         const amount = randInt(500_000, 5_000_000);
         transactions.push(makeTxn(userId, `Thu nhập thêm – ${cat.name}`, 'income', 'one-time', date, amount, cat));
       }
 
-      // ── Chi tiêu hàng ngày (expense) ──
+      // ── Chi tiêu hàng ngày (1–3 khoản/ngày) ──
       const numExp = randInt(1, 3);
       for (let i = 0; i < numExp; i++) {
         const cat    = getCat(userId, 'expense');
@@ -148,12 +134,12 @@ function buildTransactions(
       // ── Chi phí cố định (ngày 5 hàng tháng) ──
       if (date.getDate() === 5) {
         const fixedItems = [
-          { name: 'Hóa đơn điện nước', amount: randInt(300_000, 600_000) },
-          { name: 'Internet',           amount: randInt(150_000, 250_000) },
+          { name: 'Hóa đơn điện nước', amount: randInt(300_000,   600_000) },
+          { name: 'Internet',           amount: randInt(150_000,   250_000) },
           { name: 'Thuê nhà',           amount: randInt(3_000_000, 6_000_000) },
         ];
         fixedItems.forEach(item => {
-          const cat = getCat(userId, 'expense', item.name) ?? getCat(userId, 'expense');
+          const cat = getCat(userId, 'expense', item.name);
           transactions.push(makeTxn(userId, item.name, 'expense', 'monthly', date, item.amount, cat));
         });
       }
@@ -211,15 +197,13 @@ function makeTxn(
   };
 }
 
-// ─────────────────────────────────────────────
-// 5. DEBTS (từ debt transactions)
-// ─────────────────────────────────────────────
+// 5. DEBTS (tạo từ các giao dịch type = debt)
 function buildDebts(
   debtTxnIds: { userId: Types.ObjectId; txnId: Types.ObjectId; amount: number; date: Date }[],
 ) {
   return debtTxnIds.map(d => {
     const dueDate = addDays(d.date, randInt(30, 180));
-    const isPaid  = dueDate < new Date() && Math.random() < 0.6; // 60% khoản quá hạn đã trả
+    const isPaid  = dueDate < new Date() && Math.random() < 0.6; 
     return {
       _id          : new Types.ObjectId(),
       userId       : d.userId,
@@ -232,9 +216,7 @@ function buildDebts(
   });
 }
 
-// ─────────────────────────────────────────────
 // SEED  /  DELETE
-// ─────────────────────────────────────────────
 async function clearAll() {
   await Promise.all([
     User.deleteMany({}),
@@ -243,30 +225,29 @@ async function clearAll() {
     Transaction.deleteMany({}),
     Debt.deleteMany({}),
   ]);
-  console.log('Đã xoá toàn bộ dữ liệu cũ.');
+  console.log('Da xoa toan bo du lieu cu.');
 }
 
 async function seed() {
-  console.log('Đang tạo dữ liệu mock...');
+  console.log('Dang tao du lieu mock...');
 
-  // 1. Users
+  // 1. Catalogs — upsert qua bootstrapCatalogs (dùng chung logic với server)
+  await bootstrapCatalogs();
+  const catalogs = await loadCatalogs();
+  console.log(`Catalogs:     ${catalogs.length}`);
+
+  // 2. Users
   const users = await buildUsers();
   await User.insertMany(users);
   console.log(`Users:        ${users.length}`);
 
-  // 2. Catalogs
-  const catalogDocs = CATALOG_SEEDS.map(s => ({ _id: new Types.ObjectId(), ...s }));
-  await Catalog.insertMany(catalogDocs);
-  console.log(`Catalogs:     ${catalogDocs.length}`);
-
   // 3. Categories
-  const categories = buildCategories(users, catalogDocs);
+  const categories = buildCategories(users, catalogs);
   await Category.insertMany(categories);
   console.log(`Categories:   ${categories.length}`);
 
-  // 4. Transactions
+  // 4. Transactions (chia batch 500 tránh timeout)
   const { transactions, debtTxnIds } = buildTransactions(users, categories as any);
-  // MongoDB insertMany mặc định ordered=true, chia batch tránh timeout
   const BATCH = 500;
   for (let i = 0; i < transactions.length; i += BATCH) {
     await Transaction.insertMany(transactions.slice(i, i + BATCH), { ordered: false });
@@ -280,25 +261,22 @@ async function seed() {
   }
   console.log(`Debts:        ${debts.length}`);
 
-  console.log('\n🎉 Seed hoàn tất!');
+  console.log('\nSeed hoan tat!');
 }
 
-// ─────────────────────────────────────────────
 // ENTRY POINT
-// ─────────────────────────────────────────────
 (async () => {
   const DB = process.env.DATABASE_LOCAL;
-  if (!DB) { console.error('DATABASE_LOCAL không được cấu hình trong .env'); process.exit(1); }
+  if (!DB) { console.error('DATABASE_LOCAL chua duoc cau hinh trong .env'); process.exit(1); }
 
   await mongoose.connect(DB);
-  console.log(`🔗 Kết nối MongoDB: ${DB}`);
+  console.log(`Ket noi MongoDB: ${DB}`);
 
   const arg = process.argv[2];
 
   if (arg === '--delete') {
     await clearAll();
   } else {
-    // mặc định: xoá cũ rồi seed mới
     await clearAll();
     await seed();
   }
@@ -306,6 +284,6 @@ async function seed() {
   await mongoose.disconnect();
   process.exit(0);
 })().catch(err => {
-  console.error('Lỗi seed:', err);
+  console.error('Loi seed:', err);
   process.exit(1);
 });

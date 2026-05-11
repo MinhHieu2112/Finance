@@ -1,0 +1,36 @@
+[
+  { "name": "Lương",                   "type": "income"  },
+  { "name": "Thưởng",                  "type": "income"  },
+  { "name": "Lợi nhuận kinh doanh",    "type": "income"  },
+  { "name": "Thu hồi nợ",              "type": "income"  },
+  { "name": "Trợ cấp",                 "type": "income"  },
+  { "name": "Freelance",               "type": "income"  },
+
+  { "name": "Thực phẩm",               "type": "expense" },
+  { "name": "Siêu thị",                "type": "expense" },
+  { "name": "Ăn uống ngoài",           "type": "expense" },
+  { "name": "Giao thông",              "type": "expense" },
+  { "name": "Xăng xe",                 "type": "expense" },
+  { "name": "Mua sắm",                 "type": "expense" },
+  { "name": "Giải trí",                "type": "expense" },
+  { "name": "Làm đẹp",                 "type": "expense" },
+  { "name": "Y tế",                    "type": "expense" },
+  { "name": "Từ thiện",                "type": "expense" },
+  { "name": "Sửa chữa",                "type": "expense" },
+  { "name": "Hóa đơn điện nước",       "type": "expense" },
+  { "name": "Thuê nhà",                "type": "expense" },
+  { "name": "Internet",                "type": "expense" },
+  { "name": "Điện thoại",              "type": "expense" },
+  { "name": "Gia đình",                "type": "expense" },
+  { "name": "Đầu tư chứng khoán",      "type": "expense" },
+  { "name": "Giáo dục & Khoá học",     "type": "expense" },
+  { "name": "Sách",                    "type": "expense" },
+
+  { "name": "Tiết kiệm ngân hàng",     "type": "savings" },
+  { "name": "Quỹ khẩn cấp",            "type": "savings" },
+
+  { "name": "Vay tiêu dùng",           "type": "debt"    },
+  { "name": "Vay mua xe",              "type": "debt"    },
+  { "name": "Vay bạn bè",              "type": "debt"    }
+]
+

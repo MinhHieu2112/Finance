@@ -1,0 +1,6 @@
+[
+  { "type": "income",  "name": "Doanh thu"  },
+  { "type": "expense", "name": "Chi tiêu"   },
+  { "type": "debt",    "name": "Khoản nợ"   },
+  { "type": "savings", "name": "Tiết kiệm"  }
+]
