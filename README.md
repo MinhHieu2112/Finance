@@ -1,4 +1,4 @@
-# 🌟 SmartFinance - Ứng dụng Quản lý Tài chính Cá nhân tích hợp Trợ lý AI & Quét Hóa đơn OCR
+# 🌟 SmartFinance - Ứng dụng quản lý tài chính cá nhân tích hợp trợ lý AI & quét hóa đơn OCR
 
 SmartFinance là một ứng dụng quản lý tài chính cá nhân hiện đại và cao cấp, giúp người dùng theo dõi các khoản thu nhập, chi tiêu, tích lũy và nợ nần một cách dễ dàng. Bằng việc kết hợp các công nghệ web hiện đại và tích hợp AI thông minh, SmartFinance sở hữu tính năng Trợ lý AI xử lý ngôn ngữ tự nhiên (NLP) để ghi chép/truy vấn giao dịch, cùng với Máy quét hóa đơn OCR sử dụng Google Gemini để tự động trích xuất thông tin từ hình ảnh hóa đơn.
 
@@ -17,17 +17,17 @@ SmartFinance là một ứng dụng quản lý tài chính cá nhân hiện đ�
 
 ---
 
-## ✨ Các Tính năng Cốt lõi
+## ✨ Các tính năng cốt lõi
 
-*   **📊 Bảng Điều khiển Tài chính (Dashboard):** Giao diện trực quan hiển thị các thẻ tóm tắt (Số dư ròng, Thu nhập, Chi tiêu, Tích lũy) cùng biểu đồ xu hướng hàng tháng tương tác được xây dựng bằng Recharts.
-*   **✍️ Quản lý Giao dịch Nâng cao:** Thêm, sửa, xóa chi tiết các bản ghi giao dịch. Mỗi giao dịch hỗ trợ bóc tách chi tiết từng mặt hàng (tên mặt hàng, số lượng, đơn giá), phân loại danh mục và hỗ trợ nhiều đơn vị tiền tệ khác nhau.
-*   **🤖 Trợ lý AI Hội thoại:** Trợ lý ảo tích hợp ngay trong ứng dụng, được vận hành bởi model `gemini-3.1-flash-lite-preview` thông qua cơ chế Function Calling. Người dùng có thể ghi chép nhanh hoặc tra cứu dữ liệu bằng câu nói tự nhiên (Ví dụ: *"Hôm nay tôi đã chi 50k ăn sáng"* hoặc *"Tháng này tôi đã tiêu bao nhiêu tiền cho ăn uống?"*).
-*   **📷 Máy Quét Hóa đơn OCR:** Tải ảnh hóa đơn lên hệ thống để tự động trích xuất. SmartFinance sử dụng tính năng phân tích hình ảnh (Vision) của model `gemini-2.5-flash` để nhận diện danh sách mặt hàng, danh mục, tổng tiền và đưa ra bản nháp giao dịch cho người dùng xác nhận lại trước khi lưu.
-*   **💰 Công cụ Đổi tỷ giá Đa Tiền tệ:** Thêm các loại tiền tệ tùy chỉnh và quản lý tỷ giá quy đổi động so với Việt Nam Đồng (VND). Các giao dịch bằng ngoại tệ sẽ được tự động quy đổi về tiền tệ cơ sở (VND) để tính toán báo cáo tổng thể.
-*   **🤝 Theo dõi Sổ Nợ:** Module riêng biệt giúp quản lý các khoản vay/nợ, theo dõi trạng thái trả nợ (`paid`, `unpaid`) và thiết lập hạn thanh toán.
-*   **💡 Gợi ý Chi tiêu & Dự báo từ AI:** Tự động phân tích lịch sử giao dịch 3 tháng gần nhất bằng `gemini-2.5-flash` để đưa ra các lời khuyên tiết kiệm cá nhân hóa và dự đoán xu hướng, kèm theo thuật toán dự phòng (fallback) tự động dựa trên quy tắc toán học nếu không có kết nối tới API AI.
-*   **🔒 Bảo mật & Xác thực:** Đăng ký tài khoản mới, đăng nhập bảo mật bằng Token JWT (kèm rate limiting chống brute-force), thay đổi mật khẩu và quy trình khôi phục mật khẩu khi quên.
-*   **🌓 Giao diện Glassmorphism Hiện đại:** Hỗ trợ giao diện sáng/tối (Dark Mode) mượt mà, thanh menu thu gọn thông minh, thông báo nhanh qua `react-hot-toast` và sử dụng phông chữ Outfit/Inter cao cấp.
+*   **📊 Bảng điều khiển (Dashboard):** Giao diện trực quan hiển thị các thẻ tóm tắt (Số dư ròng, Thu nhập, Chi tiêu, Tích lũy) cùng biểu đồ xu hướng hàng tháng tương tác được xây dựng bằng Recharts.
+*   **✍️ Quản lý giao dịch nâng cao:** Thêm, sửa, xóa chi tiết các bản ghi giao dịch. Mỗi giao dịch hỗ trợ bóc tách chi tiết từng mặt hàng (tên mặt hàng, số lượng, đơn giá), phân loại danh mục và hỗ trợ nhiều đơn vị tiền tệ khác nhau.
+*   **🤖 Trợ lý AI hội thoại:** Trợ lý ảo tích hợp ngay trong ứng dụng, được vận hành bởi model `gemini-3.1-flash-lite-preview` thông qua cơ chế Function Calling. Người dùng có thể ghi chép nhanh hoặc tra cứu dữ liệu bằng câu nói tự nhiên (Ví dụ: *"Hôm nay tôi đã chi 50k ăn sáng"* hoặc *"Tháng này tôi đã tiêu bao nhiêu tiền cho ăn uống?"*).
+*   **📷 Máy quét hóa đơn OCR:** Tải ảnh hóa đơn lên hệ thống để tự động trích xuất. SmartFinance sử dụng tính năng phân tích hình ảnh (Vision) của model `gemini-2.5-flash` để nhận diện danh sách mặt hàng, danh mục, tổng tiền và đưa ra bản nháp giao dịch cho người dùng xác nhận lại trước khi lưu.
+*   **💰 Công cụ đổi tỷ giá đa tiền tệ:** Thêm các loại tiền tệ tùy chỉnh và quản lý tỷ giá quy đổi động so với Việt Nam Đồng (VND). Các giao dịch bằng ngoại tệ sẽ được tự động quy đổi về tiền tệ cơ sở (VND) để tính toán báo cáo tổng thể.
+*   **🤝 Theo dõi sổ Nợ:** Module riêng biệt giúp quản lý các khoản vay/nợ, theo dõi trạng thái trả nợ (`paid`, `unpaid`) và thiết lập hạn thanh toán.
+*   **💡 Gợi ý chi tiêu & dự báo từ AI:** Tự động phân tích lịch sử giao dịch 3 tháng gần nhất bằng `gemini-2.5-flash` để đưa ra các lời khuyên tiết kiệm cá nhân hóa và dự đoán xu hướng, kèm theo thuật toán dự phòng (fallback) tự động dựa trên quy tắc toán học nếu không có kết nối tới API AI.
+*   **🔒 Bảo mật & xác thực:** Đăng ký tài khoản mới, đăng nhập bảo mật bằng Token JWT (kèm rate limiting chống brute-force), thay đổi mật khẩu và quy trình khôi phục mật khẩu khi quên.
+*   **🌓 Giao diện Glassmorphism hiện đại:** Hỗ trợ giao diện sáng/tối (Dark Mode) mượt mà, thanh menu thu gọn thông minh, thông báo nhanh qua `react-hot-toast` và sử dụng phông chữ Outfit/Inter cao cấp.
 
 ---
 
@@ -192,7 +192,7 @@ Mọi đường dẫn API của máy chủ đều được bắt đầu bằng t
 | `PUT` | `/edit/:id` | Có | Chỉnh sửa tên danh mục tùy chỉnh |
 | `DELETE`| `/delete/:id` | Có | Xóa danh mục tùy chỉnh |
 
-### 🤝 Theo dõi nợ nần (`/api/debts`)
+### 🤝 Theo dõi khoản nợ (`/api/debts`)
 | Giao thức | Đường dẫn | Yêu cầu Token | Mô tả chức năng |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/list` | Có | Danh sách các khoản nợ phải trả/thu về kèm hạn thanh toán |
@@ -310,7 +310,7 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-### Bước 3: Tạo Docker Compose Orchestrator
+### Bước 3: Tạo Docker compose orchestrator
 Tạo file `/docker-compose.yml` tại thư mục gốc của dự án:
 ```yaml
 version: '3.8'
@@ -368,7 +368,7 @@ Sau đó truy cập ứng dụng trực tiếp trên cổng HTTP mặc định: 
 
 ## 🗄️ Cấu trúc Database (Mongoose Schema)
 
-### User Model (`users`)
+### User model (`users`)
 ```json
 {
   "username": { "type": "String", "required": true, "unique": true },
@@ -380,7 +380,7 @@ Sau đó truy cập ứng dụng trực tiếp trên cổng HTTP mặc định: 
 }
 ```
 
-### Transaction Model (`transactions`)
+### Transaction model (`transactions`)
 ```json
 {
   "userId": { "type": "ObjectId", "ref": "User", "index": true },
@@ -404,7 +404,7 @@ Sau đó truy cập ứng dụng trực tiếp trên cổng HTTP mặc định: 
 }
 ```
 
-### Category Model (`categories`)
+### Category model (`categories`)
 ```json
 {
   "userId": { "type": "ObjectId", "ref": "User", "index": true },
@@ -415,7 +415,7 @@ Sau đó truy cập ứng dụng trực tiếp trên cổng HTTP mặc định: 
 ```
 *(Chỉ mục Unique: `userId` + `type` + `name`)*
 
-### Debt Model (`debts`)
+### Debt model (`debts`)
 ```json
 {
   "userId": { "type": "ObjectId", "ref": "User", "index": true },
@@ -427,7 +427,7 @@ Sau đó truy cập ứng dụng trực tiếp trên cổng HTTP mặc định: 
 }
 ```
 
-### Currency Model (`currencies`)
+### Currency model (`currencies`)
 ```json
 {
   "userId": { "type": "ObjectId", "ref": "User", "index": true },
