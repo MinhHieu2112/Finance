@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { TransactionForm } from '../../components/TransactionForm/TransactionForm';
 import { ToastModal } from '../../components/ToastModal/ToastModal';
-import { CreditCard, ArrowLeft, CheckCircle2, History, TrendingDown, Wallet, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CreditCard, CheckCircle2, History, TrendingDown, Wallet, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api, getApiErrorMessage } from '../../lib/api';
 import { formatCurrency } from '../../lib/currencies';
 import { Currency } from '../../types/Transactions';

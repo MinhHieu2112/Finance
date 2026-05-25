@@ -7,7 +7,7 @@ import type {
   ListTransactionResponse,
   Transaction,
 } from './types';
-import { Bot, Sparkles, TrendingUp, Lightbulb } from 'lucide-react';
+import { Sparkles, TrendingUp, Lightbulb } from 'lucide-react';
 import { 
   PieChart, 
   Pie, 
@@ -31,7 +31,7 @@ type Period = 'week' | 'month' | 'year';
 
 const DAYS_OF_WEEK = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
 
-// Thành phần hiển thị chú thích khi di chuột vào biểu đồ (Hỗ trợ chế độ Dark Mode)
+// Thành phần hiển thị chú thích khi di chuột vào biểu đồ
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -114,7 +114,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
     </div>
   );
 
-  // Chuẩn bị và phân loại dữ liệu theo trục thời gian để hiển thị lên biểu đồ cột (BarChart)
+  // Phân loại dữ liệu theo trục thời gian để hiển thị lên biểu đồ cột (BarChart)
   const getTimelineData = (filterType: 'summary' | 'debt' | 'savings', currentPeriod: Period) => {
     if (currentPeriod === 'week') {
         const now = new Date();
@@ -174,7 +174,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ user }) => {
     const currentYear = new Date().getFullYear();
     const map = new Map<string, any>();
 
-    // Nếu chế độ "month": khởi tạo đủ 12 tháng của năm hiện tại
+    // khởi tạo đủ 12 tháng của năm hiện tại
     if (currentPeriod === 'month') {
         for (let m = 1; m <= 12; m++) {
             const key = `${currentYear}-${m}`;

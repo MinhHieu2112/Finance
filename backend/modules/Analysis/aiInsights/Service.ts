@@ -27,7 +27,6 @@ class insightsService {
             insightsRepository.getTotalBalance(userId)
         ]);
 
-        // Kết hợp kết quả từ Forecasting và Saving Suggestions
         return {
             analysis: data.summaryText,
             prediction: forecastingTrendService.getTrendPrediction(data.monthlySeries),

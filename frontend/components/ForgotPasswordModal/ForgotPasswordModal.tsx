@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, Lock, Key, ArrowRight, CheckCircle2, ShieldQuestion, Clock, Loader2, KeyRound } from 'lucide-react';
+import { Phone, Lock, Key, ArrowRight, CheckCircle2, ShieldQuestion, Loader2, KeyRound } from 'lucide-react';
 import { Button } from '../Button/Button';
 import { api, getApiErrorMessage } from '../../lib/api';
 import toast, { Toaster } from 'react-hot-toast';
@@ -29,7 +29,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
         const otpCode = res.data.otp;
         setReceivedOtp(otpCode);
         
-        // Show compact OTP toast with 10s countdown
+        // Hiển thị toast OTP với bộ đếm ngược 10 giây
         toast.custom((t) => <OtpToast t={t} otpCode={otpCode} />, { duration: 10000, position: 'top-center' });
 
         setStep(2);
@@ -90,7 +90,6 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
     setReceivedOtp('');
     setNewPassword('');
     setConfirmPassword('');
-    setError(null);
   };
 
   const renderStep = () => {
@@ -235,17 +234,15 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <Toaster />
-      {/* Backdrop */}
+      {/* Lớp phủ nền */}
       <div 
         className="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" 
         onClick={loading ? undefined : onClose}
       />
       
-      {/* Modal Content */}
+      {/* Nội dung Modal */}
       <div className="relative bg-white dark:bg-slate-950 w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-fade-in-up border border-white dark:border-slate-800">
         <div className="p-8 md:p-10">
-
-          
           {renderStep()}
 
           {step < 4 && (
@@ -300,8 +297,3 @@ const OtpToast = ({ t, otpCode }: { t: any; otpCode: string }) => {
     </div>
   );
 };
-
-function setError(arg0: null) {
-  throw new Error('Function not implemented.');
-}
-
